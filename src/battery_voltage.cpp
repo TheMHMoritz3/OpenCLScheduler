@@ -14,6 +14,11 @@
 using namespace cl;
 using namespace std;
 
+/**
+ * Sets up the Device for the Program with a specific ID
+ * @param platform
+ * @return
+ */
 Device settingUpDevice(int platform){
     //get all platforms (drivers)
     vector<Platform> all_platforms;
@@ -41,11 +46,17 @@ Device settingUpDevice(int platform){
  
 }
 
+/**
+ * Generates the Program from the Kernelfile and the device propeties
+ * @param default_device
+ * @param context
+ * @return
+ */
 Program settingUpProgram(Device default_device, Context context){
  
     Program::Sources sources;
  
-    ifstream sourceFile("kernel.cl");
+    ifstream sourceFile("battery_kernel.cl");
     string kernel_code(istreambuf_iterator<char>(sourceFile), (istreambuf_iterator<char>()));
     sources.push_back({kernel_code.c_str(),kernel_code.length()});
  
@@ -58,6 +69,17 @@ Program settingUpProgram(Device default_device, Context context){
     return program;
 }
 
+/**
+ * Executes the content of the kernel file.
+ * @param load
+ * @param count
+ * @param items
+ * @param cores
+ * @param default_device
+ * @param context
+ * @param program
+ * @return
+ */
 double run(int load, int count, uint32_t* items, int cores, Device default_device, Context context, Program program){
     
     uint32_t* A = items;
@@ -130,6 +152,11 @@ double run_no_lib(int count, float* items){
     return elapsed.count();
 }
 
+/**
+ * Reads the data from the Bus
+ * @param size
+ * @return
+ */
 uint32_t* create_data(int size) // size: Datapoints collected from canBus //stretch: Datapoints stretched to this size
 {
     uint32_t* col_res = new uint32_t[size];   
