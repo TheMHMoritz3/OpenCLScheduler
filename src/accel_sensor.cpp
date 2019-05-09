@@ -190,11 +190,13 @@ int main(){
 
     const int DEFAULT_SIZE = 10;
     double execTimeVCL, execTimePOCL;
-
+    cout << "Defintions done";
     Device default_device = settingUpDevice(0); // 0 = VideoCore IV ; 1 = POCL on CPU
     Context context({default_device});
+    cout << "definition device one";
     Device default_device2 = settingUpDevice(1); // 0 = VideoCore IV ; 1 = POCL on CPU
     Context context2({default_device2});
+
     cout << "Setting up VC4CL OpenCl Programs\n";
     Program program = settingUpProgram(default_device, context);
 
