@@ -128,7 +128,7 @@ double run(int load, int count, uint32_t* items, int cores, Device default_devic
 
     for(int i = 0; i < count; i++)
     {
-        cout << "Latitude: " << B[i]<<  "m/s²" << "\n";}
+        cout << "Latitude: " << B[i]<<  "g" << "\n";}
 
     return elapsed.count();
 }
