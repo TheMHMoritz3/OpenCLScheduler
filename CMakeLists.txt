@@ -80,3 +80,23 @@ add_executable(accelaration src/accel_sensor.cpp)
 #target_compile_options(EmbeddedSystemsProject PUBLIC -Wall)
 
 target_link_options(accelaration PUBLIC -lOpenCL PUBLIC -lsupc++ PUBLIC -lc3can_core PUBLIC -lc3can_error)
+
+project (tempreture)
+# The version number.
+set (tempreture_VERSION_MAJOR 1)
+set (tempreture_VERSION_MINOR 0)
+
+# configure a header file to pass some of the CMake settings
+# to the source code
+#configure_file ("${PROJECT_SOURCE_DIR}/src")
+
+# add the binary tree to the search path for include files
+# so that we will find TutorialConfig.h
+include_directories("${PROJECT_BINARY_DIR}")
+
+# add the executable
+add_executable(tempreture src/accel_sensor.cpp)
+
+#target_compile_options(EmbeddedSystemsProject PUBLIC -Wall)
+
+target_link_options(tempreture PUBLIC -lOpenCL PUBLIC -lsupc++ PUBLIC -lc3can_core PUBLIC -lc3can_error)
