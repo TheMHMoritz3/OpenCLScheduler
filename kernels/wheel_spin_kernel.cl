@@ -4,7 +4,7 @@ __kernel void speedCalculation(global const unsigned int* A, global float* B, co
 
 	for (i = 0; i < WLOAD; ++i)
 	{
-	    B[gid + i]= (4000000.0f * 360.0f) / (A[gid+i] * 26.0f);
+		B[gid + i]= (A[gid + i] * 3.7f * 5.0f) / 1024.0f;
 	}
 }
 
