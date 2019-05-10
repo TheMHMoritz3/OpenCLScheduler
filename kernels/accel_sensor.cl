@@ -4,6 +4,6 @@ __kernel void accelCalc(global const unsigned int* A, global float* B, const int
 
 	for (i = 0; i < WLOAD; ++i)
 	{
-		B[gid + i]= (A[gid + i] - 2048.0f) / 256f;
+		B[gid + i]= (A[gid + i] - 2048.0f) / 256.0f;
 	}
 }
