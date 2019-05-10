@@ -95,7 +95,7 @@ set (tempreture_VERSION_MINOR 0)
 include_directories("${PROJECT_BINARY_DIR}")
 
 # add the executable
-add_executable(tempreture src/accel_sensor.cpp)
+add_executable(tempreture src/tempreture.cpp)
 
 #target_compile_options(EmbeddedSystemsProject PUBLIC -Wall)
 
