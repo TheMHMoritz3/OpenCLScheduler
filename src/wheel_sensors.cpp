@@ -18,7 +18,7 @@ using namespace std;
 /**
  * Sets up the Device for the Program with a specific ID
  * @param platform
- * @return
+ * @return The Device specified on the HardwareID
  */
 Device settingUpDevice(int platform){
     //get all platforms (drivers)
@@ -286,12 +286,12 @@ int main(){
     const int DEFAULT_SIZE = 10;
     double execTimeVCL, execTimePOCL;
 
-    Device default_device = settingUpDevice(0); // 0 = VideoCore IV ; 1 = POCL on CPU
-    Context context({default_device});
+//    Device default_device = settingUpDevice(0); // 0 = VideoCore IV ; 1 = POCL on CPU
+//    Context context({default_device});
     Device default_device2 = settingUpDevice(1); // 0 = VideoCore IV ; 1 = POCL on CPU
     Context context2({default_device2});
-    cout << "Setting up VC4CL OpenCl Programs\n";
-    Program program = settingUpProgram(default_device, context);
+//    cout << "Setting up VC4CL OpenCl Programs\n";
+//    Program program = settingUpProgram(default_device, context);
 
     cout << "Setting up POCL OpenCl Programs\n";
     Program program2 = settingUpProgram(default_device2, context2);
@@ -302,17 +302,17 @@ int main(){
         cout << hex << "Data Point: " << i << ": " << (uint32_t)data[i]<< "\n";
     }
 
-//    pair<double,float*> calculationValue;
-    cout << "Computing Front Left on GPU - VC4CL" << endl;
-    pair<double,float*> calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
-    execTimeVCL = calculationValue.first;
-    float* frontLeftValues=calculationValue.second;
-    cout << "execution time: "<<execTimeVCL << "s" << endl;
+    pair<double,float*> calculationValue;
+//    cout << "Computing Front Left on GPU - VC4CL" << endl;
+//    pair<double,float*> calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
+//    execTimeVCL = calculationValue.first;
+//    float* frontLeftValues=calculationValue.second;
+//    cout << "execution time: "<<execTimeVCL << "s" << endl;
 
     cout << "Computing Front Left on CPU - POCL" << endl;
     calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2, program2);
     execTimePOCL = calculationValue.first;
-//    float* frontLeftValues=calculationValue.second;
+    float* frontLeftValues=calculationValue.second;
     cout << "execution time: "<<execTimePOCL<<"s"<<endl;
 
     data = gatherDataFrontRight(DEFAULT_SIZE);
@@ -321,25 +321,21 @@ int main(){
         cout << hex << "Data Point: " << i << ": " << (uint32_t)data[i]<< "\n";
     }
 
-    cout << "Computing Front Right on GPU - VC4CL" << endl;
-    calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
-    execTimeVCL = calculationValue.first;
-    float* frontRightValues=calculationValue.second;
-    cout << "execution time: "<<execTimeVCL << "s" << endl;
+//    cout << "Computing Front Right on GPU - VC4CL" << endl;
+//    calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
+//    execTimeVCL = calculationValue.first;
+//    float* frontRightValues=calculationValue.second;
+//    cout << "execution time: "<<execTimeVCL << "s" << endl;
 
     cout << "Computing Front Right on CPU - POCL" << endl;
     calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2, program2);
     execTimePOCL = calculationValue.first;
-//    float* frontRightValues=calculationValue.second;
+    float* frontRightValues=calculationValue.second;
     cout << "execution time: "<<execTimePOCL<<"s"<<endl;
 
-    cout << "Computing Median on GPU - VC4CL" << endl;
-    execTimeVCL = runMedian(1, DEFAULT_SIZE, frontLeftValues,frontRightValues, DEFAULT_SIZE, default_device, context, program);
-    cout << "execution time: "<<execTimeVCL << "s" << endl;
-
-    for(int i = 0; i<DEFAULT_SIZE; i++){
-        cout<<(frontLeftValues[i]+frontRightValues[i])/2.0<<endl;
-    }
+//    cout << "Computing Median on GPU - VC4CL" << endl;
+//    execTimeVCL = runMedian(1, DEFAULT_SIZE, frontLeftValues,frontRightValues, DEFAULT_SIZE, default_device, context, program);
+//    cout << "execution time: "<<execTimeVCL << "s" << endl;
 
     cout << "Computing Median on CPU - POCL" << endl;
     execTimePOCL = runMedian(1, DEFAULT_SIZE, frontLeftValues, frontRightValues, DEFAULT_SIZE, default_device2, context2, program2);
