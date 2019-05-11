@@ -148,6 +148,11 @@ double runMedian(int load, int count, float* speed1, float* speed2, int cores, D
     float speedfront1[count] = {};
     float speedfront2[count] = {};
 
+    for(int i = 0; i<count; i++){
+        speedfront1[i]=speed1[i];
+        speedfront2[i]=speed2[i];
+    }
+
     cl_int ret = 1;
     float B[count] = {};
 
