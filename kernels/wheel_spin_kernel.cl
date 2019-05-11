@@ -14,6 +14,7 @@ __kernel void median(global const float* speed1, global const float* speed2, glo
 
 	for (i = 0; i < WLOAD; ++i)
 	{
+	    printf("Value: %f \n",speed1[gid + i]);
 		B[gid + i] = (speed1[gid + i] + speed2[gid+i]) / 2.0f;
 	}
 }
