@@ -6,6 +6,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <utility>
+#include <exception>
 
 #include <c3can/error/extended.h>
 #include <c3can/core.h>
@@ -88,10 +89,12 @@ pair<double,float*> runSpeedCalculation(int load, int count, uint32_t* items, in
     float B[count] = {};
 
     auto start = chrono::high_resolution_clock::now();
+    cout << "creating buffers" << endl;
 
     Buffer buffer_A(context,CL_MEM_READ_WRITE,sizeof(uint32_t)*count);
     Buffer buffer_B(context,CL_MEM_READ_WRITE,sizeof(float)*count);
     Buffer buffer_WORKLOAD(context,CL_MEM_READ_WRITE,sizeof(int));
+    cout << "creating buffers finished staring queue"<<endl;
 
     CommandQueue queue(context,default_device, ret);
     //---Debug---
@@ -103,7 +106,7 @@ pair<double,float*> runSpeedCalculation(int load, int count, uint32_t* items, in
     ret = queue.finish();
     printf("Kernel Success WriteBuffer %d\n", ret);
 
-    Kernel speedCalculationWheel=Kernel(program,"speedCalculation");
+    Kernel speedCalculationWheel=Kernel(program,"speedCalcul");
     speedCalculationWheel.setArg(0,buffer_A);
     speedCalculationWheel.setArg(1,buffer_B);
     speedCalculationWheel.setArg(2,load);
@@ -112,7 +115,13 @@ pair<double,float*> runSpeedCalculation(int load, int count, uint32_t* items, in
     ret = queue.finish();
     printf("Kernel Success ArgSet %d\n", ret);
 
+    cout << "Is Error here?"<<endl;
+    try{
     ret = queue.enqueueNDRangeKernel(speedCalculationWheel,NullRange,NDRange(count/load),NDRange(cores));
+    }catch(exception ex){
+      cout<<ex.what();
+    }
+    cout << "Is Error befor or after that line"<<endl;
     queue.finish();
     //---Debug---
     printf("Kernel Success NDRange %d\n", ret);
@@ -188,8 +197,9 @@ double runMedian(int load, int count, float* speed1, float* speed2, int cores, D
     queue.finish();
     //---Debug---
     printf("Kernel Success NDRange %d\n", ret);
-
+    cout << "Error Here?"<<endl;
     queue.enqueueReadBuffer(buffer_B,CL_TRUE,0,sizeof(float)*count,B);
+    cout<<"Error Here?"<<endl;
     queue.finish();
 
     auto finish = chrono::high_resolution_clock::now();
@@ -302,7 +312,7 @@ int main(){
         cout << hex << "Data Point: " << i << ": " << (uint32_t)data[i]<< "\n";
     }
 
-//    pair<double,float*> calculationValue;
+    //pair<double,float*> calculationValue;
     cout << "Computing Front Left on GPU - VC4CL" << endl;
     pair<double,float*> calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
     execTimeVCL = calculationValue.first;
@@ -312,7 +322,7 @@ int main(){
     cout << "Computing Front Left on CPU - POCL" << endl;
     calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2, program2);
     execTimePOCL = calculationValue.first;
-//    float* frontLeftValues=calculationValue.second;
+    //float* frontLeftValues=calculationValue.second;
     cout << "execution time: "<<execTimePOCL<<"s"<<endl;
 
     data = gatherDataFrontRight(DEFAULT_SIZE);
