@@ -12,7 +12,7 @@ __kernel void speedCalcul(global const unsigned int* A, global float* B, const i
     for (int j = 0; j < size; j++)
     {
       array[j] = (A[gid + i] >> (8 * j)) & 0xff;
-      printf("%u",array[j]);
+      printf("%u \n",array[j]);
     }
     value[i]=((array[2])*65536.0f + (array[1])*256.0f + array[0] );
   }
@@ -29,7 +29,7 @@ __kernel void median(global const float* speed1, global const float* speed2, glo
 
 	for (i = 0; i < WLOAD; ++i)
 	{
-	
+	    printf("Speed 1: %f Speed 2: %f\n",speed1[gid + i],speed2[gid+i]);
 		B[gid + i] = (speed1[gid + i] + speed2[gid+i]) / 2.0f;
 	}
 }
