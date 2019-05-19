@@ -164,24 +164,28 @@ double run_no_lib(int count, float* items){
 uint32_t* create_data(int size) // size: Datapoints collected from canBus //stretch: Datapoints stretched to this size
 {
     uint32_t* col_res = new uint32_t[size];
-    cout << "Setting up C3CAN\n";
-    c3can_single *single = c3can_single_init("can0");
-    C3CAN_CHECK_ERR(single, exit, -1);
-    c3can_single_filter_add(single, 0x192, (C3CAN_SINGLE_FILTER_OPTS) 0);
-    /* We're receiving blocking */
-    c3can_message msg;
-    /* we're requesting the hardware timestamp for better documentation */
-    struct timeval timestamp;
 
-    cout << "Collecting Data...\n";
-    for(int i = 0; i < size; i++)
-    {
-        c3can_single_recv(single, &msg, &timestamp);
-        C3CAN_CHECK_ERR(single, exit, -1);
-        col_res[i] = U32_DATA(c3can_message_get_payload(&msg));
-    }
+    //CAN DATA
+//    cout << "Setting up C3CAN\n";
+//    c3can_single *single = c3can_single_init("can0");
+//    C3CAN_CHECK_ERR(single, exit, -1);
+//    c3can_single_filter_add(single, 0x192, (C3CAN_SINGLE_FILTER_OPTS) 0);
+//    /* We're receiving blocking */
+//    c3can_message msg;
+//    /* we're requesting the hardware timestamp for better documentation */
+//    struct timeval timestamp;
+//
+//    cout << "Collecting Data...\n";
+//    for(int i = 0; i < size; i++)
+//    {
+//        c3can_single_recv(single, &msg, &timestamp);
+//        C3CAN_CHECK_ERR(single, exit, -1);
+//        col_res[i] = U32_DATA(c3can_message_get_payload(&msg));
+//    }
+//
+//    cout << "Finished Data!\n";
 
-    cout << "Finished Data!\n";
+    col_res={80,4596,0,984,5,944,864,0,0,0};
     return col_res;
 }
 
