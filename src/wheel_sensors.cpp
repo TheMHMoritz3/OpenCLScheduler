@@ -190,16 +190,15 @@ double runMedian(int load, int count, float* speed1, float* speed2, int cores, D
     speedCalculationWheel.setArg(3,load);
 
     //---Debug---
-    ret = queue.finish();
-    printf("Kernel Success ArgSet %d\n", ret);
+//    ret = queue.finish();
+//    printf("Kernel Success ArgSet %d\n", ret);
 
     ret = queue.enqueueNDRangeKernel(speedCalculationWheel,NullRange,NDRange(count/load),NDRange(cores));
     queue.finish();
     //---Debug---
-    printf("Kernel Success NDRange %d\n", ret);
-    cout << "Error Here?"<<endl;
+//    printf("Kernel Success NDRange %d\n", ret);
+
     queue.enqueueReadBuffer(buffer_B,CL_TRUE,0,sizeof(float)*count,B);
-    cout<<"Error Here?"<<endl;
     queue.finish();
 
     auto finish = chrono::high_resolution_clock::now();
