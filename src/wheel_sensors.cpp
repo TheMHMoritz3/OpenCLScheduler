@@ -103,8 +103,8 @@ pair<double,float*> runSpeedCalculation(int load, int count, uint32_t* items, in
 
     ret = queue.enqueueWriteBuffer(buffer_A,CL_TRUE,0,sizeof(uint32_t)*count,items);
     //---Debug---
-    ret = queue.finish();
-    printf("Kernel Success WriteBuffer %d\n", ret);
+//    ret = queue.finish();
+//    printf("Kernel Success WriteBuffer %d\n", ret);
 
     Kernel speedCalculationWheel=Kernel(program,"speedCalcul");
     speedCalculationWheel.setArg(0,buffer_A);
@@ -112,19 +112,18 @@ pair<double,float*> runSpeedCalculation(int load, int count, uint32_t* items, in
     speedCalculationWheel.setArg(2,load);
 
     //---Debug---
-    ret = queue.finish();
-    printf("Kernel Success ArgSet %d\n", ret);
+//    ret = queue.finish();
+//    printf("Kernel Success ArgSet %d\n", ret);
 
-    cout << "Is Error here?"<<endl;
     try{
     ret = queue.enqueueNDRangeKernel(speedCalculationWheel,NullRange,NDRange(count/load),NDRange(cores));
     }catch(exception ex){
       cout<<ex.what();
     }
-    cout << "Is Error befor or after that line"<<endl;
+
     queue.finish();
     //---Debug---
-    printf("Kernel Success NDRange %d\n", ret);
+//    printf("Kernel Success NDRange %d\n", ret);
 
     queue.enqueueReadBuffer(buffer_B,CL_TRUE,0,sizeof(float)*count,B);
     queue.finish();
@@ -158,6 +157,7 @@ double runMedian(int load, int count, float* speed1, float* speed2, int cores, D
     float *speedfront2 = new float[count];
 
     for(int i = 0; i<count; i++){
+        cout<<speed1<<" "<<speed2<<endl;
         speedfront1[i]=speed1[i];
         speedfront2[i]=speed2[i];
     }

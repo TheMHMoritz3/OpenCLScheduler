@@ -12,7 +12,6 @@ __kernel void speedCalcul(global const unsigned int* A, global float* B, const i
     for (int j = 0; j < size; j++)
     {
       array[j] = (A[gid + i] >> (8 * j)) & 0xff;
-      printf("%u \n",array[j]);
     }
     value[i]=((array[2])*65536.0f + (array[1])*256.0f + array[0] );
   }
