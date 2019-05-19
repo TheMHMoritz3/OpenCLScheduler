@@ -128,7 +128,7 @@ double run(int load, int count, uint32_t* items, int cores, Device default_devic
 
     for(int i = 0; i < count; i++)
     {
-        cout << "Voltage: " << B[i]<<  "°" << "\n";}
+        cout << "Tempreture: " << B[i]<<  "°" << "\n";}
 
     return elapsed.count();
 }
@@ -164,6 +164,8 @@ double run_no_lib(int count, float* items){
 uint32_t* create_data(int size) // size: Datapoints collected from canBus //stretch: Datapoints stretched to this size
 {
     uint32_t* col_res = new uint32_t[size];
+
+    //CAN DATA
     cout << "Setting up C3CAN\n";
     c3can_single *single = c3can_single_init("can0");
     C3CAN_CHECK_ERR(single, exit, -1);
@@ -182,6 +184,7 @@ uint32_t* create_data(int size) // size: Datapoints collected from canBus //stre
     }
 
     cout << "Finished Data!\n";
+
     return col_res;
 }
 

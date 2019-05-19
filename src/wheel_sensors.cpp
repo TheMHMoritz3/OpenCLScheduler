@@ -103,8 +103,8 @@ pair<double,float*> runSpeedCalculation(int load, int count, uint32_t* items, in
 
     ret = queue.enqueueWriteBuffer(buffer_A,CL_TRUE,0,sizeof(uint32_t)*count,items);
     //---Debug---
-    ret = queue.finish();
-    printf("Kernel Success WriteBuffer %d\n", ret);
+//    ret = queue.finish();
+//    printf("Kernel Success WriteBuffer %d\n", ret);
 
     Kernel speedCalculationWheel=Kernel(program,"speedCalcul");
     speedCalculationWheel.setArg(0,buffer_A);
@@ -112,32 +112,33 @@ pair<double,float*> runSpeedCalculation(int load, int count, uint32_t* items, in
     speedCalculationWheel.setArg(2,load);
 
     //---Debug---
-    ret = queue.finish();
-    printf("Kernel Success ArgSet %d\n", ret);
+//    ret = queue.finish();
+//    printf("Kernel Success ArgSet %d\n", ret);
 
-    cout << "Is Error here?"<<endl;
     try{
     ret = queue.enqueueNDRangeKernel(speedCalculationWheel,NullRange,NDRange(count/load),NDRange(cores));
     }catch(exception ex){
       cout<<ex.what();
     }
-    cout << "Is Error befor or after that line"<<endl;
+
     queue.finish();
     //---Debug---
-    printf("Kernel Success NDRange %d\n", ret);
+//    printf("Kernel Success NDRange %d\n", ret);
 
     queue.enqueueReadBuffer(buffer_B,CL_TRUE,0,sizeof(float)*count,B);
     queue.finish();
 
     auto finish = chrono::high_resolution_clock::now();
     chrono::duration<double> elapsed = finish - start;
-
+    
+    float* speed = new float[count];
     for(int i = 0; i < count; i++)
     {
-        cout << "Speed: " << B[i]<<  "m/s" << "\n";
+        speed[i] = B[i]; 
+        cout << "Speed: " << speed[i] <<  "m/s" << "\n";
     }
     double elapsedTime = elapsed.count();
-    pair<double,float*> returnvalue(elapsedTime,B);
+    pair<double,float*> returnvalue(elapsedTime,speed);
     return returnvalue;
 }
 
@@ -154,8 +155,8 @@ pair<double,float*> runSpeedCalculation(int load, int count, uint32_t* items, in
  */
 double runMedian(int load, int count, float* speed1, float* speed2, int cores, Device default_device, Context context, Program program){
 
-    float speedfront1[count] = {};
-    float speedfront2[count] = {};
+    float *speedfront1 = new float[count];
+    float *speedfront2 = new float[count];
 
     for(int i = 0; i<count; i++){
         speedfront1[i]=speed1[i];
@@ -190,16 +191,15 @@ double runMedian(int load, int count, float* speed1, float* speed2, int cores, D
     speedCalculationWheel.setArg(3,load);
 
     //---Debug---
-    ret = queue.finish();
-    printf("Kernel Success ArgSet %d\n", ret);
+//    ret = queue.finish();
+//    printf("Kernel Success ArgSet %d\n", ret);
 
     ret = queue.enqueueNDRangeKernel(speedCalculationWheel,NullRange,NDRange(count/load),NDRange(cores));
     queue.finish();
     //---Debug---
-    printf("Kernel Success NDRange %d\n", ret);
-    cout << "Error Here?"<<endl;
+//    printf("Kernel Success NDRange %d\n", ret);
+
     queue.enqueueReadBuffer(buffer_B,CL_TRUE,0,sizeof(float)*count,B);
-    cout<<"Error Here?"<<endl;
     queue.finish();
 
     auto finish = chrono::high_resolution_clock::now();
@@ -263,6 +263,7 @@ uint32_t* gatherDataFrontLeft(int size) // size: Datapoints collected from canBu
     }
 
     cout << "Finished Data!\n";
+
     return col_res;
 }
 
@@ -288,6 +289,7 @@ uint32_t* gatherDataFrontRight(int size) // size: Datapoints collected from canB
     }
 
     cout << "Finished Data!\n";
+
     return col_res;
 }
 
@@ -312,7 +314,7 @@ int main(){
         cout << hex << "Data Point: " << i << ": " << (uint32_t)data[i]<< "\n";
     }
 
-    //pair<double,float*> calculationValue;
+//    pair<double,float*> calculationValue;
     cout << "Computing Front Left on GPU - VC4CL" << endl;
     pair<double,float*> calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
     execTimeVCL = calculationValue.first;
@@ -322,7 +324,7 @@ int main(){
     cout << "Computing Front Left on CPU - POCL" << endl;
     calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2, program2);
     execTimePOCL = calculationValue.first;
-    //float* frontLeftValues=calculationValue.second;
+//    float* frontLeftValues=calculationValue.second;
     cout << "execution time: "<<execTimePOCL<<"s"<<endl;
 
     data = gatherDataFrontRight(DEFAULT_SIZE);
@@ -346,7 +348,10 @@ int main(){
     cout << "Computing Median on GPU - VC4CL" << endl;
     execTimeVCL = runMedian(1, DEFAULT_SIZE, frontLeftValues,frontRightValues, DEFAULT_SIZE, default_device, context, program);
     cout << "execution time: "<<execTimeVCL << "s" << endl;
-
+    
+    for(int i = 0; i<DEFAULT_SIZE; i++){
+        cout<<frontLeftValues[i]<<" "<<frontRightValues[i]<<endl;
+    }
     cout << "Computing Median on CPU - POCL" << endl;
     execTimePOCL = runMedian(1, DEFAULT_SIZE, frontLeftValues, frontRightValues, DEFAULT_SIZE, default_device2, context2, program2);
     cout << "execution time: "<<execTimePOCL<<"s"<<endl;
