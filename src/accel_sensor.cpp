@@ -128,7 +128,7 @@ double runXAxis(int load, int count, uint32_t* items, int cores, Device default_
 
     for(int i = 0; i < count; i++)
     {
-        cout << "Latitude: " << B[i]<<  "°" << "\n";}
+        cout << "Latitude: " << B[i]<<  " RAD" << "\n";}
 
     return elapsed.count();
 }
@@ -177,7 +177,7 @@ double runYAxis(int load, int count, uint32_t* items, int cores, Device default_
 
     for(int i = 0; i < count; i++)
     {
-        cout << "Latitude: " << B[i]<<  "°" << "\n";}
+        cout << "Latitude: " << B[i]<<  " RAD" << "\n";}
 
     return elapsed.count();
 }
@@ -233,7 +233,7 @@ uint32_t* getLogdiduteValues(int size) // size: Datapoints collected from canBus
 //
 //    cout << "Finished Data!\n";
     for (unsigned int i = 0; i<size; i++){
-        col_res[i]=2014+i;
+        col_res[i]=2048+i;
     }
     return col_res;
 }
@@ -262,7 +262,7 @@ uint32_t* getLateralValues(int size) // size: Datapoints collected from canBus /
 //
 //    cout << "Finished Data!\n";
     for (unsigned int i = 0; i<size; i++){
-        col_res[i]=2014+i;
+        col_res[i]=2048+i;
     }
     return col_res;
 }
