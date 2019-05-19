@@ -84,7 +84,7 @@ Program settingUpProgram(Device default_device, Context context){
  * @param program
  * @return
  */
-double run(int load, int count, uint32_t* items, int cores, Device default_device, Context context, Program program){
+double runXAxis(int load, int count, uint32_t* items, int cores, Device default_device, Context context, Program program){
 
     uint32_t* A = items;
     cl_int ret = 1;
@@ -106,7 +106,7 @@ double run(int load, int count, uint32_t* items, int cores, Device default_devic
     //ret = queue.finish();
     //printf("Kernel Success WriteBuffer %d\n", ret);
 
-    Kernel battery=Kernel(program,"accelCalc");
+    Kernel battery=Kernel(program,"xAxis");
     battery.setArg(0,buffer_A);
     battery.setArg(1,buffer_B);
     battery.setArg(2,load);
@@ -128,7 +128,56 @@ double run(int load, int count, uint32_t* items, int cores, Device default_devic
 
     for(int i = 0; i < count; i++)
     {
-        cout << "Latitude: " << B[i]<<  "g" << "\n";}
+        cout << "Latitude: " << B[i]<<  "°" << "\n";}
+
+    return elapsed.count();
+}
+
+double runYAxis(int load, int count, uint32_t* items, int cores, Device default_device, Context context, Program program){
+
+    uint32_t* A = items;
+    cl_int ret = 1;
+    float B[count] = {};
+
+    auto start = chrono::high_resolution_clock::now();
+
+    Buffer buffer_A(context,CL_MEM_READ_WRITE,sizeof(uint32_t)*count);
+    Buffer buffer_B(context,CL_MEM_READ_WRITE,sizeof(float)*count);
+    Buffer buffer_WORKLOAD(context,CL_MEM_READ_WRITE,sizeof(int));
+
+    CommandQueue queue(context,default_device, ret);
+    //---Debug---
+    //ret = queue.finish();
+    //printf("Kernel Success CmdQ %d\n", ret);
+
+    ret = queue.enqueueWriteBuffer(buffer_A,CL_TRUE,0,sizeof(uint32_t)*count,items);
+    //---Debug---
+    //ret = queue.finish();
+    //printf("Kernel Success WriteBuffer %d\n", ret);
+
+    Kernel battery=Kernel(program,"yAxis");
+    battery.setArg(0,buffer_A);
+    battery.setArg(1,buffer_B);
+    battery.setArg(2,load);
+
+    //---Debug---
+    //ret = queue.finish();
+    //printf("Kernel Success ArgSet %d\n", ret);
+
+    ret = queue.enqueueNDRangeKernel(battery,NullRange,NDRange(count/load),NDRange(cores));
+    queue.finish();
+    //---Debug---
+    //printf("Kernel Success NDRange %d\n", ret);
+
+    queue.enqueueReadBuffer(buffer_B,CL_TRUE,0,sizeof(float)*count,B);
+    queue.finish();
+
+    auto finish = chrono::high_resolution_clock::now();
+    chrono::duration<double> elapsed = finish - start;
+
+    for(int i = 0; i < count; i++)
+    {
+        cout << "Latitude: " << B[i]<<  "°" << "\n";}
 
     return elapsed.count();
 }
@@ -165,24 +214,27 @@ uint32_t* getLogdiduteValues(int size) // size: Datapoints collected from canBus
 {
     uint32_t* col_res = new uint32_t[size];
 
-    cout << "Setting up C3CAN\n";
-    c3can_single *single = c3can_single_init("can0");
-    C3CAN_CHECK_ERR(single, exit, -1);
-    c3can_single_filter_add(single, 0x190, (C3CAN_SINGLE_FILTER_OPTS) 0);
-    /* We're receiving blocking */
-    c3can_message msg;
-    /* we're requesting the hardware timestamp for better documentation */
-    struct timeval timestamp;
-
-    cout << "Collecting Data...\n";
-    for(int i = 0; i < size; i++)
-    {
-        c3can_single_recv(single, &msg, &timestamp);
-        C3CAN_CHECK_ERR(single, exit, -1);
-        col_res[i] = U32_DATA(c3can_message_get_payload(&msg));
+//    cout << "Setting up C3CAN\n";
+//    c3can_single *single = c3can_single_init("can0");
+//    C3CAN_CHECK_ERR(single, exit, -1);
+//    c3can_single_filter_add(single, 0x190, (C3CAN_SINGLE_FILTER_OPTS) 0);
+//    /* We're receiving blocking */
+//    c3can_message msg;
+//    /* we're requesting the hardware timestamp for better documentation */
+//    struct timeval timestamp;
+//
+//    cout << "Collecting Data...\n";
+//    for(int i = 0; i < size; i++)
+//    {
+//        c3can_single_recv(single, &msg, &timestamp);
+//        C3CAN_CHECK_ERR(single, exit, -1);
+//        col_res[i] = U32_DATA(c3can_message_get_payload(&msg));
+//    }
+//
+//    cout << "Finished Data!\n";
+    for (unsigned int i = 0; i<size; i++){
+        col_res[i]=2014+i;
     }
-
-    cout << "Finished Data!\n";
     return col_res;
 }
 
@@ -191,24 +243,27 @@ uint32_t* getLateralValues(int size) // size: Datapoints collected from canBus /
 {
     uint32_t* col_res = new uint32_t[size];
 
-    cout << "Setting up C3CAN\n";
-    c3can_single *single = c3can_single_init("can0");
-    C3CAN_CHECK_ERR(single, exit, -1);
-    c3can_single_filter_add(single, 0x191, (C3CAN_SINGLE_FILTER_OPTS) 0);
-    /* We're receiving blocking */
-    c3can_message msg;
-    /* we're requesting the hardware timestamp for better documentation */
-    struct timeval timestamp;
-
-    cout << "Collecting Data...\n";
-    for(int i = 0; i < size; i++)
-    {
-        c3can_single_recv(single, &msg, &timestamp);
-        C3CAN_CHECK_ERR(single, exit, -1);
-        col_res[i] = U32_DATA(c3can_message_get_payload(&msg));
+//    cout << "Setting up C3CAN\n";
+//    c3can_single *single = c3can_single_init("can0");
+//    C3CAN_CHECK_ERR(single, exit, -1);
+//    c3can_single_filter_add(single, 0x191, (C3CAN_SINGLE_FILTER_OPTS) 0);
+//    /* We're receiving blocking */
+//    c3can_message msg;
+//    /* we're requesting the hardware timestamp for better documentation */
+//    struct timeval timestamp;
+//
+//    cout << "Collecting Data...\n";
+//    for(int i = 0; i < size; i++)
+//    {
+//        c3can_single_recv(single, &msg, &timestamp);
+//        C3CAN_CHECK_ERR(single, exit, -1);
+//        col_res[i] = U32_DATA(c3can_message_get_payload(&msg));
+//    }
+//
+//    cout << "Finished Data!\n";
+    for (unsigned int i = 0; i<size; i++){
+        col_res[i]=2014+i;
     }
-
-    cout << "Finished Data!\n";
     return col_res;
 }
 
@@ -237,7 +292,7 @@ int main(){
 //    execTimeVCL = run(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
 //    cout << "execution time: "<<execTimeVCL << "s" << endl;
     cout << "Computing on CPU - POCL" << endl;
-    execTimePOCL = run(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2, program2);
+    execTimePOCL = runXAxis(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2, program2);
     cout << "execution time: "<<execTimePOCL<<"s"<<endl;
 
     data = getLateralValues(DEFAULT_SIZE);
@@ -247,7 +302,7 @@ int main(){
 //    execTimeVCL = run(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
 //    cout << "execution time: "<<execTimeVCL << "s" << endl;
     cout << "Computing on CPU - POCL" << endl;
-    execTimePOCL = run(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2, program2);
+    execTimePOCL = runYAxis(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2, program2);
     cout << "execution time: "<<execTimePOCL<<"s"<<endl;
 
     return 0;
