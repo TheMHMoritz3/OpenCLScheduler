@@ -185,7 +185,7 @@ uint32_t* create_data(int size) // size: Datapoints collected from canBus //stre
 //
 //    cout << "Finished Data!\n";
 
-    col_res={80,4596,0,984,5,944,864,0,0,0};
+    col_res={static_cast<u_int32_t>(80),static_cast<u_int32_t>(4596),static_cast<u_int32_t>(0),static_cast<u_int32_t>(984),static_cast<u_int32_t>(5),static_cast<u_int32_t>(944),static_cast<u_int32_t>(864),static_cast<u_int32_t>(0),static_cast<u_int32_t>(0),static_cast<u_int32_t>(0)};
     return col_res;
 }
 
