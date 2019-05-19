@@ -214,27 +214,25 @@ uint32_t* getLogdiduteValues(int size) // size: Datapoints collected from canBus
 {
     uint32_t* col_res = new uint32_t[size];
 
-//    cout << "Setting up C3CAN\n";
-//    c3can_single *single = c3can_single_init("can0");
-//    C3CAN_CHECK_ERR(single, exit, -1);
-//    c3can_single_filter_add(single, 0x190, (C3CAN_SINGLE_FILTER_OPTS) 0);
-//    /* We're receiving blocking */
-//    c3can_message msg;
-//    /* we're requesting the hardware timestamp for better documentation */
-//    struct timeval timestamp;
-//
-//    cout << "Collecting Data...\n";
-//    for(int i = 0; i < size; i++)
-//    {
-//        c3can_single_recv(single, &msg, &timestamp);
-//        C3CAN_CHECK_ERR(single, exit, -1);
-//        col_res[i] = U32_DATA(c3can_message_get_payload(&msg));
-//    }
-//
-//    cout << "Finished Data!\n";
-    for (unsigned int i = 0; i<size; i++){
-        col_res[i]=2014+i;
+    cout << "Setting up C3CAN\n";
+    c3can_single *single = c3can_single_init("can0");
+    C3CAN_CHECK_ERR(single, exit, -1);
+    c3can_single_filter_add(single, 0x190, (C3CAN_SINGLE_FILTER_OPTS) 0);
+    /* We're receiving blocking */
+    c3can_message msg;
+    /* we're requesting the hardware timestamp for better documentation */
+    struct timeval timestamp;
+
+    cout << "Collecting Data...\n";
+    for(int i = 0; i < size; i++)
+    {
+        c3can_single_recv(single, &msg, &timestamp);
+        C3CAN_CHECK_ERR(single, exit, -1);
+        col_res[i] = U32_DATA(c3can_message_get_payload(&msg));
     }
+
+    cout << "Finished Data!\n";
+
     return col_res;
 }
 
@@ -243,27 +241,25 @@ uint32_t* getLateralValues(int size) // size: Datapoints collected from canBus /
 {
     uint32_t* col_res = new uint32_t[size];
 
-//    cout << "Setting up C3CAN\n";
-//    c3can_single *single = c3can_single_init("can0");
-//    C3CAN_CHECK_ERR(single, exit, -1);
-//    c3can_single_filter_add(single, 0x191, (C3CAN_SINGLE_FILTER_OPTS) 0);
-//    /* We're receiving blocking */
-//    c3can_message msg;
-//    /* we're requesting the hardware timestamp for better documentation */
-//    struct timeval timestamp;
-//
-//    cout << "Collecting Data...\n";
-//    for(int i = 0; i < size; i++)
-//    {
-//        c3can_single_recv(single, &msg, &timestamp);
-//        C3CAN_CHECK_ERR(single, exit, -1);
-//        col_res[i] = U32_DATA(c3can_message_get_payload(&msg));
-//    }
-//
-//    cout << "Finished Data!\n";
-    for (unsigned int i = 0; i<size; i++){
-        col_res[i]=2014+i;
+    cout << "Setting up C3CAN\n";
+    c3can_single *single = c3can_single_init("can0");
+    C3CAN_CHECK_ERR(single, exit, -1);
+    c3can_single_filter_add(single, 0x191, (C3CAN_SINGLE_FILTER_OPTS) 0);
+    /* We're receiving blocking */
+    c3can_message msg;
+    /* we're requesting the hardware timestamp for better documentation */
+    struct timeval timestamp;
+
+    cout << "Collecting Data...\n";
+    for(int i = 0; i < size; i++)
+    {
+        c3can_single_recv(single, &msg, &timestamp);
+        C3CAN_CHECK_ERR(single, exit, -1);
+        col_res[i] = U32_DATA(c3can_message_get_payload(&msg));
     }
+
+    cout << "Finished Data!\n";
+
     return col_res;
 }
 
@@ -275,8 +271,8 @@ int main(){
     Context context({default_device});
     Device default_device2 = settingUpDevice(1); // 0 = VideoCore IV ; 1 = POCL on CPU
     Context context2({default_device2});
-//    cout << "Setting up VC4CL OpenCl Programs\n";
-//    Program program = settingUpProgram(default_device, context);
+    cout << "Setting up VC4CL OpenCl Programs\n";
+    Program program = settingUpProgram(default_device, context);
 
     cout << "Setting up POCL OpenCl Programs\n";
     Program program2 = settingUpProgram(default_device2, context2);
@@ -288,9 +284,9 @@ int main(){
     }
 
     cout << "Longitudial Acceleration:"<<endl;
-//    cout << "Computing on GPU - VC4CL" << endl;
-//    execTimeVCL = run(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
-//    cout << "execution time: "<<execTimeVCL << "s" << endl;
+    cout << "Computing on GPU - VC4CL" << endl;
+    execTimeVCL = runXAxis(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
+    cout << "execution time: "<<execTimeVCL << "s" << endl;
     cout << "Computing on CPU - POCL" << endl;
     execTimePOCL = runXAxis(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2, program2);
     cout << "execution time: "<<execTimePOCL<<"s"<<endl;
@@ -298,9 +294,9 @@ int main(){
     data = getLateralValues(DEFAULT_SIZE);
 
     cout << "Lateral Acceleration:"<<endl;
-//    cout << "Computing on GPU - VC4CL" << endl;
-//    execTimeVCL = run(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
-//    cout << "execution time: "<<execTimeVCL << "s" << endl;
+    cout << "Computing on GPU - VC4CL" << endl;
+    execTimeVCL = runYAxis(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
+    cout << "execution time: "<<execTimeVCL << "s" << endl;
     cout << "Computing on CPU - POCL" << endl;
     execTimePOCL = runYAxis(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2, program2);
     cout << "execution time: "<<execTimePOCL<<"s"<<endl;
