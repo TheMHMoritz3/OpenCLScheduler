@@ -166,29 +166,25 @@ uint32_t* create_data(int size) // size: Datapoints collected from canBus //stre
     uint32_t* col_res = new uint32_t[size];
 
     //CAN DATA
-//    cout << "Setting up C3CAN\n";
-//    c3can_single *single = c3can_single_init("can0");
-//    C3CAN_CHECK_ERR(single, exit, -1);
-//    c3can_single_filter_add(single, 0x192, (C3CAN_SINGLE_FILTER_OPTS) 0);
-//    /* We're receiving blocking */
-//    c3can_message msg;
-//    /* we're requesting the hardware timestamp for better documentation */
-//    struct timeval timestamp;
-//
-//    cout << "Collecting Data...\n";
-//    for(int i = 0; i < size; i++)
-//    {
-//        c3can_single_recv(single, &msg, &timestamp);
-//        C3CAN_CHECK_ERR(single, exit, -1);
-//        col_res[i] = U32_DATA(c3can_message_get_payload(&msg));
-//    }
-//
-//    cout << "Finished Data!\n";
-//    uint32_t array[10] = {static_cast<uint32_t>(80),static_cast<uint32_t>(4596),static_cast<uint32_t>(0),static_cast<uint32_t>(984),static_cast<uint32_t>(5),static_cast<uint32_t>(944),static_cast<uint32_t>(864),static_cast<uint32_t>(0),static_cast<uint32_t>(0),static_cast<uint32_t>(0)};
-//    col_res=array;
-    for(unsigned int i = 0; i<size; i++){
-        col_res[i]=80*i;
+    cout << "Setting up C3CAN\n";
+    c3can_single *single = c3can_single_init("can0");
+    C3CAN_CHECK_ERR(single, exit, -1);
+    c3can_single_filter_add(single, 0x192, (C3CAN_SINGLE_FILTER_OPTS) 0);
+    /* We're receiving blocking */
+    c3can_message msg;
+    /* we're requesting the hardware timestamp for better documentation */
+    struct timeval timestamp;
+
+    cout << "Collecting Data...\n";
+    for(int i = 0; i < size; i++)
+    {
+        c3can_single_recv(single, &msg, &timestamp);
+        C3CAN_CHECK_ERR(single, exit, -1);
+        col_res[i] = U32_DATA(c3can_message_get_payload(&msg));
     }
+
+    cout << "Finished Data!\n";
+
     return col_res;
 }
 
