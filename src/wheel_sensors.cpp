@@ -130,13 +130,15 @@ pair<double,float*> runSpeedCalculation(int load, int count, uint32_t* items, in
 
     auto finish = chrono::high_resolution_clock::now();
     chrono::duration<double> elapsed = finish - start;
-
+    
+    float* speed = new float[count];
     for(int i = 0; i < count; i++)
     {
-        cout << "Speed: " << B[i]<<  "m/s" << "\n";
+        speed[i] = B[i]; 
+        cout << "Speed: " << speed[i] <<  "m/s" << "\n";
     }
     double elapsedTime = elapsed.count();
-    pair<double,float*> returnvalue(elapsedTime,B);
+    pair<double,float*> returnvalue(elapsedTime,speed);
     return returnvalue;
 }
 
@@ -157,7 +159,7 @@ double runMedian(int load, int count, float* speed1, float* speed2, int cores, D
     float *speedfront2 = new float[count];
 
     for(int i = 0; i<count; i++){
-        cout<<speed1<<" "<<speed2<<endl;
+        cout<<speed1[i]<<" "<<speed2[i]<<endl;
         speedfront1[i]=speed1[i];
         speedfront2[i]=speed2[i];
     }
@@ -355,7 +357,10 @@ int main(){
 //    cout << "Computing Median on GPU - VC4CL" << endl;
 //    execTimeVCL = runMedian(1, DEFAULT_SIZE, frontLeftValues,frontRightValues, DEFAULT_SIZE, default_device, context, program);
 //    cout << "execution time: "<<execTimeVCL << "s" << endl;
-
+    
+    for(int i = 0; i<DEFAULT_SIZE; i++){
+        cout<<frontLeftValues[i]<<" "<<frontRightValues[i]<<endl;
+    }
     cout << "Computing Median on CPU - POCL" << endl;
     execTimePOCL = runMedian(1, DEFAULT_SIZE, frontLeftValues, frontRightValues, DEFAULT_SIZE, default_device2, context2, program2);
     cout << "execution time: "<<execTimePOCL<<"s"<<endl;
