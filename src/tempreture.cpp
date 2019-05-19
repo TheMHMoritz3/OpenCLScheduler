@@ -187,7 +187,7 @@ uint32_t* create_data(int size) // size: Datapoints collected from canBus //stre
 //    uint32_t array[10] = {static_cast<uint32_t>(80),static_cast<uint32_t>(4596),static_cast<uint32_t>(0),static_cast<uint32_t>(984),static_cast<uint32_t>(5),static_cast<uint32_t>(944),static_cast<uint32_t>(864),static_cast<uint32_t>(0),static_cast<uint32_t>(0),static_cast<uint32_t>(0)};
 //    col_res=array;
     for(unsigned int i = 0; i<size; i++){
-        col_res[i]=i;
+        col_res[i]=80*i;
     }
     return col_res;
 }
