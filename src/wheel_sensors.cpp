@@ -154,8 +154,8 @@ pair<double,float*> runSpeedCalculation(int load, int count, uint32_t* items, in
  */
 double runMedian(int load, int count, float* speed1, float* speed2, int cores, Device default_device, Context context, Program program){
 
-    float speedfront1[count] = {};
-    float speedfront2[count] = {};
+    float *speedfront1 = new float[count];
+    float *speedfront2 = new float[count];
 
     for(int i = 0; i<count; i++){
         speedfront1[i]=speed1[i];
