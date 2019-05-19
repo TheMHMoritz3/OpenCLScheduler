@@ -128,7 +128,7 @@ double run(int load, int count, uint32_t* items, int cores, Device default_devic
 
     for(int i = 0; i < count; i++)
     {
-        cout << "Voltage: " << B[i]<<  "°" << "\n";}
+        cout << "Tempreture: " << B[i]<<  "°" << "\n";}
 
     return elapsed.count();
 }
@@ -184,7 +184,7 @@ uint32_t* create_data(int size) // size: Datapoints collected from canBus //stre
 //    }
 //
 //    cout << "Finished Data!\n";
-    uint32_t array[10] = {static_cast<u_int32_t>(80),static_cast<u_int32_t>(4596),static_cast<u_int32_t>(0),static_cast<u_int32_t>(984),static_cast<u_int32_t>(5),static_cast<u_int32_t>(944),static_cast<u_int32_t>(864),static_cast<u_int32_t>(0),static_cast<u_int32_t>(0),static_cast<u_int32_t>(0)};
+    uint32_t array[10] = {static_cast<uint32_t>(80),static_cast<uint32_t>(4596),static_cast<uint32_t>(0),static_cast<uint32_t>(984),static_cast<uint32_t>(5),static_cast<uint32_t>(944),static_cast<uint32_t>(864),static_cast<uint32_t>(0),static_cast<uint32_t>(0),static_cast<uint32_t>(0)};
     col_res=array;
     return col_res;
 }
