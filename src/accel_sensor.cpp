@@ -128,7 +128,7 @@ double runXAxis(int load, int count, uint32_t* items, int cores, Device default_
 
     for(int i = 0; i < count; i++)
     {
-        cout << "Latitude: " << B[i]<<  "°" << "\n";}
+        cout << "Latitude: " << B[i]<<  " RAD" << "\n";}
 
     return elapsed.count();
 }
@@ -230,9 +230,6 @@ uint32_t* getLogdiduteValues(int size) // size: Datapoints collected from canBus
         C3CAN_CHECK_ERR(single, exit, -1);
         col_res[i] = U32_DATA(c3can_message_get_payload(&msg));
     }
-
-    cout << "Finished Data!\n";
-
     return col_res;
 }
 
@@ -257,9 +254,6 @@ uint32_t* getLateralValues(int size) // size: Datapoints collected from canBus /
         C3CAN_CHECK_ERR(single, exit, -1);
         col_res[i] = U32_DATA(c3can_message_get_payload(&msg));
     }
-
-    cout << "Finished Data!\n";
-
     return col_res;
 }
 

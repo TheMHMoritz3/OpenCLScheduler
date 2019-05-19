@@ -4,7 +4,7 @@ __kernel void xAxis(global const unsigned int* A, global float* B, const int WLO
 
 	for (i = 0; i < WLOAD; ++i)
 	{
-		B[gid + i]= asin(accelCalculation(A[gid + i]);
+		B[gid + i]= asin((A[gid + i]- 2048.0f)/256.0f);
 	}
 }
 
@@ -14,10 +14,6 @@ __kernel void yAxis(global const unsigned int* A, global float* B, const int WLO
 
 	for (i = 0; i < WLOAD; ++i)
 	{
-		B[gid + i]= acos(accelCalculation(A[gid + i]);
+		B[gid + i]= acos((A[gid + i]- 2048.0f)/256.0f);
 	}
-}
-
-float accelCalculation(unsigned int value){
-    return ((value - 2048.0f)/256.0f);
 }
