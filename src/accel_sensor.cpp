@@ -258,7 +258,8 @@ uint32_t* getLateralValues(int size) // size: Datapoints collected from canBus /
 }
 
 int main(){
-
+	
+	
     const int DEFAULT_SIZE = 10;
     double execTimeVCL, execTimePOCL;
     Device default_device = settingUpDevice(0); // 0 = VideoCore IV ; 1 = POCL on CPU
@@ -270,7 +271,8 @@ int main(){
 
     cout << "Setting up POCL OpenCl Programs\n";
     Program program2 = settingUpProgram(default_device2, context2);
-
+    
+    while(true){
     uint32_t* data = getLogdiduteValues(DEFAULT_SIZE);
     for(int i = 0; i < DEFAULT_SIZE; i++)
     {
@@ -294,6 +296,6 @@ int main(){
     cout << "Computing on CPU - POCL" << endl;
     execTimePOCL = runYAxis(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2, program2);
     cout << "execution time: "<<execTimePOCL<<"s"<<endl;
-
+}
     return 0;
 }

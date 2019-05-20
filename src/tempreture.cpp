@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
+#include <sstream>
 #include <c3can/error/extended.h>
 #include <c3can/core.h>
 
@@ -29,7 +29,7 @@ Device settingUpDevice(int platform){
     char platformName[64];
     Platform::get(&all_platforms);
     if(all_platforms.size()==0){
-        cout<<" No platforms found. Check OpenCL installation!\n";
+        //cout<<" No platforms found. Check OpenCL installation!\n";
         exit(1);
     }
     Platform default_platform=all_platforms[platform];
@@ -41,7 +41,7 @@ Device settingUpDevice(int platform){
     vector<Device> all_devices;
     default_platform.getDevices(CL_DEVICE_TYPE_ALL, &all_devices);
     if(all_devices.size()==0){
-        cout<<" No devices found. Check OpenCL installation!\n";
+        //cout<<" No devices found. Check OpenCL installation!\n";
         exit(1);
     }
     Device default_device=all_devices[0];
@@ -161,21 +161,21 @@ double run_no_lib(int count, float* items){
  * @param size
  * @return
  */
-uint32_t* create_data(int size) // size: Datapoints collected from canBus //stretch: Datapoints stretched to this size
+uint32_t* create_data(int size, int address) // size: Datapoints collected from canBus //stretch: Datapoints stretched to this size
 {
     uint32_t* col_res = new uint32_t[size];
 
     //CAN DATA
-    cout << "Setting up C3CAN\n";
+    //cout << "Setting up C3CAN\n";
     c3can_single *single = c3can_single_init("can0");
     C3CAN_CHECK_ERR(single, exit, -1);
-    c3can_single_filter_add(single, 0x192, (C3CAN_SINGLE_FILTER_OPTS) 0);
+    c3can_single_filter_add(single, address, (C3CAN_SINGLE_FILTER_OPTS) 0);
     /* We're receiving blocking */
     c3can_message msg;
     /* we're requesting the hardware timestamp for better documentation */
     struct timeval timestamp;
 
-    cout << "Collecting Data...\n";
+    //cout << "Collecting Data...\n";
     for(int i = 0; i < size; i++)
     {
         c3can_single_recv(single, &msg, &timestamp);
@@ -183,38 +183,36 @@ uint32_t* create_data(int size) // size: Datapoints collected from canBus //stre
         col_res[i] = U32_DATA(c3can_message_get_payload(&msg));
     }
 
-    cout << "Finished Data!\n";
+    //cout << "Finished Data!\n";
 
     return col_res;
 }
 
 int main(){
 
-    const int DEFAULT_SIZE = 10;
+    const int DEFAULT_SIZE = 1;
     double execTimeVCL, execTimePOCL;
-
+    int address = 0x192;
+    
     Device default_device = settingUpDevice(0); // 0 = VideoCore IV ; 1 = POCL on CPU
     Context context({default_device});
     Device default_device2 = settingUpDevice(1); // 0 = VideoCore IV ; 1 = POCL on CPU
     Context context2({default_device2});
-    cout << "Setting up VC4CL OpenCl Programs\n";
+    //cout << "Setting up VC4CL OpenCl Programs\n";
     Program program = settingUpProgram(default_device, context);
 
-    cout << "Setting up POCL OpenCl Programs\n";
+    //cout << "Setting up POCL OpenCl Programs\n";
     Program program2 = settingUpProgram(default_device2, context2);
+	
+	while(true){
+    uint32_t* data = create_data(DEFAULT_SIZE, address);
 
-    uint32_t* data = create_data(DEFAULT_SIZE);
-    for(int i = 0; i < DEFAULT_SIZE; i++)
-    {
-        cout << hex << "Data Point: " << i << ": " << (uint32_t)data[i]<< "\n";
-    }
-
-    cout << "Computing on GPU - VC4CL" << endl;
+    //cout << "Computing on GPU - VC4CL" << endl;
     execTimeVCL = run(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
-    cout << "execution time: "<<execTimeVCL << "s" << endl;
-    cout << "Computing on CPU - POCL" << endl;
+    //cout << "execution time: "<<execTimeVCL << "s" << endl;
+    //cout << "Computing on CPU - POCL" << endl;
     execTimePOCL = run(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2, program2);
-    cout << "execution time: "<<execTimePOCL<<"s"<<endl;
-
+    //cout << "execution time: "<<execTimePOCL<<"s"<<endl;
+}
     return 0;
 }
