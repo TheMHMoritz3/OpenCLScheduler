@@ -213,6 +213,65 @@ double runMedian(int load, int count, float* speed1, float* speed2, int cores, D
     return elapsed.count();
 }
 
+
+double runTractionControl(int load, int count, float* speedFL, float* speedFR, float* speedRR,float* speedRL, int cores, Device default_device, Context context, Program program){
+
+    cl_int ret = 1;
+    bool B[count] = {};
+
+    auto start = chrono::high_resolution_clock::now();
+
+    Buffer buffer_speedFL(context,CL_MEM_READ_WRITE,sizeof(float)*count);
+    Buffer buffer_speedFR(context,CL_MEM_READ_WRITE,sizeof(float)*count);
+    Buffer buffer_speedRL(context,CL_MEM_READ_WRITE,sizeof(float)*count);
+    Buffer buffer_speedRR(context,CL_MEM_READ_WRITE,sizeof(float)*count);
+    Buffer buffer_B(context,CL_MEM_READ_WRITE,sizeof(bool)*count);
+    Buffer buffer_WORKLOAD(context,CL_MEM_READ_WRITE,sizeof(int));
+
+    CommandQueue queue(context,default_device, ret);
+    //---Debug---
+    //ret = queue.finish();
+    //printf("Kernel Success CmdQ %d\n", ret);
+
+    ret = queue.enqueueWriteBuffer(buffer_speedFL,CL_TRUE,0,sizeof(float)*count,speedFL);
+    ret = queue.enqueueWriteBuffer(buffer_speedFR,CL_TRUE,0,sizeof(float)*count,speedFR);
+    ret = queue.enqueueWriteBuffer(buffer_speedRL,CL_TRUE,0,sizeof(float)*count,speedRL);
+    ret = queue.enqueueWriteBuffer(buffer_speedRR,CL_TRUE,0,sizeof(float)*count,speedRR);
+    //---Debug---
+    //ret = queue.finish();
+    //printf("Kernel Success WriteBuffer %d\n", ret);
+
+    Kernel speedCalculationWheel=Kernel(program,"tractionControl");
+    speedCalculationWheel.setArg(0,buffer_speedFL);
+    speedCalculationWheel.setArg(1,buffer_speedFR);
+    speedCalculationWheel.setArg(2,buffer_speedRL);
+    speedCalculationWheel.setArg(3,buffer_speedRR);
+    speedCalculationWheel.setArg(4,buffer_B);
+    speedCalculationWheel.setArg(5,load);
+
+    //---Debug---
+//    ret = queue.finish();
+//    printf("Kernel Success ArgSet %d\n", ret);
+
+    ret = queue.enqueueNDRangeKernel(speedCalculationWheel,NullRange,NDRange(count/load),NDRange(cores));
+    queue.finish();
+    //---Debug---
+//    printf("Kernel Success NDRange %d\n", ret);
+
+    queue.enqueueReadBuffer(buffer_B,CL_TRUE,0,sizeof(bool)*count,B);
+    queue.finish();
+
+    auto finish = chrono::high_resolution_clock::now();
+    chrono::duration<double> elapsed = finish - start;
+
+    for(int i = 0; i < count; i++)
+    {
+        cout << "Traction: " << B[i]<< endl;
+    }
+
+    return elapsed.count();
+}
+
 double run_no_lib(int count, float* items){
     float B[count] = {};
     float C[count] = {};
@@ -437,9 +496,12 @@ int main(){
 
         for (int i = 0; i < DEFAULT_SIZE; i++) {
             cout << "FL: " << frontLeftValues[i] << " FR: " << frontRightValues[i] << " RL: " << rearLeftValues[i]
-                 << " RR: " << rearRightValues[i] << endl;
+                 << " RR: " << rearRightValues[i];
         }
 
+        runTractionControl(1,DEFAULT_SIZE, frontLeftValues,frontRightValues,rearRightValues,rearLeftValues,DEFAULT_SIZE,default_device,context,program);
+
+        runTractionControl(1,DEFAULT_SIZE, frontLeftValues,frontRightValues,rearRightValues,rearLeftValues,DEFAULT_SIZE,default_device2,context2,program2);
         //cout << "Computing Median on CPU - POCL" << endl;
         execTimePOCL = runMedian(1, DEFAULT_SIZE, frontLeftValues, frontRightValues, DEFAULT_SIZE, default_device2,
                                  context2, program2);
