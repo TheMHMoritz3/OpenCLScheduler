@@ -204,15 +204,15 @@ int main(){
     //cout << "Setting up POCL OpenCl Programs\n";
     Program program2 = settingUpProgram(default_device2, context2);
 	
-	while(true){
-    uint32_t* data = create_data(DEFAULT_SIZE, address);
+	while(true) {
+        uint32_t *data = create_data(DEFAULT_SIZE, address);
 
-    //cout << "Computing on GPU - VC4CL" << endl;
-    execTimeVCL = run(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
-    //cout << "execution time: "<<execTimeVCL << "s" << endl;
-    //cout << "Computing on CPU - POCL" << endl;
-    execTimePOCL = run(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2, program2);
-    //cout << "execution time: "<<execTimePOCL<<"s"<<endl;
-}
+        //cout << "Computing on GPU - VC4CL" << endl;
+        execTimeVCL = run(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
+        //cout << "execution time: "<<execTimeVCL << "s" << endl;
+        //cout << "Computing on CPU - POCL" << endl;
+        execTimePOCL = run(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2, program2);
+        //cout << "execution time: "<<execTimePOCL<<"s"<<endl;
+    }
     return 0;
 }

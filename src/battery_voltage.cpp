@@ -184,31 +184,31 @@ uint32_t* create_data(int size) // size: Datapoints collected from canBus //stre
 
 int main(){
 
-    const int DEFAULT_SIZE = 10;
+    const int DEFAULT_SIZE = 1;
     double execTimeVCL, execTimePOCL;
 
     Device default_device = settingUpDevice(0); // 0 = VideoCore IV ; 1 = POCL on CPU
     Context context({default_device});
     Device default_device2 = settingUpDevice(1); // 0 = VideoCore IV ; 1 = POCL on CPU
     Context context2({default_device2});
-    cout << "Setting up VC4CL OpenCl Programs\n";
+//    cout << "Setting up VC4CL OpenCl Programs\n";
     Program program = settingUpProgram(default_device, context);
 
-    cout << "Setting up POCL OpenCl Programs\n";
+//    cout << "Setting up POCL OpenCl Programs\n";
     Program program2 = settingUpProgram(default_device2, context2);
+    while(true) {
+        uint32_t *data = create_data(DEFAULT_SIZE);
+//	for(int i = 0; i < DEFAULT_SIZE; i++)
+//	{
+//		cout << hex << "Data Point: " << i << ": " << (uint32_t)data[i]<< "\n";
+//	}
 
-	uint32_t* data = create_data(DEFAULT_SIZE);
-	for(int i = 0; i < DEFAULT_SIZE; i++)
-	{
-		cout << hex << "Data Point: " << i << ": " << (uint32_t)data[i]<< "\n";
-	}
-
-	cout << "Computing on GPU - VC4CL" << endl;
-	execTimeVCL = run(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
-	cout << "execution time: "<<execTimeVCL << "s" << endl;
-	cout << "Computing on CPU - POCL" << endl;
-	execTimePOCL = run(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2, program2);
-	cout << "execution time: "<<execTimePOCL<<"s"<<endl;
-
+//        cout << "Computing on GPU - VC4CL" << endl;
+        execTimeVCL = run(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
+//        cout << "execution time: " << execTimeVCL << "s" << endl;
+//        cout << "Computing on CPU - POCL" << endl;
+        execTimePOCL = run(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2, program2);
+//        cout << "execution time: " << execTimePOCL << "s" << endl;
+    }
     return 0;
 }

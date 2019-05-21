@@ -365,77 +365,85 @@ int main(){
     //cout << "Setting up POCL OpenCl Programs\n";
     Program program2 = settingUpProgram(default_device2, context2);
     
-    while(true){
-    uint32_t* data = gatherDataFrontLeft(DEFAULT_SIZE);
+    while(true) {
+        uint32_t *data = gatherDataFrontLeft(DEFAULT_SIZE);
 
-//    pair<double,float*> calculationValue;
-    //cout << "Computing Front Left on GPU - VC4CL" << endl;
-    pair<double,float*> calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
-    execTimeVCL = calculationValue.first;
-    float* frontLeftValues=calculationValue.second;
-    //cout << "execution time: "<<execTimeVCL << "s" << endl;
+        //    pair<double,float*> calculationValue;
+        //cout << "Computing Front Left on GPU - VC4CL" << endl;
+        pair<double, float *> calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE,
+                                                                     default_device, context, program);
+        execTimeVCL = calculationValue.first;
+        float *frontLeftValues = calculationValue.second;
+        //cout << "execution time: "<<execTimeVCL << "s" << endl;
 
-    //cout << "Computing Front Left on CPU - POCL" << endl;
-    calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2, program2);
-    execTimePOCL = calculationValue.first;
-//    float* frontLeftValues=calculationValue.second;
-    //cout << "execution time: "<<execTimePOCL<<"s"<<endl;
+        //cout << "Computing Front Left on CPU - POCL" << endl;
+        calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2,
+                                               program2);
+        execTimePOCL = calculationValue.first;
+        //float* frontLeftValues=calculationValue.second;
+        //cout << "execution time: "<<execTimePOCL<<"s"<<endl;
 
-    data = gatherDataFrontRight(DEFAULT_SIZE);
+        data = gatherDataFrontRight(DEFAULT_SIZE);
 
-    //cout << "Computing Front Right on GPU - VC4CL" << endl;
-    calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
-    execTimeVCL = calculationValue.first;
-    float* frontRightValues=calculationValue.second;
-    //cout << "execution time: "<<execTimeVCL << "s" << endl;
+        //cout << "Computing Front Right on GPU - VC4CL" << endl;
+        calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
+        execTimeVCL = calculationValue.first;
+        float *frontRightValues = calculationValue.second;
+        //cout << "execution time: "<<execTimeVCL << "s" << endl;
 
-    //cout << "Computing Front Right on CPU - POCL" << endl;
-    calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2, program2);
-    execTimePOCL = calculationValue.first;
-//    float* frontRightValues=calculationValue.second;
-    //cout << "execution time: "<<execTimePOCL<<"s"<<endl;
-	
-	data = gatherDataRearLeft(DEFAULT_SIZE);
+        //cout << "Computing Front Right on CPU - POCL" << endl;
+        calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2,
+                                               program2);
+        execTimePOCL = calculationValue.first;
+        //float* frontRightValues=calculationValue.second;
+        //cout << "execution time: "<<execTimePOCL<<"s"<<endl;
 
-    //cout << "Computing Front Right on GPU - VC4CL" << endl;
-    calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
-    execTimeVCL = calculationValue.first;
-    float* rearLeftValues=calculationValue.second;
-    //cout << "execution time: "<<execTimeVCL << "s" << endl;
+        data = gatherDataRearLeft(DEFAULT_SIZE);
 
-    //cout << "Computing Front Right on CPU - POCL" << endl;
-    calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2, program2);
-    execTimePOCL = calculationValue.first;
-//    float* frontRightValues=calculationValue.second;
-    //cout << "execution time: "<<execTimePOCL<<"s"<<endl;
-	
-	data = gatherDataRearRight(DEFAULT_SIZE);
+        //cout << "Computing Front Right on GPU - VC4CL" << endl;
+        calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
+        execTimeVCL = calculationValue.first;
+        float *rearLeftValues = calculationValue.second;
+        //cout << "execution time: "<<execTimeVCL << "s" << endl;
 
-    //cout << "Computing Front Right on GPU - VC4CL" << endl;
-    calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
-    execTimeVCL = calculationValue.first;
-    float* rearRightValues=calculationValue.second;
-    //cout << "execution time: "<<execTimeVCL << "s" << endl;
+        //cout << "Computing Front Right on CPU - POCL" << endl;
+        calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2,
+                                               program2);
+        execTimePOCL = calculationValue.first;
+        //float* frontRightValues=calculationValue.second;
+        //cout << "execution time: "<<execTimePOCL<<"s"<<endl;
 
-    //cout << "Computing Front Right on CPU - POCL" << endl;
-    calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2, program2);
-    execTimePOCL = calculationValue.first;
-//    float* frontRightValues=calculationValue.second;
-    //cout << "execution time: "<<execTimePOCL<<"s"<<endl;
-	
-    //cout << "Computing Median on GPU - VC4CL" << endl;
-    execTimeVCL = runMedian(1, DEFAULT_SIZE, frontLeftValues,frontRightValues, DEFAULT_SIZE, default_device, context, program);
-    //cout << "execution time: "<<execTimeVCL << "s" << endl;
-    
-    
-    
-    for(int i = 0; i<DEFAULT_SIZE; i++){
-        cout<<"FL: "<<frontLeftValues[i]<<" FR: "<<frontRightValues[i]<<" RL: "<<rearLeftValues[i]<<" RR: "<<rearRightValues[i]<<endl;
+        data = gatherDataRearRight(DEFAULT_SIZE);
+
+        //cout << "Computing Front Right on GPU - VC4CL" << endl;
+        calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
+        execTimeVCL = calculationValue.first;
+        float *rearRightValues = calculationValue.second;
+        //cout << "execution time: "<<execTimeVCL << "s" << endl;
+
+        //cout << "Computing Front Right on CPU - POCL" << endl;
+        calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2,
+                                               program2);
+        execTimePOCL = calculationValue.first;
+        //float* frontRightValues=calculationValue.second;
+        //cout << "execution time: "<<execTimePOCL<<"s"<<endl;
+
+        //cout << "Computing Median on GPU - VC4CL" << endl;
+        execTimeVCL = runMedian(1, DEFAULT_SIZE, frontLeftValues, frontRightValues, DEFAULT_SIZE, default_device,
+                                context, program);
+        //cout << "execution time: "<<execTimeVCL << "s" << endl;
+
+
+
+        for (int i = 0; i < DEFAULT_SIZE; i++) {
+            cout << "FL: " << frontLeftValues[i] << " FR: " << frontRightValues[i] << " RL: " << rearLeftValues[i]
+                 << " RR: " << rearRightValues[i] << endl;
+        }
+
+        //cout << "Computing Median on CPU - POCL" << endl;
+        execTimePOCL = runMedian(1, DEFAULT_SIZE, frontLeftValues, frontRightValues, DEFAULT_SIZE, default_device2,
+                                 context2, program2);
+        //cout << "execution time: "<<execTimePOCL<<"s"<<endl;
     }
-    
-    //cout << "Computing Median on CPU - POCL" << endl;
-    execTimePOCL = runMedian(1, DEFAULT_SIZE, frontLeftValues, frontRightValues, DEFAULT_SIZE, default_device2, context2, program2);
-    //cout << "execution time: "<<execTimePOCL<<"s"<<endl;
-}
     return 0;
 }
