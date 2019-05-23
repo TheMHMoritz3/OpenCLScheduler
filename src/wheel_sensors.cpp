@@ -64,7 +64,7 @@ Program settingUpProgram(Device default_device, Context context){
 
     Program program(context,sources);
     if(program.build({default_device})!=CL_SUCCESS){
-        //cout<<" Error building: "<<program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(default_device)<<"\n";
+        cout<<" Error building: "<<program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(default_device)<<"\n";
         exit(1);
     }
 
@@ -266,7 +266,7 @@ double runTractionControl(int load, int count, float* speedFL, float* speedFR, f
 
     for(int i = 0; i < count; i++)
     {
-        cout << "Traction: " << B[i]<< endl;
+        cout << " Traction: " << B[i];
     }
 
     return elapsed.count();
@@ -370,7 +370,7 @@ uint32_t* gatherDataRearLeft(int size) // size: Datapoints collected from canBus
     /* we're requesting the hardware timestamp for better documentation */
     struct timeval timestamp;
 
-    //cout << "Collecting Data - Front Left\n";
+    //cout << "Collecting Data - Rear Left\n";
     for(int i = 0; i < size; i++)
     {
         c3can_single_recv(single, &msg, &timestamp);
@@ -396,7 +396,7 @@ uint32_t* gatherDataRearRight(int size) // size: Datapoints collected from canBu
     /* we're requesting the hardware timestamp for better documentation */
     struct timeval timestamp;
 
-    //cout << "Collecting Data - Front Right\n";
+    //cout << "Collecting Data - Rear Right\n";
     for(int i = 0; i < size; i++)
     {
         c3can_single_recv(single, &msg, &timestamp);
@@ -459,13 +459,13 @@ int main(){
 
         data = gatherDataRearLeft(DEFAULT_SIZE);
 
-        //cout << "Computing Front Right on GPU - VC4CL" << endl;
+        //cout << "Computing Rear Right on GPU - VC4CL" << endl;
         calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
         execTimeVCL = calculationValue.first;
         float *rearLeftValues = calculationValue.second;
         //cout << "execution time: "<<execTimeVCL << "s" << endl;
 
-        //cout << "Computing Front Right on CPU - POCL" << endl;
+        //cout << "Computing Rear Right on CPU - POCL" << endl;
         calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2,
                                                program2);
         execTimePOCL = calculationValue.first;
@@ -492,8 +492,6 @@ int main(){
                                 context, program);
         //cout << "execution time: "<<execTimeVCL << "s" << endl;
 
-
-
         for (int i = 0; i < DEFAULT_SIZE; i++) {
             cout << "FL: " << frontLeftValues[i] << " FR: " << frontRightValues[i] << " RL: " << rearLeftValues[i]
                  << " RR: " << rearRightValues[i];
@@ -506,6 +504,7 @@ int main(){
         execTimePOCL = runMedian(1, DEFAULT_SIZE, frontLeftValues, frontRightValues, DEFAULT_SIZE, default_device2,
                                  context2, program2);
         //cout << "execution time: "<<execTimePOCL<<"s"<<endl;
+        cout << endl;
     }
     return 0;
 }
