@@ -1,0 +1,6 @@
+**/bin
+**/C3CAN
+**/cmake-build-debug
+.idea/.name
+.idea/workspace.xml
+

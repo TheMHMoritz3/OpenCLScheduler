@@ -27,11 +27,11 @@ Device settingUpDevice(int platform){
     char platformName[64];
     Platform::get(&all_platforms);
     if(all_platforms.size()==0){
-        cout<<" No platforms found. Check OpenCL installation!\n";
+        //cout<<" No platforms found. Check OpenCL installation!\n";
         exit(1);
     }
     Platform default_platform=all_platforms[platform];
-    cout << default_platform.getInfo<CL_PLATFORM_NAME>() << "\n";
+    //cout << default_platform.getInfo<CL_PLATFORM_NAME>() << "\n";
 
 
 
@@ -39,7 +39,7 @@ Device settingUpDevice(int platform){
     vector<Device> all_devices;
     default_platform.getDevices(CL_DEVICE_TYPE_ALL, &all_devices);
     if(all_devices.size()==0){
-        cout<<" No devices found. Check OpenCL installation!\n";
+        //cout<<" No devices found. Check OpenCL installation!\n";
         exit(1);
     }
     Device default_device=all_devices[0];
@@ -89,12 +89,12 @@ pair<double,float*> runSpeedCalculation(int load, int count, uint32_t* items, in
     float B[count] = {};
 
     auto start = chrono::high_resolution_clock::now();
-    cout << "creating buffers" << endl;
+    //cout << "creating buffers" << endl;
 
     Buffer buffer_A(context,CL_MEM_READ_WRITE,sizeof(uint32_t)*count);
     Buffer buffer_B(context,CL_MEM_READ_WRITE,sizeof(float)*count);
     Buffer buffer_WORKLOAD(context,CL_MEM_READ_WRITE,sizeof(int));
-    cout << "creating buffers finished staring queue"<<endl;
+    //cout << "creating buffers finished staring queue"<<endl;
 
     CommandQueue queue(context,default_device, ret);
     //---Debug---
@@ -118,7 +118,7 @@ pair<double,float*> runSpeedCalculation(int load, int count, uint32_t* items, in
     try{
     ret = queue.enqueueNDRangeKernel(speedCalculationWheel,NullRange,NDRange(count/load),NDRange(cores));
     }catch(exception ex){
-      cout<<ex.what();
+      //cout<<ex.what();
     }
 
     queue.finish();
@@ -135,7 +135,7 @@ pair<double,float*> runSpeedCalculation(int load, int count, uint32_t* items, in
     for(int i = 0; i < count; i++)
     {
         speed[i] = B[i]; 
-        cout << "Speed: " << speed[i] <<  "m/s" << "\n";
+        //cout << "Speed: " << speed[i] <<  "m/s" << "\n";
     }
     double elapsedTime = elapsed.count();
     pair<double,float*> returnvalue(elapsedTime,speed);
@@ -207,7 +207,66 @@ double runMedian(int load, int count, float* speed1, float* speed2, int cores, D
 
     for(int i = 0; i < count; i++)
     {
-        cout << "Median: " << B[i]<<  "m/s" << "\n";
+        //cout << "Median: " << B[i]<<  "m/s" << "\n";
+    }
+
+    return elapsed.count();
+}
+
+
+double runTractionControl(int load, int count, float* speedFL, float* speedFR, float* speedRR,float* speedRL, int cores, Device default_device, Context context, Program program){
+
+    cl_int ret = 1;
+    bool B[count] = {};
+
+    auto start = chrono::high_resolution_clock::now();
+
+    Buffer buffer_speedFL(context,CL_MEM_READ_WRITE,sizeof(float)*count);
+    Buffer buffer_speedFR(context,CL_MEM_READ_WRITE,sizeof(float)*count);
+    Buffer buffer_speedRL(context,CL_MEM_READ_WRITE,sizeof(float)*count);
+    Buffer buffer_speedRR(context,CL_MEM_READ_WRITE,sizeof(float)*count);
+    Buffer buffer_B(context,CL_MEM_READ_WRITE,sizeof(bool)*count);
+    Buffer buffer_WORKLOAD(context,CL_MEM_READ_WRITE,sizeof(int));
+
+    CommandQueue queue(context,default_device, ret);
+    //---Debug---
+    //ret = queue.finish();
+    //printf("Kernel Success CmdQ %d\n", ret);
+
+    ret = queue.enqueueWriteBuffer(buffer_speedFL,CL_TRUE,0,sizeof(float)*count,speedFL);
+    ret = queue.enqueueWriteBuffer(buffer_speedFR,CL_TRUE,0,sizeof(float)*count,speedFR);
+    ret = queue.enqueueWriteBuffer(buffer_speedRL,CL_TRUE,0,sizeof(float)*count,speedRL);
+    ret = queue.enqueueWriteBuffer(buffer_speedRR,CL_TRUE,0,sizeof(float)*count,speedRR);
+    //---Debug---
+    //ret = queue.finish();
+    //printf("Kernel Success WriteBuffer %d\n", ret);
+
+    Kernel speedCalculationWheel=Kernel(program,"tractionControl");
+    speedCalculationWheel.setArg(0,buffer_speedFL);
+    speedCalculationWheel.setArg(1,buffer_speedFR);
+    speedCalculationWheel.setArg(2,buffer_speedRL);
+    speedCalculationWheel.setArg(3,buffer_speedRR);
+    speedCalculationWheel.setArg(4,buffer_B);
+    speedCalculationWheel.setArg(5,load);
+
+    //---Debug---
+//    ret = queue.finish();
+//    printf("Kernel Success ArgSet %d\n", ret);
+
+    ret = queue.enqueueNDRangeKernel(speedCalculationWheel,NullRange,NDRange(count/load),NDRange(cores));
+    queue.finish();
+    //---Debug---
+//    printf("Kernel Success NDRange %d\n", ret);
+
+    queue.enqueueReadBuffer(buffer_B,CL_TRUE,0,sizeof(bool)*count,B);
+    queue.finish();
+
+    auto finish = chrono::high_resolution_clock::now();
+    chrono::duration<double> elapsed = finish - start;
+
+    for(int i = 0; i < count; i++)
+    {
+        cout << " Traction: " << B[i];
     }
 
     return elapsed.count();
@@ -245,16 +304,16 @@ uint32_t* gatherDataFrontLeft(int size) // size: Datapoints collected from canBu
 {
     uint32_t* col_res = new uint32_t[size];
 
-    cout << "Setting up C3CAN\n";
+    //cout << "Setting up C3CAN\n";
     c3can_single *single = c3can_single_init("can0");
     C3CAN_CHECK_ERR(single, exit, -1);
-    c3can_single_filter_add(single, 0x0d, (C3CAN_SINGLE_FILTER_OPTS) 0);
+    c3can_single_filter_add(single, 0x008, (C3CAN_SINGLE_FILTER_OPTS) 0);
     /* We're receiving blocking */
     c3can_message msg;
     /* we're requesting the hardware timestamp for better documentation */
     struct timeval timestamp;
 
-    cout << "Collecting Data - Front Left\n";
+    //cout << "Collecting Data - Front Left\n";
     for(int i = 0; i < size; i++)
     {
         c3can_single_recv(single, &msg, &timestamp);
@@ -262,7 +321,7 @@ uint32_t* gatherDataFrontLeft(int size) // size: Datapoints collected from canBu
         col_res[i] = U32_DATA(c3can_message_get_payload(&msg));
     }
 
-    cout << "Finished Data!\n";
+    //cout << "Finished Data!\n";
 
     return col_res;
 }
@@ -271,16 +330,16 @@ uint32_t* gatherDataFrontRight(int size) // size: Datapoints collected from canB
 {
     uint32_t* col_res = new uint32_t[size];
 
-    cout << "Setting up C3CAN\n";
+    //cout << "Setting up C3CAN\n";
     c3can_single *single = c3can_single_init("can0");
     C3CAN_CHECK_ERR(single, exit, -1);
-    c3can_single_filter_add(single, 0x0d, (C3CAN_SINGLE_FILTER_OPTS) 0);
+    c3can_single_filter_add(single, 0x009, (C3CAN_SINGLE_FILTER_OPTS) 0);
     /* We're receiving blocking */
     c3can_message msg;
     /* we're requesting the hardware timestamp for better documentation */
     struct timeval timestamp;
 
-    cout << "Collecting Data - Front Right\n";
+    //cout << "Collecting Data - Front Right\n";
     for(int i = 0; i < size; i++)
     {
         c3can_single_recv(single, &msg, &timestamp);
@@ -288,73 +347,164 @@ uint32_t* gatherDataFrontRight(int size) // size: Datapoints collected from canB
         col_res[i] = U32_DATA(c3can_message_get_payload(&msg));
     }
 
-    cout << "Finished Data!\n";
+    //cout << "Finished Data!\n";
+
+    return col_res;
+}
+
+/**
+ * Reads the data from the Bus
+ * @param size
+ * @return
+ */
+uint32_t* gatherDataRearLeft(int size) // size: Datapoints collected from canBus //stretch: Datapoints stretched to this size
+{
+    uint32_t* col_res = new uint32_t[size];
+
+    //cout << "Setting up C3CAN\n";
+    c3can_single *single = c3can_single_init("can0");
+    C3CAN_CHECK_ERR(single, exit, -1);
+    c3can_single_filter_add(single, 0x00a, (C3CAN_SINGLE_FILTER_OPTS) 0);
+    /* We're receiving blocking */
+    c3can_message msg;
+    /* we're requesting the hardware timestamp for better documentation */
+    struct timeval timestamp;
+
+    //cout << "Collecting Data - Rear Left\n";
+    for(int i = 0; i < size; i++)
+    {
+        c3can_single_recv(single, &msg, &timestamp);
+        C3CAN_CHECK_ERR(single, exit, -1);
+        col_res[i] = U32_DATA(c3can_message_get_payload(&msg));
+    }
+
+    //cout << "Finished Data!\n";
+
+    return col_res;
+}
+
+uint32_t* gatherDataRearRight(int size) // size: Datapoints collected from canBus //stretch: Datapoints stretched to this size
+{
+    uint32_t* col_res = new uint32_t[size];
+
+    //cout << "Setting up C3CAN\n";
+    c3can_single *single = c3can_single_init("can0");
+    C3CAN_CHECK_ERR(single, exit, -1);
+    c3can_single_filter_add(single, 0x00b, (C3CAN_SINGLE_FILTER_OPTS) 0);
+    /* We're receiving blocking */
+    c3can_message msg;
+    /* we're requesting the hardware timestamp for better documentation */
+    struct timeval timestamp;
+
+    //cout << "Collecting Data - Rear Right\n";
+    for(int i = 0; i < size; i++)
+    {
+        c3can_single_recv(single, &msg, &timestamp);
+        C3CAN_CHECK_ERR(single, exit, -1);
+        col_res[i] = U32_DATA(c3can_message_get_payload(&msg));
+    }
+
+    //cout << "Finished Data!\n";
 
     return col_res;
 }
 
 int main(){
 
-    const int DEFAULT_SIZE = 10;
+    const int DEFAULT_SIZE = 1;
     double execTimeVCL, execTimePOCL;
 
     Device default_device = settingUpDevice(0); // 0 = VideoCore IV ; 1 = POCL on CPU
     Context context({default_device});
     Device default_device2 = settingUpDevice(1); // 0 = VideoCore IV ; 1 = POCL on CPU
     Context context2({default_device2});
-    cout << "Setting up VC4CL OpenCl Programs\n";
+    //cout << "Setting up VC4CL OpenCl Programs\n";
     Program program = settingUpProgram(default_device, context);
 
-    cout << "Setting up POCL OpenCl Programs\n";
+    //cout << "Setting up POCL OpenCl Programs\n";
     Program program2 = settingUpProgram(default_device2, context2);
-
-    uint32_t* data = gatherDataFrontLeft(DEFAULT_SIZE);
-    for(int i = 0; i < DEFAULT_SIZE; i++)
-    {
-        cout << hex << "Data Point: " << i << ": " << (uint32_t)data[i]<< "\n";
-    }
-
-//    pair<double,float*> calculationValue;
-    cout << "Computing Front Left on GPU - VC4CL" << endl;
-    pair<double,float*> calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
-    execTimeVCL = calculationValue.first;
-    float* frontLeftValues=calculationValue.second;
-    cout << "execution time: "<<execTimeVCL << "s" << endl;
-
-    cout << "Computing Front Left on CPU - POCL" << endl;
-    calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2, program2);
-    execTimePOCL = calculationValue.first;
-//    float* frontLeftValues=calculationValue.second;
-    cout << "execution time: "<<execTimePOCL<<"s"<<endl;
-
-    data = gatherDataFrontRight(DEFAULT_SIZE);
-    for(int i = 0; i < DEFAULT_SIZE; i++)
-    {
-        cout << hex << "Data Point: " << i << ": " << (uint32_t)data[i]<< "\n";
-    }
-
-    cout << "Computing Front Right on GPU - VC4CL" << endl;
-    calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
-    execTimeVCL = calculationValue.first;
-    float* frontRightValues=calculationValue.second;
-    cout << "execution time: "<<execTimeVCL << "s" << endl;
-
-    cout << "Computing Front Right on CPU - POCL" << endl;
-    calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2, program2);
-    execTimePOCL = calculationValue.first;
-//    float* frontRightValues=calculationValue.second;
-    cout << "execution time: "<<execTimePOCL<<"s"<<endl;
-
-    cout << "Computing Median on GPU - VC4CL" << endl;
-    execTimeVCL = runMedian(1, DEFAULT_SIZE, frontLeftValues,frontRightValues, DEFAULT_SIZE, default_device, context, program);
-    cout << "execution time: "<<execTimeVCL << "s" << endl;
     
-    for(int i = 0; i<DEFAULT_SIZE; i++){
-        cout<<frontLeftValues[i]<<" "<<frontRightValues[i]<<endl;
-    }
-    cout << "Computing Median on CPU - POCL" << endl;
-    execTimePOCL = runMedian(1, DEFAULT_SIZE, frontLeftValues, frontRightValues, DEFAULT_SIZE, default_device2, context2, program2);
-    cout << "execution time: "<<execTimePOCL<<"s"<<endl;
+    while(true) {
+        uint32_t *data = gatherDataFrontLeft(DEFAULT_SIZE);
 
+        //    pair<double,float*> calculationValue;
+        //cout << "Computing Front Left on GPU - VC4CL" << endl;
+        pair<double, float *> calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE,
+                                                                     default_device, context, program);
+        execTimeVCL = calculationValue.first;
+        float *frontLeftValues = calculationValue.second;
+        //cout << "execution time: "<<execTimeVCL << "s" << endl;
+
+        //cout << "Computing Front Left on CPU - POCL" << endl;
+        calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2,
+                                               program2);
+        execTimePOCL = calculationValue.first;
+        //float* frontLeftValues=calculationValue.second;
+        //cout << "execution time: "<<execTimePOCL<<"s"<<endl;
+
+        data = gatherDataFrontRight(DEFAULT_SIZE);
+
+        //cout << "Computing Front Right on GPU - VC4CL" << endl;
+        calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
+        execTimeVCL = calculationValue.first;
+        float *frontRightValues = calculationValue.second;
+        //cout << "execution time: "<<execTimeVCL << "s" << endl;
+
+        //cout << "Computing Front Right on CPU - POCL" << endl;
+        calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2,
+                                               program2);
+        execTimePOCL = calculationValue.first;
+        //float* frontRightValues=calculationValue.second;
+        //cout << "execution time: "<<execTimePOCL<<"s"<<endl;
+
+        data = gatherDataRearLeft(DEFAULT_SIZE);
+
+        //cout << "Computing Rear Right on GPU - VC4CL" << endl;
+        calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
+        execTimeVCL = calculationValue.first;
+        float *rearLeftValues = calculationValue.second;
+        //cout << "execution time: "<<execTimeVCL << "s" << endl;
+
+        //cout << "Computing Rear Right on CPU - POCL" << endl;
+        calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2,
+                                               program2);
+        execTimePOCL = calculationValue.first;
+        //float* frontRightValues=calculationValue.second;
+        //cout << "execution time: "<<execTimePOCL<<"s"<<endl;
+
+        data = gatherDataRearRight(DEFAULT_SIZE);
+
+        //cout << "Computing Front Right on GPU - VC4CL" << endl;
+        calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
+        execTimeVCL = calculationValue.first;
+        float *rearRightValues = calculationValue.second;
+        //cout << "execution time: "<<execTimeVCL << "s" << endl;
+
+        //cout << "Computing Front Right on CPU - POCL" << endl;
+        calculationValue = runSpeedCalculation(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2,
+                                               program2);
+        execTimePOCL = calculationValue.first;
+        //float* frontRightValues=calculationValue.second;
+        //cout << "execution time: "<<execTimePOCL<<"s"<<endl;
+
+        //cout << "Computing Median on GPU - VC4CL" << endl;
+        execTimeVCL = runMedian(1, DEFAULT_SIZE, frontLeftValues, frontRightValues, DEFAULT_SIZE, default_device,
+                                context, program);
+        //cout << "execution time: "<<execTimeVCL << "s" << endl;
+
+        for (int i = 0; i < DEFAULT_SIZE; i++) {
+            cout << "FL: " << frontLeftValues[i] << " FR: " << frontRightValues[i] << " RL: " << rearLeftValues[i]
+                 << " RR: " << rearRightValues[i];
+        }
+
+        runTractionControl(1,DEFAULT_SIZE, frontLeftValues,frontRightValues,rearRightValues,rearLeftValues,DEFAULT_SIZE,default_device,context,program);
+
+        runTractionControl(1,DEFAULT_SIZE, frontLeftValues,frontRightValues,rearRightValues,rearLeftValues,DEFAULT_SIZE,default_device2,context2,program2);
+        //cout << "Computing Median on CPU - POCL" << endl;
+        execTimePOCL = runMedian(1, DEFAULT_SIZE, frontLeftValues, frontRightValues, DEFAULT_SIZE, default_device2,
+                                 context2, program2);
+        //cout << "execution time: "<<execTimePOCL<<"s"<<endl;
+        cout << endl;
+    }
     return 0;
 }
