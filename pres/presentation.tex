@@ -7,23 +7,74 @@
 \author{Moritz Herzog, Philipp Lersch}
 \date{\today}
 
+\addtobeamertemplate{navigation symbols}{}{%
+    \usebeamerfont{footline}%
+    \usebeamercolor[fg]{footline}%
+    \hspace{1em}%
+    \insertframenumber/\inserttotalframenumber
+}
+
 \begin{document}
 \maketitle
-\frame{\tableofcontents}
 
-\section{Introduction}
+\AtBeginSection[]
+{
+  \begin{frame}
+    \frametitle{Table of Contents}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+
+\section{OpenCL}
 \begin{frame}
-    \frametitle{Introduction}
+    \frametitle{OpenCL Structure}
     Some Problems:
     \begin{itemize}
         \item Test
     \end{itemize}
 \end{frame}
-\section{Runtimes}
+
+\section{Kernels}
 \begin{frame} %%Eine Folie
-  \frametitle{Battery Runtime} %%Folientitel
-  \begin{Definition} %%Definition
-    Eine Definition
-  \end{Definition}
+  \frametitle{List of Kernels} %%Folientitel
+  Already there:
+  \begin{itemize}
+   \item Battery
+   \item Speed
+   \item Acceleration
+   \begin{itemize}
+    \item X-Achsis
+    \item Y-Achsis
+    \item Tangential
+   \end{itemize}
+   \item Tempreture
+  \end{itemize}
+
+  %\begin{Definition} %%Definition
+  %  Eine Definition
+  %\end{Definition}
 \end{frame}
+\begin{frame}
+    \frametitle{List of Kernels}
+    Added Kernels:
+    \begin{itemize}
+     \item Tractioncontrol
+     \item Accident Detection
+     \item Anti-Lock Braking System
+    \end{itemize}
+\end{frame}
+\subsection{Tractioncontrol}
+\begin{frame}
+ %TODO To be filled
+\end{frame}
+\subsection{Accident Detection}
+\begin{frame}
+ %TODO To be filled
+\end{frame}
+\subsection{Anti-Lock Braking System}
+\begin{frame}
+ %TODO To be filled
+\end{frame}
+
 \end{document}
