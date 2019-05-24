@@ -3,4 +3,11 @@
 **/cmake-build-debug
 .idea/.name
 .idea/workspace.xml
-
+**.aux
+**.log
+**.nav
+**.out
+**.pdf
+**.snm
+**.synctex.gz
+**.toc
