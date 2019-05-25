@@ -182,6 +182,58 @@ double runYAxis(int load, int count, uint32_t* items, int cores, Device default_
     return elapsed.count();
 }
 
+double runDualAxis(int load, int count, uint32_t* xAxis, uint32_t* yAxis, int cores, Device default_device, Context context, Program program){
+
+    cl_int ret = 1;
+    float B[count] = {};
+
+    auto start = chrono::high_resolution_clock::now();
+
+    Buffer buffer_A(context,CL_MEM_READ_WRITE,sizeof(uint32_t)*count);
+    Buffer buffer_B(context,CL_MEM_READ_WRITE,sizeof(uint32_t)*count);
+    Buffer buffer_C(context,CL_MEM_READ_WRITE,sizeof(float)*count);
+    Buffer buffer_WORKLOAD(context,CL_MEM_READ_WRITE,sizeof(int));
+
+    CommandQueue queue(context,default_device, ret);
+    //---Debug---
+    //ret = queue.finish();
+    //printf("Kernel Success CmdQ %d\n", ret);
+
+    ret = queue.enqueueWriteBuffer(buffer_A,CL_TRUE,0,sizeof(uint32_t)*count,xAxis);
+    ret = queue.enqueueWriteBuffer(buffer_B,CL_TRUE,0,sizeof(uint32_t)*count,yAxis);
+    //---Debug---
+    //ret = queue.finish();
+    //printf("Kernel Success WriteBuffer %d\n", ret);
+
+    Kernel battery=Kernel(program,"dualAxis");
+    battery.setArg(0,buffer_A);
+    battery.setArg(1,buffer_B);
+    battery.setArg(2,buffer_C);
+    battery.setArg(3,load);
+
+    //---Debug---
+    //ret = queue.finish();
+    //printf("Kernel Success ArgSet %d\n", ret);
+
+    ret = queue.enqueueNDRangeKernel(battery,NullRange,NDRange(count/load),NDRange(cores));
+    queue.finish();
+    //---Debug---
+    //printf("Kernel Success NDRange %d\n", ret);
+
+    queue.enqueueReadBuffer(buffer_B,CL_TRUE,0,sizeof(float)*count,B);
+    queue.finish();
+
+    auto finish = chrono::high_resolution_clock::now();
+    chrono::duration<double> elapsed = finish - start;
+
+    for(int i = 0; i < count; i++)
+    {
+        cout << "Dual Axis: " << B[i]<<  "RAD" << "\n";}
+
+    return elapsed.count();
+}
+
+
 double run_no_lib(int count, float* items){
     float B[count] = {};
     float C[count] = {};
@@ -262,39 +314,42 @@ int main(){
 	
     const int DEFAULT_SIZE = 1;
     double execTimeVCL, execTimePOCL;
-    Device default_device = settingUpDevice(0); // 0 = VideoCore IV ; 1 = POCL on CPU
-    Context context({default_device});
+//    Device default_device = settingUpDevice(0); // 0 = VideoCore IV ; 1 = POCL on CPU
+//    Context context({default_device});
     Device default_device2 = settingUpDevice(1); // 0 = VideoCore IV ; 1 = POCL on CPU
     Context context2({default_device2});
     cout << "Setting up VC4CL OpenCl Programs\n";
-    Program program = settingUpProgram(default_device, context);
+//    Program program = settingUpProgram(default_device, context);
 
     cout << "Setting up POCL OpenCl Programs\n";
     Program program2 = settingUpProgram(default_device2, context2);
     
     while(true) {
-        uint32_t *data = getLogdiduteValues(DEFAULT_SIZE);
+        uint32_t *xAxis = getLogdiduteValues(DEFAULT_SIZE);
 //        for (int i = 0; i < DEFAULT_SIZE; i++) {
 //            cout << hex << "Data Point: " << i << ": " << (uint32_t) data[i] << "\n";
 //        }
 
 //        cout << "Longitudial Acceleration:" << endl;
 //        cout << "Computing on GPU - VC4CL" << endl;
-        execTimeVCL = runXAxis(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
+//        execTimeVCL = runXAxis(1, DEFAULT_SIZE, xAxis, DEFAULT_SIZE, default_device, context, program);
 //        cout << "execution time: " << execTimeVCL << "s" << endl;
 //        cout << "Computing on CPU - POCL" << endl;
-        execTimePOCL = runXAxis(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2, program2);
+        execTimePOCL = runXAxis(1, DEFAULT_SIZE, xAxis, DEFAULT_SIZE, default_device2, context2, program2);
 //        cout << "execution time: " << execTimePOCL << "s" << endl;
 
-        data = getLateralValues(DEFAULT_SIZE);
+        uint32_t *yAxis = getLogdiduteValues(DEFAULT_SIZE);
 
 //        cout << "Lateral Acceleration:" << endl;
 //        cout << "Computing on GPU - VC4CL" << endl;
-        execTimeVCL = runYAxis(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device, context, program);
+//        execTimeVCL = runYAxis(1, DEFAULT_SIZE, yAxis, DEFAULT_SIZE, default_device, context, program);
 //        cout << "execution time: " << execTimeVCL << "s" << endl;
 //        cout << "Computing on CPU - POCL" << endl;
-        execTimePOCL = runYAxis(1, DEFAULT_SIZE, data, DEFAULT_SIZE, default_device2, context2, program2);
+        execTimePOCL = runYAxis(1, DEFAULT_SIZE, yAxis, DEFAULT_SIZE, default_device2, context2, program2);
 //        cout << "execution time: " << execTimePOCL << "s" << endl;
+
+//        runDualAxis(1, DEFAULT_SIZE, xAxis, yAxis, DEFAULT_SIZE, default_device, context, program);
+        runDualAxis(1, DEFAULT_SIZE, xAxis, yAxis, DEFAULT_SIZE, default_device2, context2, program2);
     }
     return 0;
 }
