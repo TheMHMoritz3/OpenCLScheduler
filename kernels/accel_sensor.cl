@@ -1,3 +1,7 @@
+float alpha(int input) {
+    return (input - 2048.0f)/256.0;
+}
+
 __kernel void xAxis(global const unsigned int* A, global float* B, const int WLOAD) {
 	int gid = get_global_id(0) * WLOAD;
 	int i;
@@ -16,10 +20,6 @@ __kernel void yAxis(global const unsigned int* A, global float* B, const int WLO
 	{
 		B[gid + i]= acos(alpha(A[gid+i]));
 	}
-}
-
-float alpha(int input) {
-    return (input - 2048.0f)/256.0;
 }
 
 __kernel void dualAxis(global const unsigned int* x_axis, global const unsigned int* y_axis, global float* B, const int WLOAD) {
