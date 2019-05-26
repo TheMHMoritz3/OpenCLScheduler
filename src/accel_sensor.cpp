@@ -314,41 +314,38 @@ int main(){
 	
     const int DEFAULT_SIZE = 1;
     double execTimeVCL, execTimePOCL;
-//    Device default_device = settingUpDevice(0); // 0 = VideoCore IV ; 1 = POCL on CPU
-//    Context context({default_device});
+    Device default_device = settingUpDevice(0); // 0 = VideoCore IV ; 1 = POCL on CPU
+    Context context({default_device});
     Device default_device2 = settingUpDevice(1); // 0 = VideoCore IV ; 1 = POCL on CPU
     Context context2({default_device2});
     cout << "Setting up VC4CL OpenCl Programs\n";
-//    Program program = settingUpProgram(default_device, context);
+    Program program = settingUpProgram(default_device, context);
 
     cout << "Setting up POCL OpenCl Programs\n";
     Program program2 = settingUpProgram(default_device2, context2);
     
     while(true) {
         uint32_t *xAxis = getLogdiduteValues(DEFAULT_SIZE);
-//        for (int i = 0; i < DEFAULT_SIZE; i++) {
-//            cout << hex << "Data Point: " << i << ": " << (uint32_t) data[i] << "\n";
-//        }
 
-//        cout << "Longitudial Acceleration:" << endl;
-//        cout << "Computing on GPU - VC4CL" << endl;
-//        execTimeVCL = runXAxis(1, DEFAULT_SIZE, xAxis, DEFAULT_SIZE, default_device, context, program);
-//        cout << "execution time: " << execTimeVCL << "s" << endl;
-//        cout << "Computing on CPU - POCL" << endl;
+        cout << "Longitudial Acceleration:" << endl;
+        cout << "Computing on GPU - VC4CL" << endl;
+        execTimeVCL = runXAxis(1, DEFAULT_SIZE, xAxis, DEFAULT_SIZE, default_device, context, program);
+        cout << "execution time: " << execTimeVCL << "s" << endl;
+        cout << "Computing on CPU - POCL" << endl;
         execTimePOCL = runXAxis(1, DEFAULT_SIZE, xAxis, DEFAULT_SIZE, default_device2, context2, program2);
-//        cout << "execution time: " << execTimePOCL << "s" << endl;
+        cout << "execution time: " << execTimePOCL << "s" << endl;
 
         uint32_t *yAxis = getLogdiduteValues(DEFAULT_SIZE);
 
-//        cout << "Lateral Acceleration:" << endl;
-//        cout << "Computing on GPU - VC4CL" << endl;
-//        execTimeVCL = runYAxis(1, DEFAULT_SIZE, yAxis, DEFAULT_SIZE, default_device, context, program);
-//        cout << "execution time: " << execTimeVCL << "s" << endl;
-//        cout << "Computing on CPU - POCL" << endl;
+        cout << "Lateral Acceleration:" << endl;
+        cout << "Computing on GPU - VC4CL" << endl;
+        execTimeVCL = runYAxis(1, DEFAULT_SIZE, yAxis, DEFAULT_SIZE, default_device, context, program);
+        cout << "execution time: " << execTimeVCL << "s" << endl;
+        cout << "Computing on CPU - POCL" << endl;
         execTimePOCL = runYAxis(1, DEFAULT_SIZE, yAxis, DEFAULT_SIZE, default_device2, context2, program2);
-//        cout << "execution time: " << execTimePOCL << "s" << endl;
+        cout << "execution time: " << execTimePOCL << "s" << endl;
 
-//        runDualAxis(1, DEFAULT_SIZE, xAxis, yAxis, DEFAULT_SIZE, default_device, context, program);
+        runDualAxis(1, DEFAULT_SIZE, xAxis, yAxis, DEFAULT_SIZE, default_device, context, program);
         runDualAxis(1, DEFAULT_SIZE, xAxis, yAxis, DEFAULT_SIZE, default_device2, context2, program2);
     }
     return 0;
