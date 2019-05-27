@@ -14,9 +14,6 @@
     \insertframenumber/\inserttotalframenumber
 }
 
-\begin{document}
-\maketitle
-
 \AtBeginSection[]
 {
   \begin{frame}
@@ -25,14 +22,22 @@
   \end{frame}
 }
 
+\begin{document}
+\maketitle
+
 
 \section{OpenCL}
 \begin{frame}
     \frametitle{OpenCL Structure}
-    Some Problems:
-    \begin{itemize}
-        \item Test
-    \end{itemize}
+    
+\end{frame}
+\subsection{Hardware Model}
+\begin{frame}
+    \frametitle{Hardware Model}
+\end{frame}
+\subsection{Software Model}
+\begin{frame}
+    \frametitle{Software Model}
 \end{frame}
 
 \section{Kernels}
@@ -66,7 +71,20 @@
 \end{frame}
 \subsection{Tractioncontrol}
 \begin{frame}
- %TODO To be filled
+    \frametitle{Tractioncontrol}
+    The assumption is that the drive is on the rear axle.
+    Alorthmical Description:
+    \begin{itemize}
+     \item Check if rear right wheel is spinning much faster (threshold is around 40\%) than rear left.\\
+     $\Rightarrow$ Rear right wheel has no Traction.\\
+     $\Rightarrow$ Stop Engine and lock the differential and inform diver.
+     \pause
+     \item Check if rear left wheel is spinning much faster than rear left.\\
+     $\Rightarrow$ Rear left wheel has no Traction. $\Rightarrow$ Same reaction as left wheel.
+     \pause
+     \item Check if both wheels are spinning much faster than the front axel.\\
+     $\Rightarrow$ Slow down the Engine.
+    \end{itemize}
 \end{frame}
 \subsection{Accident Detection}
 \begin{frame}
@@ -76,5 +94,8 @@
 \begin{frame}
  %TODO To be filled
 \end{frame}
-
+\subsection{Range}
+\begin{frame}
+ %TODO To be filled
+\end{frame}
 \end{document}
