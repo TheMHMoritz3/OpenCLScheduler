@@ -7,6 +7,15 @@
 \author{Moritz Herzog, Philipp Lersch}
 \date{\today}
 
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, chains, calc}
+
+\tikzset{
+    green/.style  = {draw, rectangle, minimum width=2cm, minimum height=1cm, text centered, text width=1.2cm, font=\footnotesize, draw=black, fill=green!30},
+    blue/.style   = {draw, rectangle, minimum width=8cm+3\pgflinewidth, minimum height=1cm, text centered, text width=5.0cm, font=\footnotesize, draw=black, fill=blue!30},
+    yellow/.style = {draw, rectangle, minimum width=8cm+3\pgflinewidth, minimum height=1cm, text centered, text width=5.0cm, font=\footnotesize, draw=black, fill=yellow!30},
+}
+
 \addtobeamertemplate{navigation symbols}{}{%
     \usebeamerfont{footline}%
     \usebeamercolor[fg]{footline}%
@@ -29,11 +38,18 @@
 \section{OpenCL}
 \begin{frame}
     \frametitle{OpenCL Structure}
-    
+    \begin{columns}
+        \column{.6\textwidth}
+        \includegraphics[width=\textwidth]{res/HardwareSoftwareLayer.jpg}
+        \column{.4\textwidth}
+        \begin{itemize}
+            \item OpenCL draws clear line between hardware and software
+        \end{itemize}
+    \end{columns}
 \end{frame}
 \subsection{Hardware Model}
 \begin{frame}
-    \frametitle{Hardware Model}
+    
 \end{frame}
 \subsection{Software Model}
 \begin{frame}
