@@ -71,28 +71,58 @@
 \end{frame}
 \subsection{Tractioncontrol}
 \begin{frame}
-    \frametitle{Tractioncontrol}
-    The assumption is that the drive is on the rear axle.
-    Alorthmical Description:
+    \frametitle{Accident Detection}
+    By testing for accelerationspikes or accelerationvalues, we are able to detect accidents and unexpected movement.\\
     \begin{itemize}
-     \item Check if rear right wheel is spinning much faster (threshold is around 40\%) than rear left.\\
-     $\Rightarrow$ Rear right wheel has no Traction.\\
-     $\Rightarrow$ Stop Engine and lock the differential and inform diver.
+     \item Check for values above or below given thresholds which should be unachieveable under normal circumstances.\\
+     $\Rightarrow$ If found, we crashed.
      \pause
-     \item Check if rear left wheel is spinning much faster than rear left.\\
-     $\Rightarrow$ Rear left wheel has no Traction. $\Rightarrow$ Same reaction as left wheel.
+     \item In addition we can look for spikes in the last n-datapoints of the acceration and determine light crashes.\\
+     $\Rightarrow$ If found, we crashed.
      \pause
-     \item Check if both wheels are spinning much faster than the front axel.\\
-     $\Rightarrow$ Slow down the Engine.
     \end{itemize}
 \end{frame}
-\subsection{Accident Detection}
+\subsection{Anti Blocking System}
 \begin{frame}
- %TODO To be filled
+    \frametitle{Anti Blocking System}
+    By comparing the fronts average and back wheels speeds we can determine if the rear wheels are turning to slow or are locking up. 
+    \begin{itemize}
+     \item Check if the rear wheels are spinning much slower (threshold is around 40\%) than the front wheels.\\
+     $\Rightarrow$ If this is true for one or both wheels we are breaking to hard.\\
+     $\Rightarrow$ Signal traction loss.
+     \pause
+     \item We could also try to regain traction by spinning the motor a little bit faster until we regain traction and slow down again.\\
+     $\Rightarrow$ Hard to implement without proper or near realtime capeabliltys and no finer specified wheel control. Breaking has to be implemented by slowing down the build in motor. \\
+     \pause
+    \end{itemize}
 \end{frame}
-\subsection{Anti-Lock Braking System}
+\subsection{Antriebsschlupfregelung}
 \begin{frame}
- %TODO To be filled
+    By comparing the fronts average and back wheels speeds we can determine if the rear wheels are turning to fast. 
+    \begin{itemize}
+     \item Check if the rear wheels are spinning much faster (threshold is around 40\%) than the front wheels.\\
+     $\Rightarrow$ If this is true for one or both wheels we are accelerating to hard.\\
+     $\Rightarrow$ Signal traction loss.
+     \pause
+     \item We could also try to regain traction by spinning the motor a little bit slower until we regain traction and slow down again.\\
+     $\Rightarrow$ Hard to implement without proper or near realtime capeablilties and no finer specifieable wheel control like a differential lock. Could be implemented by flattening the acceleration curve for the motor. \\
+     \pause
+    \end{itemize}
+\end{frame}
+\subsection{Tractioncontrol}
+\begin{frame}
+    \frametitle{Tractioncontrol}
+    By comparing the fronts average and back wheels speeds we can determine if the rear wheels have lost to much traction.
+    \begin{itemize}
+     \item Check if the rear wheels are spinning outside of their thresholds.\\
+     $\Rightarrow$ If one or both wheels are to slow we are breaking to hard.\\
+     $\Rightarrow$ Signal traction loss.\\
+     $\Rightarrow$ If one or both wheels are to fast we are accelerating to hard.\\
+     $\Rightarrow$ Signal traction loss.
+     \pause
+     \item Without the needed capeablilties we are only cabealbe to signal the loss of traction.
+     \pause
+    \end{itemize}
 \end{frame}
 \subsection{Range}
 \begin{frame}
