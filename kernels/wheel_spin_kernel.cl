@@ -32,12 +32,27 @@ __kernel void median(global const float* speed1, global const float* speed2, glo
 	}
 }
 
-__kernel void tractionControl(global const float* speedFL, global const float* speedFR, global const float* speedRL, global const float* speedRR, global bool* Output, const int WLOAD){
+__kernel void tractionControl(global const float* speedFL, global const float* speedFR, global const float* speedRL, global const float* speedRR, global int* Output, const int WLOAD){
     int gid = get_global_id(0) * WLOAD;
     int i;
 
     for (i = 0; i < WLOAD; ++i)
     {
-        Output[gid+i]=(((speedRL[gid + i]-speedRR[gid + i])<0.01f)&&((speedRR[gid + i]-speedRL[gid + i])<0.01f)||(((speedRL[gid + i]-speedFL[gid + i])<0.01f)&&((speedRR[gid + i]-speedFR[gid + i])<0.01f)));
+        if(!(((speedRL[gid + i]-speedRR[gid + i])<0.01f)&&((speedRR[gid + i]-speedRL[gid + i])<0.01f)||(((speedRL[gid + i]-speedFL[gid + i])<0.01f)&&((speedRR[gid + i]-speedFR[gid + i])<0.01f)))){
+            if((speedRL[gid + i]-speedRR[gid + i])>=0.01f)
+            {
+                Output[gid+i]=1;
+            }
+            if((speedRR[gid + i]-speedRL[gid + i])>=0.01f)
+            {
+                Output[gid+i]=0;
+            }
+            if(((speedRL[gid + i]-speedFL[gid + i])>=0.01f)&&((speedRR[gid + i]-speedFR[gid + i])>=0.01f))
+            {
+                Output[gid+i]=2;
+            }
+        }else{
+            Output[gid+i]=3;
+        }
     }
 }
