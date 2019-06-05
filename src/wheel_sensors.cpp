@@ -225,7 +225,7 @@ double runTractionControl(int load, int count, float* speedFL, float* speedFR, f
     Buffer buffer_speedFR(context,CL_MEM_READ_WRITE,sizeof(float)*count);
     Buffer buffer_speedRL(context,CL_MEM_READ_WRITE,sizeof(float)*count);
     Buffer buffer_speedRR(context,CL_MEM_READ_WRITE,sizeof(float)*count);
-    Buffer buffer_B(context,CL_MEM_READ_WRITE,sizeof(bool)*count);
+    Buffer buffer_B(context,CL_MEM_READ_WRITE,sizeof(uint32_t)*count);
     Buffer buffer_WORKLOAD(context,CL_MEM_READ_WRITE,sizeof(int));
 
     CommandQueue queue(context,default_device, ret);
@@ -258,7 +258,7 @@ double runTractionControl(int load, int count, float* speedFL, float* speedFR, f
     //---Debug---
 //    printf("Kernel Success NDRange %d\n", ret);
 
-    queue.enqueueReadBuffer(buffer_B,CL_TRUE,0,sizeof(bool)*count,B);
+    queue.enqueueReadBuffer(buffer_B,CL_TRUE,0,sizeof(uint32_t)*count,B);
     queue.finish();
 
     auto finish = chrono::high_resolution_clock::now();
@@ -266,7 +266,14 @@ double runTractionControl(int load, int count, float* speedFL, float* speedFR, f
 
     for(int i = 0; i < count; i++)
     {
-        cout << " Traction: " << B[i];
+        if(B[i]=0)
+            cout<<"rear right is spinning";
+        else if(B[i]=1)
+            cout<<"rear left is spinning";
+        else if(B[i]=2)
+            cout<<"rear axis is spinning";
+        else
+            cout<<"We have traction";
     }
 
     return elapsed.count();
