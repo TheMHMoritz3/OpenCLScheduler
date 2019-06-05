@@ -7,6 +7,15 @@
 \author{Moritz Herzog, Philipp Lersch}
 \date{\today}
 
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, chains, calc}
+
+\tikzset{
+    green/.style  = {draw, rectangle, minimum width=2cm, minimum height=1cm, text centered, text width=1.2cm, font=\footnotesize, draw=black, fill=green!30},
+    blue/.style   = {draw, rectangle, minimum width=8cm+3\pgflinewidth, minimum height=1cm, text centered, text width=5.0cm, font=\footnotesize, draw=black, fill=blue!30},
+    yellow/.style = {draw, rectangle, minimum width=8cm+3\pgflinewidth, minimum height=1cm, text centered, text width=5.0cm, font=\footnotesize, draw=black, fill=yellow!30},
+}
+
 \addtobeamertemplate{navigation symbols}{}{%
     \usebeamerfont{footline}%
     \usebeamercolor[fg]{footline}%
@@ -29,11 +38,39 @@
 \section{OpenCL}
 \begin{frame}
     \frametitle{OpenCL Structure}
-    
+    \begin{columns}
+        \column{.6\textwidth}
+        \includegraphics[width=\textwidth]{res/HardwareSoftwareLayer.jpg}
+        \column{.4\textwidth}
+        \begin{itemize}
+            \item OpenCL draws clear line between hardware and software
+        \end{itemize}
+    \end{columns}
 \end{frame}
 \subsection{Hardware Model}
 \begin{frame}
-    \frametitle{Hardware Model}
+    OpenCL Propertys:
+    \begin{itemize}
+     \item Diffrent Models for CPU and GPU
+    \end{itemize}
+\end{frame}
+\begin{frame}
+    \frametitle{Hardware Model - Memory}
+    \begin{itemize}
+     \item Some Memeory Stuff
+    \end{itemize}
+\end{frame}
+\begin{frame}
+    \frametitle{Hardware Model - CPU}
+    \begin{itemize}
+     \item Some CPU Stuff
+    \end{itemize}
+\end{frame}
+\begin{frame}
+    \frametitle{Hardware Model - GPU}
+    \begin{itemize}
+     \item Some GPU Stuff
+    \end{itemize}
 \end{frame}
 \subsection{Software Model}
 \begin{frame}
@@ -126,6 +163,27 @@
 \end{frame}
 \subsection{Range}
 \begin{frame}
- %TODO To be filled
+    \frametitle{Range}
+    Requirements:
+    \begin{itemize}
+        \item Knowlegde of the maximum Battery Charge in Wh
+        \item Minimum charge voltage
+        \item Engine propertys (load to watt usage)
+    \end{itemize}
 \end{frame}
+\begin{frame}
+    \frametitle{Range}
+    Algorithm
+    \begin{enumerate}
+     \item Get current battery voltage
+     \item Calculate current charge in Wh
+     \item Calculate on engine load, engine proppertys and current speed the current consumed wattage
+     \item Calculate the remaining Range with these Formulars.
+     \begin{itemize}
+        \item $remainingTime=\frac{Charge}{Current Wattage}\cdot3600$
+        \item $remainingRange=speed\cdot remainingTime$
+     \end{itemize}
+    \end{enumerate}
+\end{frame}
+
 \end{document}
