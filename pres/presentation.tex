@@ -133,8 +133,9 @@
      \pause
     \end{itemize}
 \end{frame}
-\subsection{Antriebsschlupfregelung}
+\subsection{Drive Slip Control}
 \begin{frame}
+    \frametitle{Drive Slip Control}
     By comparing the fronts average and back wheels speeds we can determine if the rear wheels are turning to fast. 
     \begin{itemize}
      \item Check if the rear wheels are spinning much faster (threshold is around 40\%) than the front wheels.\\
@@ -183,6 +184,25 @@
         \item $remainingTime=\frac{Charge}{Current Wattage}\cdot3600$
         \item $remainingRange=speed\cdot remainingTime$
      \end{itemize}
+    \end{enumerate}
+\end{frame}
+\subsection{Turningradius}
+
+\begin{frame}
+    \frametitle{Turningradius}
+    Requirements:
+    \begin{itemize}
+     \item wheel Velocity of every wheel sepread ($\Sigma_{RR}$, $\Sigma_{RL}$, $\Sigma_{FR}$, $\Sigma_{FL}$)
+     \item Knowlegde of the width of the axle (Distance of the two wheels on one axle) ($D$)
+    \end{itemize}
+    Algorithm:
+    \begin{enumerate}
+     \item Calculate the folloring Formular
+     \begin{itemize}
+        \item $r=\frac{D}{2}*\frac{\Sigma_{RR}+\Sigma_{RL}}{\Sigma_{RR}-\Sigma_{RL}}$
+        \item Same can be done for the front axle to calculate slippige
+     \end{itemize}
+     \item if $r<0$ then $r=-r$
     \end{enumerate}
 \end{frame}
 
