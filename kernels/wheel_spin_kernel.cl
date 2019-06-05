@@ -56,3 +56,17 @@ __kernel void tractionControl(global const float* speedFL, global const float* s
         }
     }
 }
+
+__kernel void radius(global const float* speedL, global const float* speedR, global float* Output, const int WLOAD){
+    int gid = get_global_id(0) * WLOAD;
+    int i;
+
+    const float axleSize=0,05;
+
+    for (i = 0; i < WLOAD; ++i)
+    {
+    	Output[gid + i] = (axleSize/2.0f)*((speedL[gid + i] + speedR[gid+i])/(speedL[gid + i] - speedR[gid+i]));
+    	if(Output[gid + i]<0)
+    	    Output[gid + i]=0.0f-Output[gid + i];
+    }
+}
