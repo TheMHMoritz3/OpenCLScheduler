@@ -65,9 +65,32 @@
 
 \begin{frame}
     \frametitle{Hardware Model - Memory}
-    \begin{itemize}
-     \item Some Memeory Stuff
-    \end{itemize}
+        \includegraphics[width=.8\textwidth]{res/OpenCLMemoryStructure.jpg}
+        
+\end{frame}
+\begin{frame}
+    \frametitle{Hardware Model - Memory}
+        \begin{itemize}
+            \item Private Memory
+            \begin{itemize}
+             \item Private for every Workitem
+            \end{itemize}
+            \item Local Memory
+            \begin{itemize}
+             \item Shared within the Workgroup
+             \item Synchronization within the Workgroup
+            \end{itemize}
+            \item Global/Constant Memory
+            \begin{itemize}
+             \item Visible for all Workgoups within the device
+            \end{itemize}
+            \item Host Memory
+            \item Memorymanagement is Explicit.
+            \begin{itemize}
+             \item Data must be moved Manually from host to global to local and back.
+            \end{itemize}
+
+        \end{itemize}
 \end{frame}
 \begin{frame}
     \frametitle{Hardware Model - CPU}
@@ -81,7 +104,8 @@
     \frametitle{Hardware Model - GPU}
     Architecure:
     \begin{itemize}
-     \item ``Processing Elements'' are the execution and arithmetic processing Units 
+     \item ``Processing Elements'' are the execution and arithmetic processing Units
+     \item Specific Definition of ``Processing Elements'' depends on the Hardware Vendor and generation
     \end{itemize}
 \end{frame}
 \subsection{Software Model}
