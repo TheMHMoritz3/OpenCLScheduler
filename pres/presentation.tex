@@ -85,16 +85,16 @@
              \item Visible for all Workgoups within the device
             \end{itemize}
             \item Host Memory
-            \item Memorymanagement is Explicit.
             \begin{itemize}
-             \item Data must be moved Manually from host to global to local and back.
+             \item Local DRAM
             \end{itemize}
-
+            \item Memorymanagement is Explicit.
+            \item Communication and Synchronization (only possible within a workgroup) is done over the Memory.
         \end{itemize}
 \end{frame}
 \begin{frame}
     \frametitle{Hardware Model - CPU}
-    Architecures:
+    Architecure:
     \begin{itemize}
         \item Processing Elements are the ``Cores''
         
@@ -107,6 +107,14 @@
      \item ``Processing Elements'' are the execution and arithmetic processing Units
      \item Specific Definition of ``Processing Elements'' depends on the Hardware Vendor and generation
     \end{itemize}
+    Benefits:
+    \begin{itemize}
+     \item GPU-Architecure benefits from small, sequential and highly parallel Workloads.
+    \end{itemize}
+\end{frame}
+\begin{frame}
+    \frametitle{Hardware Model - GPU}
+    \includegraphics[width=.5\textwidth]{res/ATIComputeDevice.png}
 \end{frame}
 \subsection{Software Model}
 \begin{frame}
