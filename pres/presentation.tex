@@ -127,6 +127,7 @@
 \end{frame}
 
 \section{Kernels}
+\subsection{Overview}
 \begin{frame} %%Eine Folie
   \frametitle{List of Kernels} %%Folientitel
   Already there:
@@ -141,21 +142,19 @@
    \end{itemize}
    \item Tempreture
   \end{itemize}
-
-  %\begin{Definition} %%Definition
-  %  Eine Definition
-  %\end{Definition}
 \end{frame}
 \begin{frame}
     \frametitle{List of Kernels}
     Added Kernels:
     \begin{itemize}
-     \item Tractioncontrol
      \item Accident Detection
-     \item Anti-Lock Braking System
+     \item Tractioncontrol
+     \item Range
+     \item Turningradius
     \end{itemize}
 \end{frame}
-\subsection{Tractioncontrol}
+
+\subsection{Accident Detection}
 \begin{frame}
     \frametitle{Accident Detection}
     By testing for accelerationspikes or accelerationvalues, we are able to detect accidents and unexpected movement.\\
@@ -168,49 +167,79 @@
      \pause
     \end{itemize}
 \end{frame}
+\begin{frame}
+    \frametitle{Tractioncontrol}
+    Algorithm
+    \begin{enumerate}
+        \item Get n last accelerationvalues
+        \item Calculate: 
+        \begin{itemize}
+            \item $crossed = accelMin_{x,y} > accel_{x,y} \parallel accel_{x,y} > accelMax_{x,y}$
+            \item spiked if m datapoints signal a harsh acceleration possibly followed by a harsh deceleration in a given direction.
+        \end{itemize}
+    \end{enumerate}
+\end{frame}
+
 \subsection{Anti Blocking System}
 \begin{frame}
     \frametitle{Anti Blocking System}
     By comparing the fronts average and back wheels speeds we can determine if the rear wheels are turning to slow or are locking up. 
     \begin{itemize}
      \item Check if the rear wheels are spinning much slower (threshold is around 40\%) than the front wheels.\\
-     $\Rightarrow$ If this is true for one or both wheels we are breaking to hard.\\
+     $\Rightarrow$ If this is true for one or both wheels we are breaking to hard.
      $\Rightarrow$ Signal traction loss.
      \pause
-     \item We could also try to regain traction by spinning the motor a little bit faster until we regain traction and slow down again.\\
-     $\Rightarrow$ Hard to implement without proper or near realtime capeabliltys and no finer specified wheel control. Breaking has to be implemented by slowing down the build in motor. \\
+     \item We could also try to regain traction by speeding up the motor. 
+     $\Rightarrow$ Hard to implement with given systems and no finer wheel control. \\
      \pause
     \end{itemize}
 \end{frame}
+
 \subsection{Drive Slip Control}
 \begin{frame}
     \frametitle{Drive Slip Control}
     By comparing the fronts average and back wheels speeds we can determine if the rear wheels are turning to fast. 
     \begin{itemize}
      \item Check if the rear wheels are spinning much faster (threshold is around 40\%) than the front wheels.\\
-     $\Rightarrow$ If this is true for one or both wheels we are accelerating to hard.\\
+     $\Rightarrow$ If this is true for one or both wheels we are accelerating to hard.
      $\Rightarrow$ Signal traction loss.
      \pause
-     \item We could also try to regain traction by spinning the motor a little bit slower until we regain traction and slow down again.\\
-     $\Rightarrow$ Hard to implement without proper or near realtime capeablilties and no finer specifieable wheel control like a differential lock. Could be implemented by flattening the acceleration curve for the motor. \\
+     \item We could also try to regain traction by slowing down the motor.
+     $\Rightarrow$ Hard to implement with given systems and no finer wheel control. \\
      \pause
     \end{itemize}
 \end{frame}
+
 \subsection{Tractioncontrol}
 \begin{frame}
     \frametitle{Tractioncontrol}
     By comparing the fronts average and back wheels speeds we can determine if the rear wheels have lost to much traction.
     \begin{itemize}
-     \item Check if the rear wheels are spinning outside of their thresholds.\\
-     $\Rightarrow$ If one or both wheels are to slow we are breaking to hard.\\
-     $\Rightarrow$ Signal traction loss.\\
-     $\Rightarrow$ If one or both wheels are to fast we are accelerating to hard.\\
-     $\Rightarrow$ Signal traction loss.
+    \item Check if the rear wheels are spinning outside of their thresholds.\\
+        \begin{enumerate}
+        \item If one or both wheels are to slow we are breaking to hard.\\
+        $\Rightarrow$ Signal traction loss.\\
+        \item If one or both wheels are to fast we are accelerating to hard.\\
+        $\Rightarrow$ Signal traction loss.
+        \end{enumerate}
      \pause
-     \item Without the needed capeablilties we are only cabealbe to signal the loss of traction.
+     \item Without the needed capabilities we are only cabalbe to signal traction loss reliable.
      \pause
     \end{itemize}
 \end{frame}
+\begin{frame}
+    \frametitle{Tractioncontrol}
+    Algorithm
+    \begin{enumerate}
+        \item Get current wheel speeds
+        \item Calculate: 
+        \begin{itemize}
+            \item $averageFrontWheelSpeed = \frac{leftWheelSpeed + rightWheelSpeed}{2}$
+            \item $slipping = (aFWS-T) > bWS \parallel bWS > (aFWS+T)$
+        \end{itemize}
+    \end{enumerate}
+\end{frame}
+
 \subsection{Range}
 \begin{frame}
     \frametitle{Range}
@@ -227,7 +256,7 @@
     \begin{enumerate}
      \item Get current battery voltage
      \item Calculate current charge in Wh
-     \item Calculate on engine load, engine proppertys and current speed the current consumed wattage
+     \item Calculate on engine load, engine properties and current speed the currently consumed wattage
      \item Calculate the remaining Range with these Formulars.
      \begin{itemize}
         \item $remainingTime=\frac{Charge}{Current Wattage}\cdot3600$
@@ -235,21 +264,21 @@
      \end{itemize}
     \end{enumerate}
 \end{frame}
-\subsection{Turningradius}
 
+\subsection{Turningradius}
 \begin{frame}
     \frametitle{Turningradius}
     Requirements:
     \begin{itemize}
-     \item wheel Velocity of every wheel sepread ($\Sigma_{RR}$, $\Sigma_{RL}$, $\Sigma_{FR}$, $\Sigma_{FL}$)
+     \item wheel Velocity of every wheel separated ($\Sigma_{RR}$, $\Sigma_{RL}$, $\Sigma_{FR}$, $\Sigma_{FL}$)
      \item Knowlegde of the width of the axle (Distance of the two wheels on one axle) ($D$)
     \end{itemize}
     Algorithm:
     \begin{enumerate}
-     \item Calculate the folloring Formular
+     \item Calculate the following Formular
      \begin{itemize}
         \item $r=\frac{D}{2}*\frac{\Sigma_{RR}+\Sigma_{RL}}{\Sigma_{RR}-\Sigma_{RL}}$
-        \item Same can be done for the front axle to calculate slippige
+        \item Same can be done for the front axle to calculate slippage
      \end{itemize}
      \item if $r<0$ then $r=-r$
     \end{enumerate}
