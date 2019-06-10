@@ -39,7 +39,7 @@
         \column{.4\textwidth}
         \begin{itemize}
             \item OpenCL draws clear line between hardware and software
-            \item Kernels can be scheduled on CPU, GPU and other Architecures
+            \item Kernels can be scheduled on CPU, GPU and other architecures
         \end{itemize}
     \end{columns}
 \end{frame}
@@ -48,14 +48,15 @@
     \frametitle{Hardware Model - Generel}
     OpenCL Propertys:
     \begin{itemize}
-     \item Diffrent Models for CPU and GPU
+     \item Diffrent models for CPU and GPU
      \item In General:
      \begin{itemize}
       \item a compute device has a separade memory
       \item a compute unit can have multible processing elements 
      \end{itemize}
      \item One CPU-Based ``Host'' controlls multible ``Computedevices''
-     \item Processing Elements all execute OpenCL ``Kernels''
+     \item ``Computedevice'' is every OpenCL complient connected GPU, CPU and FPGA and even more. 
+     \item ``Processing Elements'' all execute OpenCL ``Kernels''
     \end{itemize}
 \end{frame}
 \begin{frame}
@@ -119,7 +120,15 @@
 \end{frame}
 \begin{frame}
     \frametitle{Hardware Model - GPU}
-    \includegraphics[width=.5\textwidth]{res/ATIComputeDevice.png}
+    \begin{columns}
+        \column[T]{.4\textwidth}
+        \includegraphics[width=\textwidth]{res/ATIComputeDevice.png}
+        \column[T]{.6\textwidth}
+        Example of AMD GPU ``Processing Units''
+    \end{columns}
+\end{frame}
+\begin{frame}{Example Raspberry Pi 3B+}
+    \includegraphics[height=.8\textheight]{res/RaspberryPiData.PNG}
 \end{frame}
 \subsection{Software Model}
 \begin{frame}
