@@ -39,7 +39,12 @@
         \column{.4\textwidth}
         \begin{itemize}
             \item OpenCL draws clear line between hardware and software
-            \item Kernels can be scheduled on CPU, GPU and other Architecures
+            \begin{itemize}
+		\item broad range of architectures
+		\item scalebility
+		\item compatility
+		\item less code changes
+	 \end{itemize}
         \end{itemize}
     \end{columns}
 \end{frame}
@@ -48,14 +53,16 @@
     \frametitle{Hardware Model - General}
     OpenCL Propertys:
     \begin{itemize}
-     \item Diffrent Models for CPU and GPU
+     \item Diffrent models for CPU and GPU
      \item In General:
      \begin{itemize}
       \item a compute device has a separade memory
       \item a compute unit can have multible processing elements 
      \end{itemize}
-     \item One CPU-Based ``Host'' controlls multible ``Computedevices''
-     \item Processing Elements all execute OpenCL ``Kernels''
+     \item One CPU-Based ``Host'' controlls multible ``Compute Devices''
+     \item A ``Compute Device'' is every OpenCL complient connected GPU, CPU and FPGA and even more.
+     \item A ``Compute Device'' has one or more ``Compute Unit(s)''
+     \item ``Processing Elements'' all execute OpenCL ``Kernels''
     \end{itemize}
 \end{frame}
 \begin{frame}
@@ -97,11 +104,11 @@
     Architecure:
     \begin{itemize}
         \item ``Processing Units'' are the ``Treads/Cores''
-        \item If not sepreadly connected, CPU has a shared Memory with the system and other Programs that use the CPU
+        \item If not sepreadly connected, CPU has a shared memory with the system and other programs that use the CPU
     \end{itemize}
     Benefits
     \begin{itemize}
-        \item Benefits from idependant instruction in an Kernel.
+        \item Benefits from idependant instruction in a kernel.
     \end{itemize}
 
 \end{frame}
@@ -111,15 +118,24 @@
     \begin{itemize}
      \item ``Processing Unit'' are the execution and arithmetic processing Units
      \item Specific Definition of ``Processing Units'' depends on the Hardware Vendor and generation
+     \item A ``Processing Unit'' has mutlible cores
     \end{itemize}
     Benefits:
     \begin{itemize}
      \item GPU-Architecure benefits from small, sequential and highly parallel Workloads.
     \end{itemize}
 \end{frame}
-\begin{frame}
-    \frametitle{Hardware Model - GPU}
-    \includegraphics[width=.5\textwidth]{res/ATIComputeDevice.png}
+%\begin{frame}
+%    \frametitle{Hardware Model - GPU}
+%    \begin{columns}
+%        \column[T]{.4\textwidth}
+%        \includegraphics[width=\textwidth]{res/ATIComputeDevice.png}
+%        \column[T]{.6\textwidth}
+%        Example of AMD GPU ``Processing Units''
+%    \end{columns}
+%\end{frame}
+\begin{frame}{Example Raspberry Pi 3B+}
+    \includegraphics[height=.8\textheight]{res/RaspberryPiData.PNG}
 \end{frame}
 \subsection{Software Model}
 \begin{frame}
@@ -212,21 +228,19 @@
     \begin{itemize}
      \item Check for values above or below given thresholds which should be unachieveable under normal circumstances.\\
      $\Rightarrow$ If found, we crashed.
-     \pause
      \item In addition we can look for spikes in the last n-datapoints of the acceration and determine light crashes.\\
      $\Rightarrow$ If found, we crashed.
-     \pause
     \end{itemize}
 \end{frame}
 \begin{frame}
-    \frametitle{Tractioncontrol}
+    \frametitle{Accident Detection}
     Algorithm
     \begin{enumerate}
         \item Get n last accelerationvalues
         \item Calculate: 
         \begin{itemize}
             \item $crossed = accelMin_{x,y} > accel_{x,y} \parallel accel_{x,y} > accelMax_{x,y}$
-            \item spiked if m datapoints signal a harsh acceleration possibly followed by a harsh deceleration in a given direction.
+            \item spiked if $m$ datapoints signal a harsh acceleration possibly followed by a harsh deceleration in a given direction.
         \end{itemize}
     \end{enumerate}
 \end{frame}
@@ -239,10 +253,8 @@
      \item Check if the rear wheels are spinning much slower (threshold is around 40\%) than the front wheels.\\
      $\Rightarrow$ If this is true for one or both wheels we are breaking to hard.
      $\Rightarrow$ Signal traction loss.
-     \pause
      \item We could also try to regain traction by speeding up the motor. 
      $\Rightarrow$ Hard to implement with given systems and no finer wheel control. \\
-     \pause
     \end{itemize}
 \end{frame}
 
@@ -254,10 +266,8 @@
      \item Check if the rear wheels are spinning much faster (threshold is around 40\%) than the front wheels.\\
      $\Rightarrow$ If this is true for one or both wheels we are accelerating to hard.
      $\Rightarrow$ Signal traction loss.
-     \pause
      \item We could also try to regain traction by slowing down the motor.
      $\Rightarrow$ Hard to implement with given systems and no finer wheel control. \\
-     \pause
     \end{itemize}
 \end{frame}
 
@@ -273,9 +283,7 @@
         \item If one or both wheels are to fast we are accelerating to hard.\\
         $\Rightarrow$ Signal traction loss.
         \end{enumerate}
-     \pause
      \item Without the needed capabilities we are only cabalbe to signal traction loss reliable.
-     \pause
     \end{itemize}
 \end{frame}
 \begin{frame}
