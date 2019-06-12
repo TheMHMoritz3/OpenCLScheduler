@@ -53,16 +53,11 @@
     \frametitle{Hardware Model - Generel}
     OpenCL Propertys:
     \begin{itemize}
-     \item Diffrent models for CPU and GPU
-     \item In General:
-     \begin{itemize}
-      \item a compute device has a separade memory
-      \item a compute unit can have multible processing elements 
-     \end{itemize}
-     \item One CPU-Based ``Host'' controlls multible ``Compute Devices''
-     \item A ``Compute Device'' is every OpenCL complient connected GPU, CPU and FPGA and even more.
-     \item A ``Compute Device'' has one or more ``Compute Unit(s)''
-     \item ``Processing Elements'' all execute OpenCL ``Kernels''
+     	\item One CPU-Based ``Host'' controlls multible ``Compute Devices''
+     	\item A ``Compute Device'' is every OpenCL complient connected GPU, CPU and FPGA and even more.
+     	\item A ``Compute Device'' has one or more ``Compute Unit(s)''
+     	\item ``Processing Elements'' all execute OpenCL ``Kernels''
+	\item Diffrent models for CPU and GPU.
     \end{itemize}
 \end{frame}
 \begin{frame}
@@ -125,15 +120,7 @@
      \item GPU-Architecure benefits from small, sequential and highly parallel Workloads.
     \end{itemize}
 \end{frame}
-%\begin{frame}
-%    \frametitle{Hardware Model - GPU}
-%    \begin{columns}
-%        \column[T]{.4\textwidth}
-%        \includegraphics[width=\textwidth]{res/ATIComputeDevice.png}
-%        \column[T]{.6\textwidth}
-%        Example of AMD GPU ``Processing Units''
-%    \end{columns}
-%\end{frame}
+
 \begin{frame}{Example Raspberry Pi 3B+}
     \includegraphics[height=.8\textheight]{res/RaspberryPiData.PNG}
 \end{frame}
