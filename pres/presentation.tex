@@ -112,6 +112,7 @@
     \begin{itemize}
      \item ``Processing Unit'' are the execution and arithmetic processing Units
      \item Specific Definition of ``Processing Units'' depends on the Hardware Vendor and generation
+     \item A ``Processing Unit'' has mutlible cores
     \end{itemize}
     Benefits:
     \begin{itemize}
@@ -177,14 +178,14 @@
     \end{itemize}
 \end{frame}
 \begin{frame}
-    \frametitle{Tractioncontrol}
+    \frametitle{Accident Detection}
     Algorithm
     \begin{enumerate}
         \item Get n last accelerationvalues
         \item Calculate: 
         \begin{itemize}
             \item $crossed = accelMin_{x,y} > accel_{x,y} \parallel accel_{x,y} > accelMax_{x,y}$
-            \item spiked if m datapoints signal a harsh acceleration possibly followed by a harsh deceleration in a given direction.
+            \item spiked if $m$ datapoints signal a harsh acceleration possibly followed by a harsh deceleration in a given direction.
         \end{itemize}
     \end{enumerate}
 \end{frame}
