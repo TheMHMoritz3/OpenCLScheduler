@@ -45,7 +45,7 @@
 \end{frame}
 \subsection{Hardware Model}
 \begin{frame}
-    \frametitle{Hardware Model - Generel}
+    \frametitle{Hardware Model - General}
     OpenCL Propertys:
     \begin{itemize}
      \item Diffrent Models for CPU and GPU
@@ -59,7 +59,7 @@
     \end{itemize}
 \end{frame}
 \begin{frame}
-    \frametitle{Hardware Model - Generel}
+    \frametitle{Hardware Model - General}
     \includegraphics[width=\textwidth]{res/KhronosPlatformModel.png}
 \end{frame}
 
@@ -123,7 +123,58 @@
 \end{frame}
 \subsection{Software Model}
 \begin{frame}
-    \frametitle{Software Model}
+    \frametitle{Software Model: Kernel}
+        Kernel
+        \begin{columns}
+        \column{.6\textwidth}
+            \begin{itemize}
+            \item Aims for SIMD/SIMT\\
+            $\Rightarrow$ Data/Thread Parallism
+            \item describes thread behavior\\
+            $\Rightarrow$ filled with data a single thread is called work item
+            \item written in simplified C99 Code\\
+            $\Rightarrow$ kept simple for architectual flexibility
+            \end{itemize} 
+        \column{.4\textwidth}
+            \includegraphics[width=\textwidth]{res/CodeExample.png}   
+    \end{columns}
+\end{frame}
+\begin{frame}
+    \frametitle{Software Model: Workgroup}
+        Workgroup
+        \begin{columns}
+        \column{.6\textwidth}
+            \begin{itemize}
+            \item A Set of multi dimensional Arrays of work items\\
+            \item in group syncable / outside independent
+            \item exploids intstruction uniformity and memory contexts
+            \end{itemize} 
+        \column{.4\textwidth}
+            \includegraphics[width=\textwidth]{res/WorkGroupItemStructure.png}   
+    \end{columns}
+\end{frame}
+\begin{frame}
+    \frametitle{Software Model: Workgroup}
+    \begin{columns}
+        \column{.4\textwidth}
+            \includegraphics[width=\textwidth]{res/2DDataParallelWorkgroup.png}  
+        \column{.6\textwidth}
+            \includegraphics[width=\textwidth]{res/ExecutionModel.png}   
+    \end{columns}
+\end{frame}
+\begin{frame}
+    \frametitle{Software Model: Scheduler}
+    Reminder: OpenCL builds on SIMT/D\\
+    To map Kernels efficently to hardware:\\
+    $\Rightarrow$ workgroup size is important
+    \begin{itemize}
+        \item GPU: Many short Kernels/Threads\\
+             $\Rightarrow$ Thread / Data level Parallism
+        \item CPU: Fewer longer, more complex Kernels/Threads\\
+             $\Rightarrow$ Instruction Level Parallism\\
+             $\Rightarrow$ CPU drowns in overhead in default implementations\\
+             $\Rightarrow$ possible Solution: Kernel Serialization
+    \end{itemize}
 \end{frame}
 
 \section{Kernels}
