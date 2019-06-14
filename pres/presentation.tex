@@ -53,10 +53,10 @@
     \frametitle{Hardware Model - General}
     OpenCL Propertys:
     \begin{itemize}
-     	\item One CPU-Based ``Host'' controlls multible ``Compute Devices''
-     	\item A ``Compute Device'' is every OpenCL complient connected GPU, CPU and FPGA and even more.
-     	\item A ``Compute Device'' has one or more ``Compute Unit(s)''
-     	\item ``Processing Elements'' all execute OpenCL ``Kernels''
+     	\item One CPU-Based Host controlls multible Compute Devices
+     	\item A Compute Device is every OpenCL complient connected GPU, CPU and FPGA and even more.
+     	\item A Compute Device has one or more Compute Unit(s)
+     	\item Processing Elements all execute OpenCL Kernels
 	\item Diffrent models for CPU and GPU.
     \end{itemize}
 \end{frame}
@@ -67,11 +67,6 @@
 
 \begin{frame}
     \frametitle{Hardware Model - Memory}
-        \includegraphics[width=.8\textwidth]{res/OpenCLMemoryStructure.jpg}
-        
-\end{frame}
-\begin{frame}
-    \frametitle{Hardware Model - Memory}
         \begin{itemize}
             \item Private Memory
             \begin{itemize}
@@ -80,7 +75,6 @@
             \item Local Memory
             \begin{itemize}
              \item Shared within the Workgroup
-             \item Synchronization within the Workgroup
             \end{itemize}
             \item Global/Constant Memory
             \begin{itemize}
@@ -90,30 +84,35 @@
             \begin{itemize}
              \item Local DRAM
             \end{itemize}
-            \item Memorymanagement is Explicit.
-            \item Communication and Synchronization (only possible within a workgroup) is done over the Memory.
+            \item Memorymanagement can be explicit.
         \end{itemize}
+\end{frame}
+\begin{frame}
+    \frametitle{Hardware Model - Memory}
+        \includegraphics[width=.8\textwidth]{res/OpenCLMemoryStructure.jpg}
+        
 \end{frame}
 \begin{frame}
     \frametitle{Hardware Model - CPU}
     Architecure:
     \begin{itemize}
-        \item ``Processing Units'' are the ``Treads/Cores''
-        \item If not sepreadly connected, CPU has a shared memory with the system and other programs that use the CPU
+        \item Processing Units are the Treads/Cores
+        \item Out-of-order execution is possible
+        \item Contains branch prediction
     \end{itemize}
     Benefits
     \begin{itemize}
         \item Benefits from idependant instruction in a kernel.
     \end{itemize}
-
 \end{frame}
+
 \begin{frame}
     \frametitle{Hardware Model - GPU}
     Architecure:
     \begin{itemize}
-     \item ``Processing Unit'' are the execution and arithmetic processing Units
-     \item Specific Definition of ``Processing Units'' depends on the Hardware Vendor and generation
-     \item A ``Processing Unit'' has mutlible cores
+     \item Processing Unit are the streaming multiprocessors
+     \item Specific Definition of Processing Units depends on the Hardware Vendor and generation
+     \item A Processing Unit has mutlible cores
     \end{itemize}
     Benefits:
     \begin{itemize}
@@ -135,7 +134,7 @@
             $\Rightarrow$ Data/Thread Parallism
             \item describes thread behavior\\
             $\Rightarrow$ filled with data a single thread is called work item
-            \item written in simplified C99 Code\\
+            \item written in simplified C99 code\\
             $\Rightarrow$ kept simple for architectual flexibility
             \end{itemize} 
         \column{.4\textwidth}
@@ -148,7 +147,7 @@
         \begin{columns}
         \column{.6\textwidth}
             \begin{itemize}
-            \item A Set of multi dimensional Arrays of work items\\
+            \item A set of multi dimensional arrays of work items\\
             \item in group syncable / outside independent
             \item exploids intstruction uniformity and memory contexts
             \end{itemize} 
@@ -168,11 +167,11 @@
 \begin{frame}
     \frametitle{Software Model: Scheduler}
     Reminder: OpenCL builds on SIMT/D\\
-    To map Kernels efficently to hardware:\\
+    To map kernels efficently to hardware:\\
     $\Rightarrow$ workgroup size is important
     \begin{itemize}
         \item GPU: Many short Kernels/Threads\\
-             $\Rightarrow$ Thread / Data level Parallism
+             $\Rightarrow$ Thread / Data Level Parallism
         \item CPU: Fewer longer, more complex Kernels/Threads\\
              $\Rightarrow$ Instruction Level Parallism\\
              $\Rightarrow$ CPU drowns in overhead in default implementations\\
@@ -289,12 +288,18 @@
 \subsection{Range}
 \begin{frame}
     \frametitle{Range}
+    Function:
+    \begin{itemize}
+     \item Range by current workload
+    \end{itemize}
     Requirements:
     \begin{itemize}
         \item Knowlegde of the maximum Battery Charge in Wh
         \item Minimum charge voltage
         \item Engine propertys (load to watt usage)
     \end{itemize}
+    
+
 \end{frame}
 \begin{frame}
     \frametitle{Range}
