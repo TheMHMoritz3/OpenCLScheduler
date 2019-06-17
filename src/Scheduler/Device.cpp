@@ -4,4 +4,4 @@
 
 #include "Device.h"
 
-using namespace Scheduler;
+using namespace SCHEDULER;

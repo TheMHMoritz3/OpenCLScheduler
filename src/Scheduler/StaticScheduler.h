@@ -7,9 +7,9 @@
 
 #include "Scheduler.h"
 
-namespace Scheduler {
+namespace SCHEDULER {
     class StaticScheduler : public Scheduler{
-
+        void schedule() override;
     };
 }
 

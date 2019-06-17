@@ -3,3 +3,9 @@
 //
 
 #include "Scheduler.h"
+
+using namespace SCHEDULER;
+
+Scheduler::Scheduler(std::vector<Task> Tasks) {
+
+}

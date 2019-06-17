@@ -5,7 +5,7 @@
 #ifndef CAN_DEVICE_H
 #define CAN_DEVICE_H
 
-namespace Scheduler {
+namespace SCHEDULER {
     class Device {
 
     };

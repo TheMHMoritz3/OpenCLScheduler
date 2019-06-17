@@ -5,7 +5,7 @@
 #ifndef EMBEDDEDSYSTEMSPROJECT_SCHEDULEMANAGER_H
 #define EMBEDDEDSYSTEMSPROJECT_SCHEDULEMANAGER_H
 
-namespace Schedule {
+namespace SCHEDULER {
     class ScheduleManager {
 
     };

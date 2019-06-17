@@ -3,3 +3,9 @@
 //
 
 #include "StaticScheduler.h"
+
+using namespace SCHEDULER;
+
+void StaticScheduler::schedule() {
+
+}

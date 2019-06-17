@@ -4,4 +4,4 @@
 
 #include "ScheduleManager.h"
 
-using namespace Schedule;
+using namespace SCHEDULER;
