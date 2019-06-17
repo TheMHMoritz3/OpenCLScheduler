@@ -43,6 +43,7 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 # add the executable
 add_executable(UI src/UI/main.cpp)
+add_dependencies(UI Scheduler CAN)
 target_link_libraries(UI libsupc++.a)
 
 target_compile_options(UI PUBLIC -Wall)

@@ -2,10 +2,13 @@
 // Created by moritz on 17.06.19.
 //
 
-#include <string>
+#include <iostream>
 
 using namespace std;
 
-static void main(char** values){
-
+int main(int count, char** values){
+    if(count == 0){
+        cout<<"No Arguments given Starting normal."<<endl;
+    }
+    return 0;
 }
