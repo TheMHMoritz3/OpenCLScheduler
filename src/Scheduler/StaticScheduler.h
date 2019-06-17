@@ -9,7 +9,12 @@
 
 namespace SCHEDULER {
     class StaticScheduler : public Scheduler{
+    public:
+        StaticScheduler()= delete;
+        StaticScheduler(std::vector<Task> tasks);
         void schedule() override;
+
+    private:
     };
 }
 

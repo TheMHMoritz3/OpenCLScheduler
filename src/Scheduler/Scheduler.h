@@ -11,14 +11,14 @@
 namespace SCHEDULER {
     class Scheduler {
     public:
-        Scheduler(std::vector<Task> Tasks);
+        Scheduler() = delete;
+        Scheduler(std::vector<Task> tasks);
         virtual void schedule()=0;
 
     protected:
         std::vector<Task> Tasks;
 
     private:
-        Scheduler() = delete;
     };
 }
 

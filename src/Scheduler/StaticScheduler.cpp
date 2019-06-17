@@ -6,6 +6,11 @@
 
 using namespace SCHEDULER;
 
+StaticScheduler::StaticScheduler(std::vector<Task> tasks) : Scheduler(tasks) {
+
+}
+
+
 void StaticScheduler::schedule() {
 
 }

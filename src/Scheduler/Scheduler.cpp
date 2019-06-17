@@ -6,6 +6,6 @@
 
 using namespace SCHEDULER;
 
-Scheduler::Scheduler(std::vector<Task> Tasks) {
-
+Scheduler::Scheduler(std::vector<Task> tasks) {
+    Tasks=tasks;
 }
