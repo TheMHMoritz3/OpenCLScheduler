@@ -24,14 +24,14 @@ set (Scheduler_VERSION_MINOR 0)
 
 include_directories("${PROJECT_BINARY_DIR}")
 
+
 # add the executable
 add_library(Scheduler SHARED src/Scheduler/Device.cpp src/Scheduler/Device.h src/Scheduler/ScheduleManager.cpp src/Scheduler/ScheduleManager.h src/Scheduler/Scheduler.cpp src/Scheduler/Scheduler.h src/Scheduler/Task.cpp src/Scheduler/Task.h src/Scheduler/StaticScheduler.cpp src/Scheduler/StaticScheduler.h src/Scheduler/SchedulerNamespace.h)
 target_link_libraries(Scheduler libOpenCL.so libsupc++.a)
-
+target_include_directories (Scheduler PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_options(Scheduler PUBLIC -Wall)
 
 #target_link_options(deviceinfo PUBLIC -lOpenCL PUBLIC -lsupc++)
-
 
 project(UI DESCRIPTION "Scheduler Interface Libary")
 # The version number.
@@ -44,7 +44,7 @@ include_directories("${PROJECT_BINARY_DIR}")
 # add the executable
 add_executable(UI src/UI/main.cpp)
 add_dependencies(UI Scheduler CAN)
-target_link_libraries(UI libsupc++.a)
+target_link_libraries(UI LINK_PUBLIC Scheduler CAN libsupc++.a)
 
 target_compile_options(UI PUBLIC -Wall)
 

@@ -10,6 +10,7 @@
 #include "SchedulerNamespace.h"
 #include "Task.h"
 #include "Scheduler.h"
+#include "Device.h"
 
 namespace SCHEDULER {
     class ScheduleManager {
@@ -22,6 +23,7 @@ namespace SCHEDULER {
     private:
         ScheduleType Type;
         std::vector<Task> Tasks;
+        std::vector<Device> Devices;
         Scheduler* ActiveScheduler;
     };
 }
