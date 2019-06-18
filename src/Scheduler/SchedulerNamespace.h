@@ -6,9 +6,9 @@
 #define UI_SCHEDULERNAMESPACE_H
 namespace SCHEDULER {
     enum ScheduleType {
-        List,
+        LIST,
         ASAPHC,
-        Static
+        STATIC
     };
 }
 
