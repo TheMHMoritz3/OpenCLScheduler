@@ -3,15 +3,21 @@
 //
 
 #include "Device.h"
-
+using namespace std;
 using namespace SCHEDULER;
 
-Device::Device() {
-
+Device::Device(int id, cl::Device* oclDevice) :
+OclDevice(oclDevice)
+{
+    Id=id;
 }
 
-std::string Device::getName() {
-    return std::__cxx11::string();
+Device::~Device() {
+    delete OclDevice;
+}
+
+string Device::getName() {
+    return OclDevice->getInfo<CL_DEVICE_NAME>();
 }
 
 int Device::scheduledTasks() {
@@ -19,17 +25,25 @@ int Device::scheduledTasks() {
 }
 
 int Device::getWorkgroupSize() {
-    return 0;
+    return OclDevice->getInfo<CL_DEVICE_MAX_WORK_GROUP_SIZE>();
 }
 
 int Device::getID() {
-    return 0;
+    return Id;
 }
 
 double Device::getDeviceUsage() {
-    return 0;
+    return 0.0;
 }
 
-void Device::schedule(Task tak) {
+void Device::schedule(Task tak, int computeUnit) {
 
+}
+
+int Device::getMaxComputeUnits() {
+    return OclDevice->getInfo<CL_DEVICE_MAX_COMPUTE_UNITS>();
+}
+
+double Device::getComputeUnitUsage(int ComputeUnit) {
+    return 0;
 }
