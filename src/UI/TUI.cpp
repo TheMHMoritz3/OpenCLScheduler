@@ -4,6 +4,7 @@
 
 #include "TUI.h"
 #include <iostream>
+#include <fstream>
 
 using namespace UI;
 using namespace std;
@@ -29,11 +30,17 @@ void TUI::addKernelMenu() {
     std::string userInput="";
     while ((userInput.compare("no")!=0)&&((userInput.compare("n")!=0))){
         system("clear");
+        cout<<"Found Devices: "<<ScheduleManager->getDeviceCount()<<endl;
         cout<<"\e[0m Kernel count: "<<ScheduleManager->getKernelCount()<<endl;
-        cout<<"\e[0m Adding Kernels: Please type in the FilePath:"<<endl;
+        bool fileIsBad=false;
         string filepath;
-        cin>>filepath;
-        //TODO CheckFilePath; //TODO Adding Dependancys CAN  and Handover
+        do {
+            cout << "\e[0m Adding Kernels: Please type in the FilePath:" << endl;
+            cin >> filepath;
+            ifstream sourceFile(filepath);
+            fileIsBad=sourceFile.bad();
+        }while(fileIsBad);
+        //TODO Adding Dependancys CAN  and Handover
         cout<<"\e[0m Adding Kernels: Please type in the Kernel name:"<<endl;
         string kernelName;
         cin>>kernelName;

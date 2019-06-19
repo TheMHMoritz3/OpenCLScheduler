@@ -62,3 +62,7 @@ cl::Program::Sources ScheduleManager::convertSources(std::string file) {
 
     return sources;
 }
+
+int ScheduleManager::getDeviceCount() {
+    return Devices.size();
+}
