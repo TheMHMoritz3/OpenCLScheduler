@@ -13,11 +13,11 @@ void TUI::start() {
     ScheduleManager = new SCHEDULER::ScheduleManager();
     ScheduleManager->searchForDevices();
 
-//    if(ScheduleManager->isAddingTasksPossible()){
+    if(ScheduleManager->isAddingTasksPossible()){
         addKernelMenu();
-//    }else{
-//        decorateError("No devices Found! Abording.");
-//    }
+    }else{
+        decorateError("No devices Found! Abording.");
+    }
 }
 
 void TUI::decorateError(std::string errorText) {
@@ -33,7 +33,7 @@ void TUI::addKernelMenu() {
         cout<<"\e[0m Adding Kernels: Please type in the FilePath:"<<endl;
         string filepath;
         cin>>filepath;
-        //TODO CheckFilePath;
+        //TODO CheckFilePath; //TODO Adding Dependancys CAN  and Handover
         cout<<"\e[0m Adding Kernels: Please type in the Kernel name:"<<endl;
         string kernelName;
         cin>>kernelName;
