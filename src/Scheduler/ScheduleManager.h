@@ -6,10 +6,13 @@
 #define EMBEDDEDSYSTEMSPROJECT_SCHEDULEMANAGER_H
 
 #include <vector>
+#include <string>
+#include <CL/cl.hpp>
 
 #include "SchedulerNamespace.h"
 #include "Task.h"
 #include "Scheduler.h"
+#include "Device.h"
 
 namespace SCHEDULER {
     class ScheduleManager {
@@ -18,10 +21,17 @@ namespace SCHEDULER {
         void searchForDevices();
         void startSchedule();
         void setScheduleType(ScheduleType type);
+        void addTask(std::string filePath, std::string kernelName);
+        bool isAddingTasksPossible();
+        int getKernelCount();
+        int getDeviceCount();
 
     private:
+        cl::Program::Sources convertSources(std::string file);
+
         ScheduleType Type;
         std::vector<Task> Tasks;
+        std::vector<Device> Devices;
         Scheduler* ActiveScheduler;
     };
 }

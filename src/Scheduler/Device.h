@@ -12,7 +12,7 @@
 namespace SCHEDULER {
     class Device {
     public:
-        Device(int id, cl::Device* oclDevice);
+        Device(int id, cl::Device oclDevice);
         ~Device();
         std::string getName();
         int scheduledTasks();
@@ -22,10 +22,11 @@ namespace SCHEDULER {
         double getDeviceUsage();
         double getComputeUnitUsage(int ComputeUnit);
         void schedule(Task tak, int computeUnit);
+        void generateProgramm(Task task);
 
     private:
-//        cl::Platform* const Platform;
-        cl::Device* const OclDevice;
+        cl::Device const OclDevice;
+        cl::Context OclContext;
         int Id;
     };
 }
