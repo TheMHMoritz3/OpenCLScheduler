@@ -14,7 +14,7 @@ namespace CAN{
         BatteryVoltage = 0x00d,
         AccelerationLongitudinal = 0x190,
         AccelerationLateral = 0x191,
-        Tempreture = 0x192
+        Temperature = 0x192
     };
 
     enum CanErrorCode{

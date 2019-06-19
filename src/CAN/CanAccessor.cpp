@@ -19,6 +19,7 @@ CanErrorCode CanAccessor::didErrorOccur() {
 }
 
 std::vector<u_int32_t> CanAccessor::getData() {
+    Thread.join();
     std::vector<u_int32_t> data;
     for(int i = 0; i<ElementCount; i++){
         data.push_back(Data[i]);
@@ -33,11 +34,16 @@ void CanAccessor::init() {
 
 }
 
-void CanAccessor::startCollectingData() {
+void CanAccessor::collectData() {
     struct timeval timestamp;
     for(int i = 0; i<ElementCount; i++){
         c3can_single_recv(Single, &Message, &timestamp);
 //        C3CAN_CHECK_ERR(Single, exit, -1);
         Data[i] = U32_DATA(c3can_message_get_payload(&Message));
     }
+}
+
+void CanAccessor::startCollectingData() {
+
+    Thread=std::thread([=](){collectData();});
 }
