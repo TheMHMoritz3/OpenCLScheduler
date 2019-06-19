@@ -1,3 +1,4 @@
+**/CMakeFiles
 **/bin
 **/C3CAN
 **/cmake-build-debug
@@ -12,3 +13,9 @@
 **.synctex.gz
 **.synctex
 **.toc
+**.cmake
+CMakeCache.txt
+**.so
+Makefile
+UI
+**.cbp

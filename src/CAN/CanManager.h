@@ -6,8 +6,11 @@
 #define CAN_CANMANAGER_H
 
 #include <vector>
+#include <map>
+#include <sys/types.h>
 
 #include "CanNamespace.h"
+#include "CanAccessor.h"
 
 namespace CAN {
     class CanManager {
@@ -15,7 +18,11 @@ namespace CAN {
         CanManager();
         void create(CanID id, int count);
         void create(std::vector<CanID> ids, int count);
-        void getSamplingRate(CanID id);
+        static double getSamplingRate(CanID id);
+        std::vector<u_int32_t> getData(CanID id);
+
+    private:
+        std::map<int,CanAccessor*> CanThreadMap;
     };
 }
 

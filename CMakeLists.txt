@@ -2,6 +2,7 @@ cmake_minimum_required (VERSION 3.10)
 
 project(CAN DESCRIPTION "C3CAN Interface Libary")
 # The version number.
+set(CMAKE_CXX_STANDARD 14)
 set (CAN_VERSION_MAJOR 1)
 set (CAN_VERSION_MINOR 0)
 #set (CMAKE_CXX_COMPILER g++)
@@ -18,6 +19,7 @@ target_compile_options(CAN PUBLIC -Wall)
 
 project(Scheduler DESCRIPTION "Scheduler Interface Libary")
 # The version number.
+set(CMAKE_CXX_STANDARD 14)
 set (Scheduler_VERSION_MAJOR 1)
 set (Scheduler_VERSION_MINOR 0)
 #set (CMAKE_CXX_COMPILER g++)
@@ -35,6 +37,7 @@ target_compile_options(Scheduler PUBLIC -Wall)
 
 project(UI DESCRIPTION "Scheduler Interface Libary")
 # The version number.
+set(CMAKE_CXX_STANDARD 14)
 set (UI_VERSION_MAJOR 1)
 set (UI_VERSION_MINOR 0)
 #set (CMAKE_CXX_COMPILER g++)
