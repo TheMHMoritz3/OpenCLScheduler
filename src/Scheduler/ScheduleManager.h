@@ -6,6 +6,7 @@
 #define EMBEDDEDSYSTEMSPROJECT_SCHEDULEMANAGER_H
 
 #include <vector>
+#include <string>
 
 #include "SchedulerNamespace.h"
 #include "Task.h"
@@ -19,6 +20,9 @@ namespace SCHEDULER {
         void searchForDevices();
         void startSchedule();
         void setScheduleType(ScheduleType type);
+        void addTask(std::string filePath, std::string kernelName);
+        bool isAddingTasksPossible();
+        int getKernelCount();
 
     private:
         ScheduleType Type;

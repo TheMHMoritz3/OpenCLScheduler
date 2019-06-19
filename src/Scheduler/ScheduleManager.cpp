@@ -19,9 +19,6 @@ void ScheduleManager::searchForDevices() {
 
     int device_id=0;
 
-    if(platforms.size()==0)
-        cout<<"No Devices Found Abording"<<endl;
-
     for(cl::Platform platform : platforms){
         vector<cl::Device> devices;
         platform.getDevices(CL_DEVICE_TYPE_ALL, &devices);
@@ -38,4 +35,19 @@ void ScheduleManager::startSchedule() {
 
 void ScheduleManager::setScheduleType(ScheduleType type) {
 
+}
+
+void ScheduleManager::addTask(std::string filePath, std::string kernelName) {
+    Task task;
+    task.setFile(filePath);
+    task.setKernel(kernelName);
+    Tasks.push_back(task);
+}
+
+bool ScheduleManager::isAddingTasksPossible() {
+    return Devices.size()>0;
+}
+
+int ScheduleManager::getKernelCount() {
+    return Tasks.size();
 }

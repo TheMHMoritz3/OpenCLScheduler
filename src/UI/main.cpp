@@ -3,10 +3,11 @@
 //
 
 #include <iostream>
-#include "../Scheduler/ScheduleManager.h"
+#include <string>
+#include "TUI.h"
 
 using namespace std;
-using namespace SCHEDULER;
+using namespace UI;
 
 
 int main(int count, char** values){
@@ -14,8 +15,9 @@ int main(int count, char** values){
         cout<<"No Arguments given Starting normal."<<endl;
     }
 
-    ScheduleManager* scheduleManager = new ScheduleManager();
-    scheduleManager->searchForDevices();
+    TUI tui;
+
+    tui.start();
 
     return 0;
 }

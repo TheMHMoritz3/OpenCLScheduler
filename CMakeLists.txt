@@ -42,7 +42,7 @@ set (UI_VERSION_MINOR 0)
 include_directories("${PROJECT_BINARY_DIR}")
 
 # add the executable
-add_executable(UI src/UI/main.cpp)
+add_executable(UI src/UI/main.cpp src/UI/TUI.cpp src/UI/TUI.h)
 add_dependencies(UI Scheduler CAN)
 target_link_libraries(UI LINK_PUBLIC Scheduler CAN libsupc++.a)
 
