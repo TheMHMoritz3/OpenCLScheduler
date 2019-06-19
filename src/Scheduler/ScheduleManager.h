@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <string>
+#include <CL/cl.hpp>
 
 #include "SchedulerNamespace.h"
 #include "Task.h"
@@ -25,6 +26,8 @@ namespace SCHEDULER {
         int getKernelCount();
 
     private:
+        cl::Program::Sources convertSources(std::string file);
+
         ScheduleType Type;
         std::vector<Task> Tasks;
         std::vector<Device> Devices;

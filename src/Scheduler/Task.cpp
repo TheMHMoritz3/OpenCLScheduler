@@ -7,12 +7,12 @@
 using namespace SCHEDULER;
 
 
-Task::Task() {
-
+Task::Task(int id) {
+    ID=id;
 }
 
 int Task::getId() {
-    return 0;
+    return ID;
 }
 
 void* Task::getData() {
@@ -23,10 +23,22 @@ void Task::addData(void *value) {
 
 }
 
-void Task::setFile(std::string fileName) {
+void Task::setKernel(std::string kernelName) {
 
 }
 
-void Task::setKernel(std::string kernelName) {
+void Task::addDescription(std::string desc) {
+    Description=desc;
+}
 
+void Task::setProgramSources(cl::Program::Sources sources) {
+    Sources=sources;
+}
+
+void Task::setProgam(cl::Program program) {
+    Program=program;
+}
+
+cl::Program::Sources Task::getSources() {
+    return Sources;
 }

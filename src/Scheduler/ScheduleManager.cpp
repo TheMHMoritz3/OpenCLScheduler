@@ -4,6 +4,7 @@
 
 #include "ScheduleManager.h"
 #include <iostream>
+#include <fstream>
 #include <CL/cl.hpp>
 
 using namespace SCHEDULER;
@@ -23,7 +24,7 @@ void ScheduleManager::searchForDevices() {
         vector<cl::Device> devices;
         platform.getDevices(CL_DEVICE_TYPE_ALL, &devices);
         for(cl::Device device : devices){
-            Device newDevice(device_id, &device);
+            Device newDevice(device_id, device);
             Devices.push_back(newDevice);
         }
     }
@@ -38,8 +39,8 @@ void ScheduleManager::setScheduleType(ScheduleType type) {
 }
 
 void ScheduleManager::addTask(std::string filePath, std::string kernelName) {
-    Task task;
-    task.setFile(filePath);
+    Task task(getKernelCount());
+    task.setProgramSources(convertSources(filePath));
     task.setKernel(kernelName);
     Tasks.push_back(task);
 }
@@ -50,4 +51,14 @@ bool ScheduleManager::isAddingTasksPossible() {
 
 int ScheduleManager::getKernelCount() {
     return Tasks.size();
+}
+
+cl::Program::Sources ScheduleManager::convertSources(std::string file) {
+    cl::Program::Sources sources;
+
+    ifstream sourceFile(file);
+    string kernel_code(istreambuf_iterator<char>(sourceFile), (istreambuf_iterator<char>()));
+    sources.push_back({kernel_code.c_str(),kernel_code.length()});
+
+    return sources;
 }

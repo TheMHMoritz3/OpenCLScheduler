@@ -6,18 +6,19 @@
 using namespace std;
 using namespace SCHEDULER;
 
-Device::Device(int id, cl::Device* oclDevice) :
+Device::Device(int id, cl::Device oclDevice) :
 OclDevice(oclDevice)
 {
+    OclContext =  cl::Context({OclDevice});
     Id=id;
 }
 
 Device::~Device() {
-    delete OclDevice;
+
 }
 
 string Device::getName() {
-    return OclDevice->getInfo<CL_DEVICE_NAME>();
+    return OclDevice.getInfo<CL_DEVICE_NAME>();
 }
 
 int Device::scheduledTasks() {
@@ -25,7 +26,7 @@ int Device::scheduledTasks() {
 }
 
 int Device::getWorkgroupSize() {
-    return OclDevice->getInfo<CL_DEVICE_MAX_WORK_GROUP_SIZE>();
+    return OclDevice.getInfo<CL_DEVICE_MAX_WORK_GROUP_SIZE>();
 }
 
 int Device::getID() {
@@ -41,9 +42,14 @@ void Device::schedule(Task tak, int computeUnit) {
 }
 
 int Device::getMaxComputeUnits() {
-    return OclDevice->getInfo<CL_DEVICE_MAX_COMPUTE_UNITS>();
+    return OclDevice.getInfo<CL_DEVICE_MAX_COMPUTE_UNITS>();
 }
 
 double Device::getComputeUnitUsage(int ComputeUnit) {
     return 0;
+}
+
+void Device::generateProgramm(Task task) {
+    cl::Program program(OclContext, task.getSources());
+    task.setProgam(program);
 }

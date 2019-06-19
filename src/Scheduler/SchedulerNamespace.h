@@ -10,6 +10,10 @@ namespace SCHEDULER {
         ASAPHC,
         STATIC
     };
+
+    enum ErrorCodes {
+        COMPILATION_NOT_POSSIBLE
+    };
 }
 
 #endif //UI_SCHEDULERNAMESPACE_H
