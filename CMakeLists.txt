@@ -1,122 +1,54 @@
-cmake_minimum_required (VERSION 2.6)
-project (EmbeddedSystemsProject)
+cmake_minimum_required (VERSION 3.10)
+
+project(CAN DESCRIPTION "C3CAN Interface Libary")
 # The version number.
-set (EmbeddedSystemsProject_VERSION_MAJOR 1)
-set (EmbeddedSystemsProject_VERSION_MINOR 0)
- 
-# configure a header file to pass some of the CMake settings
-# to the source code
-#configure_file ("${PROJECT_SOURCE_DIR}/src")
- 
-# add the binary tree to the search path for include files
-# so that we will find TutorialConfig.h
-include_directories("${PROJECT_BINARY_DIR}")
- 
-# add the executable
-add_executable(EmbeddedSystemsProject src/battery_voltage.cpp src/InstanceManager.cpp src/InstanceManager.h src/main.cpp)
+set(CMAKE_CXX_STANDARD 14)
+set (CAN_VERSION_MAJOR 1)
+set (CAN_VERSION_MINOR 0)
+#set (CMAKE_CXX_COMPILER g++)
 
-#target_compile_options(EmbeddedSystemsProject PUBLIC -Wall)
-
-target_link_options(EmbeddedSystemsProject PUBLIC -lOpenCL PUBLIC -lsupc++ PUBLIC -lc3can_core PUBLIC -lc3can_error)
-#SET(GCC_COVERAGE_LINK_FLAGS "-lOpenCL -lsupc++ -lc3can_{core,error}")
-#add_definitions(${GCC_COVERAGE_COMPILE_FLAGS})
-
-project (voltage)
-# The version number.
-set (voltage_VERSION_MAJOR 1)
-set (voltage_VERSION_MINOR 0)
-
-# configure a header file to pass some of the CMake settings
-# to the source code
-#configure_file ("${PROJECT_SOURCE_DIR}/src")
-
-# add the binary tree to the search path for include files
-# so that we will find TutorialConfig.h
 include_directories("${PROJECT_BINARY_DIR}")
 
 # add the executable
-add_executable(voltage src/battery_voltage.cpp)
+add_library(CAN SHARED src/CAN/CanAccessor.cpp src/CAN/CanAccessor.h src/CAN/CanNamespace.h src/CAN/CanManager.cpp src/CAN/CanManager.h)
+target_link_libraries(CAN libsupc++.a c3can_core c3can_error)
 
-#target_compile_options(EmbeddedSystemsProject PUBLIC -Wall)
+target_compile_options(CAN PUBLIC -Wall)
 
-target_link_options(voltage PUBLIC -lOpenCL PUBLIC -lsupc++ PUBLIC -lc3can_core PUBLIC -lc3can_error)
+#target_link_options(deviceinfo PUBLIC -lOpenCL PUBLIC -lsupc++)
 
-project (wheelspin)
+project(Scheduler DESCRIPTION "Scheduler Interface Libary")
 # The version number.
-set (wheelspin_VERSION_MAJOR 1)
-set (wheelspin_VERSION_MINOR 0)
+set(CMAKE_CXX_STANDARD 14)
+set (Scheduler_VERSION_MAJOR 1)
+set (Scheduler_VERSION_MINOR 0)
+#set (CMAKE_CXX_COMPILER g++)
 
-# configure a header file to pass some of the CMake settings
-# to the source code
-#configure_file ("${PROJECT_SOURCE_DIR}/src")
+include_directories("${PROJECT_BINARY_DIR}")
 
-# add the binary tree to the search path for include files
-# so that we will find TutorialConfig.h
+
+# add the executable
+add_library(Scheduler SHARED src/Scheduler/Device.cpp src/Scheduler/Device.h src/Scheduler/ScheduleManager.cpp src/Scheduler/ScheduleManager.h src/Scheduler/Scheduler.cpp src/Scheduler/Scheduler.h src/Scheduler/Task.cpp src/Scheduler/Task.h src/Scheduler/StaticScheduler.cpp src/Scheduler/StaticScheduler.h src/Scheduler/SchedulerNamespace.h)
+target_link_libraries(Scheduler libOpenCL.so libsupc++.a)
+target_include_directories (Scheduler PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_compile_options(Scheduler PUBLIC -Wall)
+
+#target_link_options(deviceinfo PUBLIC -lOpenCL PUBLIC -lsupc++)
+
+project(UI DESCRIPTION "Scheduler Interface Libary")
+# The version number.
+set(CMAKE_CXX_STANDARD 14)
+set (UI_VERSION_MAJOR 1)
+set (UI_VERSION_MINOR 0)
+#set (CMAKE_CXX_COMPILER g++)
+
 include_directories("${PROJECT_BINARY_DIR}")
 
 # add the executable
-add_executable(wheelspin src/wheel_sensors.cpp)
+add_executable(UI src/UI/main.cpp src/UI/TUI.cpp src/UI/TUI.h)
+add_dependencies(UI Scheduler CAN)
+target_link_libraries(UI LINK_PUBLIC Scheduler CAN libsupc++.a)
 
-#target_compile_options(EmbeddedSystemsProject PUBLIC -Wall)
+target_compile_options(UI PUBLIC -Wall)
 
-target_link_options(wheelspin PUBLIC -lOpenCL PUBLIC -lsupc++ PUBLIC -lc3can_core PUBLIC -lc3can_error)
-
-project (accelaration)
-# The version number.
-set (accelaration_VERSION_MAJOR 1)
-set (accelaration_VERSION_MINOR 0)
-
-# configure a header file to pass some of the CMake settings
-# to the source code
-#configure_file ("${PROJECT_SOURCE_DIR}/src")
-
-# add the binary tree to the search path for include files
-# so that we will find TutorialConfig.h
-include_directories("${PROJECT_BINARY_DIR}")
-
-# add the executable
-add_executable(accelaration src/accel_sensor.cpp)
-
-#target_compile_options(EmbeddedSystemsProject PUBLIC -Wall)
-
-target_link_options(accelaration PUBLIC -lOpenCL PUBLIC -lsupc++ PUBLIC -lc3can_core PUBLIC -lc3can_error)
-
-project (tempreture)
-# The version number.
-set (tempreture_VERSION_MAJOR 1)
-set (tempreture_VERSION_MINOR 0)
-
-# configure a header file to pass some of the CMake settings
-# to the source code
-#configure_file ("${PROJECT_SOURCE_DIR}/src")
-
-# add the binary tree to the search path for include files
-# so that we will find TutorialConfig.h
-include_directories("${PROJECT_BINARY_DIR}")
-
-# add the executable
-add_executable(tempreture src/tempreture.cpp)
-
-#target_compile_options(EmbeddedSystemsProject PUBLIC -Wall)
-
-target_link_options(tempreture PUBLIC -lOpenCL PUBLIC -lsupc++ PUBLIC -lc3can_core PUBLIC -lc3can_error)
-
-project (deviceinfo)
-# The version number.
-set (deviceinfo_VERSION_MAJOR 1)
-set (deviceinfo_VERSION_MINOR 0)
-
-# configure a header file to pass some of the CMake settings
-# to the source code
-#configure_file ("${PROJECT_SOURCE_DIR}/src")
-
-# add the binary tree to the search path for include files
-# so that we will find TutorialConfig.h
-include_directories("${PROJECT_BINARY_DIR}")
-
-# add the executable
-add_executable(deviceinfo src/device_querry.cpp)
-
-#target_compile_options(EmbeddedSystemsProject PUBLIC -Wall)
-
-target_link_options(deviceinfo PUBLIC -lOpenCL PUBLIC -lsupc++)
+#target_link_options(deviceinfo PUBLIC -lOpenCL PUBLIC -lsupc++)
