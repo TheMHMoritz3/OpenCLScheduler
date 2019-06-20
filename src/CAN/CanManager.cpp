@@ -31,10 +31,12 @@ double CanManager::getSamplingRate(CAN::CanID id) {
         case CanID::WheelFrontLeft:
         case CanID::WheelRearLeft:
         case CanID::WheelRearRight:
-        case CanID::BatteryVoltage:
         case CanID::AccelerationLateral:
         case CanID::AccelerationLongitudinal:
         case CanID::Temperature:
+            return 0.050;
+        case CanID::BatteryVoltage:
+            return 0.2;
         default:
             return 0.0;
     }
