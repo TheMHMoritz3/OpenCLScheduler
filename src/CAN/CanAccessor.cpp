@@ -19,7 +19,7 @@ CanErrorCode CanAccessor::didErrorOccur() {
 }
 
 std::vector<u_int32_t> CanAccessor::getData() {
-    Thread.join();
+    //Thread.join();
     std::vector<u_int32_t> data;
     for(int i = 0; i<ElementCount; i++){
         data.push_back(Data[i]);
@@ -45,5 +45,5 @@ void CanAccessor::collectData() {
 
 void CanAccessor::startCollectingData() {
 
-    Thread=std::thread([=](){collectData();});
+    //Thread=std::thread([=](){collectData();});
 }
