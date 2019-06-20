@@ -7,7 +7,7 @@
 
 #include <vector>
 #include <sys/param.h>
-//#include <thread>
+#include <thread>
 #include <c3can/error/extended.h>
 #include <c3can/core.h>
 #include "CanNamespace.h"
@@ -28,7 +28,7 @@ namespace CAN {
         c3can_single* Single;
         c3can_message Message;
         CanID IdCan;
-        //std::thread Thread;
+        std::thread Thread;
     };
 }
 
