@@ -55,3 +55,11 @@ std::pair<Type, void *> Task::getReturnData() {
 void Task::setReturnDataType(Type type) {
     ReturnDataType=type;
 }
+
+std::vector<std::pair<Type, void *>> Task::getAllData() {
+    return Data;
+}
+
+Task Task::operator=(Task other) {
+    return other;
+}

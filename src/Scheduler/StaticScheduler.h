@@ -11,7 +11,7 @@ namespace SCHEDULER {
     class StaticScheduler : public Scheduler{
     public:
         StaticScheduler()= delete;
-        StaticScheduler(std::vector<Task> tasks);
+        StaticScheduler(std::vector<Task> tasks, std::vector<Device> device);
         void schedule() override;
 
     private:

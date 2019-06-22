@@ -23,7 +23,8 @@ namespace SCHEDULER {
         double getComputeUnitUsage(int ComputeUnit);
         void schedule(Task tak, int computeUnit);
         void generateProgramm(Task task);
-
+        cl::Context getDeviceContext();
+        Device operator=(Device other);
     private:
         cl::Device const OclDevice;
         cl::Context OclContext;

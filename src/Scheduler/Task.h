@@ -18,6 +18,7 @@ namespace SCHEDULER {
         int getId();
         std::pair<Type,void*> getReturnData();
         void addData(void* value, Type type);
+        std::vector<std::pair<Type, void*>> getAllData();
         void setProgramSources(cl::Program::Sources sources);
         cl::Program::Sources getSources();
         void setProgam(cl::Program program);
@@ -26,6 +27,7 @@ namespace SCHEDULER {
         std::string getKernelName();
         std::string getDescription();
         void setReturnDataType(Type type);
+        Task operator=(Task other);
 
     private:
         std::string KernelName;

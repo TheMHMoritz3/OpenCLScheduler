@@ -6,8 +6,7 @@
 
 using namespace SCHEDULER;
 
-StaticScheduler::StaticScheduler(std::vector<Task> tasks) : Scheduler(tasks) {
-
+StaticScheduler::StaticScheduler(std::vector<Task> tasks, std::vector<Device> device) : Scheduler(tasks, device) {
 }
 
 
