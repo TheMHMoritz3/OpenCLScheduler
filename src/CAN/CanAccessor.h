@@ -17,7 +17,7 @@ namespace CAN {
     public:
         CanAccessor()= delete;
         CanAccessor(CanID id, int elementCount);
-        CanErrorCode didErrorOccur();
+        int didErrorOccur();
         std::vector<u_int32_t> getData();
         void startCollectingData();
     private:
@@ -29,6 +29,7 @@ namespace CAN {
         c3can_message Message;
         CanID IdCan;
         std::thread Thread;
+        int ErrorCode;
     };
 }
 
