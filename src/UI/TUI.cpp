@@ -32,14 +32,17 @@ void TUI::addKernelMenu() {
         system("clear");
         cout<<"Found Devices: "<<ScheduleManager->getDeviceCount()<<endl;
         cout<<"\e[0m Kernel count: "<<ScheduleManager->getKernelCount()<<endl;
-        bool fileIsBad=false;
+        bool fileIsOpen=false;
         string filepath;
         do {
             cout << "\e[0m Adding Kernels: Please type in the FilePath:" << endl;
             cin >> filepath;
-            ifstream sourceFile(filepath);
-            fileIsBad=sourceFile.bad();
-        }while(fileIsBad);
+            ifstream sourceFile;
+            sourceFile.open(filepath);
+            fileIsOpen=sourceFile.is_open();
+            if(!fileIsOpen)
+                decorateError(filepath+"file could not be opened");
+        }while(fileIsOpen);
         //TODO Adding Dependancys CAN  and Handover
         cout<<"\e[0m Adding Kernels: Please type in the Kernel name:"<<endl;
         string kernelName;
