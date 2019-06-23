@@ -58,6 +58,11 @@ cl::Context Device::getDeviceContext() {
     return OclContext;
 }
 
+cl::Device SCHEDULER::Device::Device::getOclDevice()
+{
+	return OclDevice;
+}
+
 Device Device::operator=(Device other) {
     return other;
 }

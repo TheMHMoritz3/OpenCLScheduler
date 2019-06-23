@@ -45,6 +45,16 @@ cl::Program::Sources Task::getSources() {
     return Sources;
 }
 
+void Task::setReadBuffer(cl::Buffer readBuffer)
+{
+	ReadBuffer = readBuffer;
+}
+
+cl::Buffer SCHEDULER::Task::Task::readBuffer()
+{
+	return ReadBuffer;
+}
+
 std::string Task::getDescription() {
     return Description;
 }

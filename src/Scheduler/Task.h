@@ -26,6 +26,8 @@ namespace SCHEDULER {
         std::vector<std::pair<Type, void*>> getAllData();
         void setProgramSources(cl::Program::Sources sources);
         cl::Program::Sources getSources();
+		void setReadBuffer(cl::Buffer readBuffer);
+		cl::Buffer readBuffer();
         void setProgam(cl::Program program);
         void setKernel(std::string kernelName);
 		void setLoad(int load);
@@ -41,6 +43,7 @@ namespace SCHEDULER {
         std::string Description;
         cl::Program::Sources Sources;
         cl::Program Program;
+		cl::Buffer ReadBuffer;
         int ID;
 		int Load;
         std::vector<std::pair<Type, void*>> Data;

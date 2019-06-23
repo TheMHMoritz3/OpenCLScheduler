@@ -78,12 +78,25 @@ void Scheduler::setRAMBufferForOutput(Task task, Device device, cl::Kernel kerne
 	default:
 		break;
 	}
+	task.setReadBuffer(buffer);
 	kernel.setArg(task.getAllData().size() + 1, buffer);
 }
 
-void Scheduler::setKernelLoad(Task task, cl::Kernel kernel)
+void Scheduler::setKernelLoad(Task task, Device device, cl::Kernel kernel)
 {
+	cl::Buffer buffer_WORKLOAD(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(int));
 	kernel.setArg(task.getAllData().size() + 2, task.getLoad());
+}
+
+void Scheduler::enqueueTaks(Task task, Device device, cl::CommandQueue commandQueue, cl::Kernel kernel)
+{
+	commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(task.getAllData().size()),cl::NDRange(device.getMaxComputeUnits()));
+	commandQueue.finish();
+}
+
+void Scheduler::readDataFromTask(Task task, cl::CommandQueue commandQueue)
+{
+	commandQueue.enqueueReadBuffer(task->readBuffer(),)
 }
 
 cl::Buffer Scheduler::generateBufferForUINT(void *data, cl::Context context, cl::CommandQueue queue, int count) {
@@ -124,4 +137,29 @@ cl::Buffer Scheduler::generateBufferForFLOAT(void *data, cl::Context context, cl
     cl::Buffer buffer(context, CL_MEM_READ_WRITE, sizeof(*doubleRamDataToAdd));
     queue.enqueueWriteBuffer(buffer,CL_TRUE,count, sizeof(*doubleRamDataToAdd),doubleRamDataToAdd);
     return buffer;
+}
+
+void* SCHEDULER::Scheduler::Scheduler::readDataFromBufferForUINT(cl::Context context, cl::CommandQueue queue, int count)
+{
+	return nullptr;
+}
+
+void* SCHEDULER::Scheduler::Scheduler::readDataFromBufferForINT(cl::Context context, cl::CommandQueue queue, int count)
+{
+	return nullptr;
+}
+
+void* SCHEDULER::Scheduler::Scheduler::readDataFromBufferForCHAR(cl::Context context, cl::CommandQueue queue, int count)
+{
+	return nullptr;
+}
+
+void* SCHEDULER::Scheduler::Scheduler::readDataFromBufferForDOUBLE(cl::Context context, cl::CommandQueue queue, int count)
+{
+	return nullptr;
+}
+
+void* SCHEDULER::Scheduler::Scheduler::readDataFromBufferForFLOAT(cl::Context context, cl::CommandQueue queue, int count)
+{
+	return nullptr;
 }
