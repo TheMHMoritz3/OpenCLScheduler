@@ -53,6 +53,7 @@ Task ScheduleManager::addTask(std::string filePath, std::string kernelName) {
     task.setProgramSources(convertSources(filePath));
     task.setKernel(kernelName);
     Tasks.push_back(task);
+    return task;
 }
 
 bool ScheduleManager::isAddingTasksPossible() {
