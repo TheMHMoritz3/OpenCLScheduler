@@ -173,7 +173,7 @@ void* Scheduler::readDataFromBufferForUINT(Task* task, cl::CommandQueue queue, i
 #ifndef _WINDOWS
 	u_int32_t* data = {};
 	u_int32_t* copiedData = new u_int32_t[task->getLoad()];
-	queue.enqueueReadBuffer(task->readBuffer(), CL_TRUE, count, sizeof(u_int32_t) * task.getLoad(), data);
+	queue.enqueueReadBuffer(task->readBuffer(), CL_TRUE, count, sizeof(u_int32_t) * task->getLoad(), data);
 #endif // !_WINDOWS
 	queue.finish();
 	for (int i = 0; i < task->getLoad(); i++) {
