@@ -102,7 +102,7 @@ void TUI::printData()
 		float* values;
 		values = (float*)task->getReturnData().second;
 		if (values) {
-			clear();
+			//clear();
 			for (int i = 0; i < task->getLoad(); i++) {
 				cout << i << ". Return Value: \t" << values[i] << endl;
 			}
