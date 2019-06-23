@@ -21,7 +21,8 @@ void StaticScheduler::schedule() {
 		for (Task* task : Tasks) {
 			cout << "Generate Programm for: " << device.getName() << endl;
 			device.generateProgramm(task);
-			cl::Kernel kernel = cl::Kernel(task->getProgramm(), task->getKernelName().c_str(), &ErrorCode);
+			cl::Kernel kernel = cl::Kernel(task->getProgramm(), &task->getKernelName().c_str(), &ErrorCode);
+			cout << "Error Code for generating Kernel: "<<ErrorCode <<" Kernel Name: "<<task->getKernelName().c_str()<<"-"<<kernel.getInfo<CL_KERNEL_FUNCTION_NAME>()<<endl;
 			if (ErrorCode == 0) {
 				setRAMForCurrentTask(task, device, kernel, commandQueue);
 				setRAMBufferForOutput(task, device, kernel);
