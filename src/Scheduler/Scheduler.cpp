@@ -96,7 +96,7 @@ void Scheduler::enqueueTaks(Task task, Device device, cl::CommandQueue commandQu
 
 void Scheduler::readDataFromTask(Task task, cl::CommandQueue commandQueue)
 {
-	commandQueue.enqueueReadBuffer(task->readBuffer(),)
+	//commandQueue.enqueueReadBuffer(task->readBuffer(),)
 }
 
 cl::Buffer Scheduler::generateBufferForUINT(void *data, cl::Context context, cl::CommandQueue queue, int count) {
