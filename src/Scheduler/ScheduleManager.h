@@ -20,7 +20,12 @@
 #include "Device.h"
 
 namespace SCHEDULER {
-    class __declspec(dllexport) ScheduleManager {
+#ifdef _WINDOWS
+	class __declspec(dllexport) ScheduleManager {
+#endif
+#ifndef _WINDOWS
+		class ScheduleManager {
+#endif // !_WINDOWS
     public:
 		ScheduleManager();
 		void searchForDevices();

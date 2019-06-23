@@ -10,7 +10,13 @@
 #include "Task.h"
 
 namespace SCHEDULER {
+#ifdef _WINDOWS
     class __declspec(dllexport) Device {
+#endif
+#ifndef _WINDOWS
+	class Device {
+#endif // !_WINDOWS
+
     public:
         Device(int id, cl::Device oclDevice);
         ~Device();
