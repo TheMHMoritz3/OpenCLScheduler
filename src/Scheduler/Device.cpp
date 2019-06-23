@@ -53,3 +53,16 @@ void Device::generateProgramm(Task task) {
     cl::Program program(OclContext, task.getSources());
     task.setProgam(program);
 }
+
+cl::Context Device::getDeviceContext() {
+    return OclContext;
+}
+
+cl::Device SCHEDULER::Device::Device::getOclDevice()
+{
+	return OclDevice;
+}
+
+Device Device::operator=(Device other) {
+    return other;
+}

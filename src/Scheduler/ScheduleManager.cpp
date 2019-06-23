@@ -3,6 +3,7 @@
 //
 
 #include "ScheduleManager.h"
+#include "StaticScheduler.h"
 #include <iostream>
 #include <fstream>
 #include <CL/cl.hpp>
@@ -31,11 +32,20 @@ void ScheduleManager::searchForDevices() {
 }
 
 void ScheduleManager::startSchedule() {
-
+    switch(Type){
+        case ScheduleType::STATIC:
+            ActiveScheduler = new StaticScheduler(Tasks, Devices);
+            break;
+        case ScheduleType::ASAPHC:
+        case ScheduleType::LIST:
+        default:
+            break;
+    }
+    ActiveScheduler->schedule();
 }
 
 void ScheduleManager::setScheduleType(ScheduleType type) {
-
+    Type=type;
 }
 
 void ScheduleManager::addTask(std::string filePath, std::string kernelName) {

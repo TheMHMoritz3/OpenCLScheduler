@@ -14,6 +14,15 @@ namespace SCHEDULER {
     enum ErrorCodes {
         COMPILATION_NOT_POSSIBLE
     };
+
+    enum Type {
+        INT,
+        UINT,
+        CHAR,
+        FLOAT,
+        DOUBLE,
+        STRING
+    };
 }
 
 #endif //UI_SCHEDULERNAMESPACE_H
