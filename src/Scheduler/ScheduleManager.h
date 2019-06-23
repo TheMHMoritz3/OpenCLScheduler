@@ -31,16 +31,17 @@ namespace SCHEDULER {
 		void searchForDevices();
         void startSchedule();
         void setScheduleType(ScheduleType type);
-        Task addTask(std::string filePath, std::string kernelName);
+        Task* addTask(std::string filePath, std::string kernelName);
         bool isAddingTasksPossible();
         int getKernelCount();
         int getDeviceCount();
 
     private:
         cl::Program::Sources convertSources(std::string file);
+		cl::Program convertSourcesToProgramm(cl::Program Sources);
 
         ScheduleType Type;
-        std::vector<Task> Tasks;
+        std::vector<Task*> Tasks;
         std::vector<Device> Devices;
         Scheduler* ActiveScheduler;
     };

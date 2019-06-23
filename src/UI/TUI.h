@@ -26,7 +26,7 @@ namespace UI {
         SCHEDULER::ScheduleManager* ScheduleManager;
 		bool IsInUnitTestingMode;
 
-		std::vector<SCHEDULER::Task> tasks;
+		std::vector<SCHEDULER::Task*> tasks;
     };
 }
 

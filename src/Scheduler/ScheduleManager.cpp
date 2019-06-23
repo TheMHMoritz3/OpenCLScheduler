@@ -48,10 +48,10 @@ void ScheduleManager::setScheduleType(ScheduleType type) {
     Type=type;
 }
 
-Task ScheduleManager::addTask(std::string filePath, std::string kernelName) {
-    Task task(getKernelCount());
-    task.setProgramSources(convertSources(filePath));
-    task.setKernel(kernelName);
+Task* ScheduleManager::addTask(std::string filePath, std::string kernelName) {
+    Task* task=new Task(getKernelCount());
+    task->setProgramSources(convertSources(filePath));
+    task->setKernel(kernelName);
     Tasks.push_back(task);
     return task;
 }

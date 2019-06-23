@@ -27,8 +27,9 @@ namespace SCHEDULER {
         int getMaxComputeUnits();
         double getDeviceUsage();
         double getComputeUnitUsage(int ComputeUnit);
+		//TODO schedule entfernen
         void schedule(Task tak, int computeUnit);
-        void generateProgramm(Task task);
+        void generateProgramm(Task* task);
         cl::Context getDeviceContext();
 		cl::Device getOclDevice();
         Device operator=(Device other);

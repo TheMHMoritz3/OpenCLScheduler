@@ -46,12 +46,12 @@ void TUI::addKernelMenu() {
 			fileIsOpen = sourceFile.is_open();
 			if (!fileIsOpen)
 				decorateError(filepath + "file could not be opened");
-		} while (fileIsOpen);
+		} while (!fileIsOpen);
 		//TODO Adding Dependancys CAN  and Handover
 		cout << "\e[0m Adding Kernels: Please type in the Kernel name:" << endl;
 		string kernelName;
 		cin >> kernelName;
-		SCHEDULER::Task task = ScheduleManager->addTask(filepath, kernelName);
+		SCHEDULER::Task* task = ScheduleManager->addTask(filepath, kernelName);
 
 		if (IsInUnitTestingMode) {
 			cout << "How many Arguments do you want to set?" << endl;
@@ -60,19 +60,20 @@ void TUI::addKernelMenu() {
 			int load;
 			cout << "How big is the Array of Arguments?" << endl;
 			cin >> load;
-			task.setLoad(load);
+			task->setLoad(load);
+			task->setReturnDataType(SCHEDULER::Type::FLOAT);
 			for (int i = 0; i < argcount; i++) {
 				clear();
 				cout << "Setting Args of "<<i<<". Array"<<endl;
-				//TODO Float only for Testing
-				float* values = new float[load];
+				//TODO int only for Testing
+				int* values = new int[load];
 				for (int j = 0; j < load; j++) {
 					cout << j << ". Entry" << endl;
-					float value;
+					int value;
 					cin >> value;
 					values[j] = value;
 				}
-				task.addData(values, SCHEDULER::Type::FLOAT);
+				task->addData(values, SCHEDULER::Type::UINT);
 			}
 			tasks.push_back(task);
 		}
@@ -88,19 +89,23 @@ void TUI::setSchedule()
 	cout << "\e[0m Which Scheduling Type do you want to use?" << endl;
 	cout << "\e[0m 1\t Static Scheduler" << endl;
 	int userInput;
+	cin >> userInput;
 	if (userInput == 1)
 		ScheduleManager->setScheduleType(SCHEDULER::ScheduleType::STATIC);
+	ScheduleManager->startSchedule();
 }
 
 void TUI::printData()
 {
-	clear();
-	for (SCHEDULER::Task task : tasks) {
+	for (SCHEDULER::Task* task : tasks) {
 		//TODO Remove Float
 		float* values;
-		values = (float*)task.getReturnData().second;
-		for (int i = 0; i < task.getLoad(); i++) {
-			cout << i << ". Return Value: \t" << values[i] << endl;
+		values = (float*)task->getReturnData().second;
+		if (values) {
+			clear();
+			for (int i = 0; i < task->getLoad(); i++) {
+				cout << i << ". Return Value: \t" << values[i] << endl;
+			}
 		}
 	}
 }

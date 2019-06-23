@@ -16,7 +16,7 @@ namespace SCHEDULER {
 #endif // !_WINDOWS
     public:
         StaticScheduler()= delete;
-        StaticScheduler(std::vector<Task> tasks, std::vector<Device> device);
+        StaticScheduler(std::vector<Task*> tasks, std::vector<Device> device);
         void schedule() override;
 
     private:
