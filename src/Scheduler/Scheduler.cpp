@@ -166,12 +166,12 @@ cl::Buffer Scheduler::generateBufferForFLOAT(void *data, cl::Context context, cl
 void* Scheduler::readDataFromBufferForUINT(Task task, cl::CommandQueue queue, int count)
 {
 #ifdef _WINDOWS
-	uint32_t *data;
+	uint32_t* data = {};
 	uint32_t* copiedData = new uint32_t[task.getLoad()];
 	queue.enqueueReadBuffer(task.readBuffer(), CL_TRUE,count, sizeof(uint32_t) * task.getLoad(),data);
 #endif // _WINDOWS
 #ifndef _WINDOWS
-	u_int32_t* data;
+	u_int32_t* data = {};
 	u_int32_t* copiedData = new u_int32_t[task.getLoad()];
 	queue.enqueueReadBuffer(task.readBuffer(), CL_TRUE, count, sizeof(u_int32_t) * task.getLoad(), data);
 #endif // !_WINDOWS
@@ -184,7 +184,7 @@ void* Scheduler::readDataFromBufferForUINT(Task task, cl::CommandQueue queue, in
 
 void* Scheduler::readDataFromBufferForINT(Task task, cl::CommandQueue queue, int count)
 {
-	int32_t* data;
+	int32_t* data = {};
 	int32_t* copiedData = new int32_t[task.getLoad()];
 	queue.enqueueReadBuffer(task.readBuffer(), CL_TRUE, count, sizeof(int32_t) * task.getLoad(), data);
 
@@ -197,7 +197,7 @@ void* Scheduler::readDataFromBufferForINT(Task task, cl::CommandQueue queue, int
 
 void* Scheduler::readDataFromBufferForCHAR(Task task, cl::CommandQueue queue, int count)
 {
-	char* data;
+	char* data = {};
 	char* copiedData = new char[task.getLoad()];
 	queue.enqueueReadBuffer(task.readBuffer(), CL_TRUE, count, sizeof(char) * task.getLoad(), data);
 
@@ -210,7 +210,7 @@ void* Scheduler::readDataFromBufferForCHAR(Task task, cl::CommandQueue queue, in
 
 void* Scheduler::readDataFromBufferForDOUBLE(Task task, cl::CommandQueue queue, int count)
 {
-	double* data;
+	double* data = {};
 	double* copiedData = new double[task.getLoad()];
 	queue.enqueueReadBuffer(task.readBuffer(), CL_TRUE, count, sizeof(double) * task.getLoad(), data);
 
@@ -223,7 +223,7 @@ void* Scheduler::readDataFromBufferForDOUBLE(Task task, cl::CommandQueue queue, 
 
 void* Scheduler::readDataFromBufferForFLOAT(Task task, cl::CommandQueue queue, int count)
 {
-	float* data;
+	float* data = {};
 	float* copiedData = new float[task.getLoad()];
 	queue.enqueueReadBuffer(task.readBuffer(), CL_TRUE, count, sizeof(float) * task.getLoad(), data);
 
