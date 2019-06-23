@@ -31,7 +31,7 @@ namespace SCHEDULER {
 		void searchForDevices();
         void startSchedule();
         void setScheduleType(ScheduleType type);
-        void addTask(std::string filePath, std::string kernelName);
+        Task addTask(std::string filePath, std::string kernelName);
         bool isAddingTasksPossible();
         int getKernelCount();
         int getDeviceCount();

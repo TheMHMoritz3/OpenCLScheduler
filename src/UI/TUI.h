@@ -6,7 +6,7 @@
 #define UI_TUI_H
 
 #include "../Scheduler/ScheduleManager.h"
-
+#include "../Scheduler/Task.h"
 #include <string>
 
 namespace UI {
@@ -18,7 +18,15 @@ namespace UI {
         void decorateError(std::string errorText);
         void addKernelMenu();
 
+		void setSchedule();
+
+		void printData();
+		void clear();
+
         SCHEDULER::ScheduleManager* ScheduleManager;
+		bool IsInUnitTestingMode;
+
+		std::vector<SCHEDULER::Task> tasks;
     };
 }
 
