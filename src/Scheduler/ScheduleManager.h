@@ -5,6 +5,11 @@
 #ifndef EMBEDDEDSYSTEMSPROJECT_SCHEDULEMANAGER_H
 #define EMBEDDEDSYSTEMSPROJECT_SCHEDULEMANAGER_H
 
+#ifdef _WINDOWS
+#define DLL_EXPORT = __declspec(dllexport)
+#endif // _WINDOWS
+
+
 #include <vector>
 #include <string>
 #include <CL/cl.hpp>
@@ -15,10 +20,10 @@
 #include "Device.h"
 
 namespace SCHEDULER {
-    class ScheduleManager {
+    class __declspec(dllexport) ScheduleManager {
     public:
-        ScheduleManager();
-        void searchForDevices();
+		ScheduleManager();
+		void searchForDevices();
         void startSchedule();
         void setScheduleType(ScheduleType type);
         void addTask(std::string filePath, std::string kernelName);

@@ -12,7 +12,7 @@
 #include "SchedulerNamespace.h"
 
 namespace SCHEDULER {
-    class Scheduler {
+    class __declspec(dllexport) Scheduler {
     public:
         Scheduler() = delete;
         Scheduler(std::vector<Task> tasks, std::vector<Device> devices);

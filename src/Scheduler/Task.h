@@ -11,7 +11,7 @@
 #include "SchedulerNamespace.h"
 
 namespace SCHEDULER {
-    class Task {
+    class __declspec(dllexport) Task {
     public:
         Task() = delete;
         Task(int id);

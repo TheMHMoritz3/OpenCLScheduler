@@ -12,6 +12,7 @@
 **.snm
 **.synctex.gz
 **.synctex
+**.synctex(busy)
 **.toc
 **.cmake
 CMakeCache.txt
@@ -19,3 +20,10 @@ CMakeCache.txt
 Makefile
 UI
 **.cbp
+**.dir**
+**.vcxproj**
+**/out
+**/x64
+**/.vs
+**/Debug
+**.sln

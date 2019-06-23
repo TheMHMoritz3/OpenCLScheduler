@@ -8,7 +8,7 @@
 #include "Scheduler.h"
 
 namespace SCHEDULER {
-    class StaticScheduler : public Scheduler{
+    class __declspec(dllexport) StaticScheduler : public Scheduler{
     public:
         StaticScheduler()= delete;
         StaticScheduler(std::vector<Task> tasks, std::vector<Device> device);

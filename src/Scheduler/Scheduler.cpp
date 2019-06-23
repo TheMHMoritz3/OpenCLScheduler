@@ -2,6 +2,11 @@
 // Created by moritz on 17.06.19.
 //
 
+#ifdef _WINDOWS
+#include <stdint.h>
+#endif // _WINDOWS
+
+
 #include "Scheduler.h"
 
 using namespace SCHEDULER;
@@ -43,7 +48,12 @@ void Scheduler::setRAMForCurrentTask(Task task, Device device, cl::Kernel kernel
 }
 
 cl::Buffer Scheduler::generateBufferForUINT(void *data, cl::Context context, cl::CommandQueue queue, int count) {
-    u_int32_t *uintRamDataToAdd = (u_int32_t *) data;
+#ifdef _WINDOWS
+	uint32_t* uintRamDataToAdd = (uint32_t*)data;
+#endif // _WINDOWS
+#ifndef _WINDOWS
+	u_int32_t* uintRamDataToAdd = (u_int32_t*)data;
+#endif // !_WINDOWS
     cl::Buffer buffer(context,CL_MEM_READ_WRITE,sizeof(*uintRamDataToAdd));
     queue.enqueueWriteBuffer(buffer, CL_TRUE, count, sizeof(*uintRamDataToAdd), uintRamDataToAdd);
     return buffer;
