@@ -20,26 +20,29 @@ namespace SCHEDULER {
     public:
         Task() = delete;
         Task(int id);
+
+		void setProgam(cl::Program program);
+		void setKernel(std::string kernelName);
+		void setLoad(int load);
+		void setReadBuffer(cl::Buffer readBuffer);
+		void setProgramSources(cl::Program::Sources sources);
+		void addData(void* value, Type type);
+		void addDescription(std::string desc);
+		void setReturnDataType(Type type);
+		void setReturnData(void* data);
+
         int getId();
         std::pair<Type,void*> getReturnData();
-        void addData(void* value, Type type);
         std::vector<std::pair<Type, void*>> getAllData();
-        void setProgramSources(cl::Program::Sources sources);
         cl::Program::Sources getSources();
-		void setReadBuffer(cl::Buffer readBuffer);
 		cl::Buffer readBuffer();
 		cl::Program getProgramm();
-        void setProgam(cl::Program program);
-        void setKernel(std::string kernelName);
-		void setLoad(int load);
 		int getLoad();
-        void addDescription(std::string desc);
         std::string getKernelName();
         std::string getDescription();
-        void setReturnDataType(Type type);
 		Type getReturnDataType();
-        Task operator=(Task other);
-		void setReturnData(void* data);
+		Task operator=(Task other);
+
     private:
         std::string KernelName;
         std::string Description;
