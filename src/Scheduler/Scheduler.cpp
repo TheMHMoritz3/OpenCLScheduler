@@ -88,7 +88,7 @@ void Scheduler::setKernelLoad(Task task, Device device, cl::Kernel kernel)
 	kernel.setArg(task.getAllData().size() + 2, task.getLoad());
 }
 
-void Scheduler::enqueueTaks(Task task, Device device, cl::CommandQueue commandQueue, cl::Kernel kernel)
+void Scheduler::enqueueTak(Task task, Device device, cl::CommandQueue commandQueue, cl::Kernel kernel)
 {
 	commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(task.getAllData().size()),cl::NDRange(device.getMaxComputeUnits()));
 	commandQueue.finish();
@@ -96,7 +96,31 @@ void Scheduler::enqueueTaks(Task task, Device device, cl::CommandQueue commandQu
 
 void Scheduler::readDataFromTask(Task task, cl::CommandQueue commandQueue)
 {
-	//commandQueue.enqueueReadBuffer(task->readBuffer(),)
+	void* data;
+	switch (task.getReturnDataType())
+	{
+	case Type::UINT:
+		data = readDataFromBufferForUINT(task, commandQueue, task.getAllData().size());
+		break;
+	case Type::INT:
+		data = readDataFromBufferForINT(task, commandQueue, task.getAllData().size());
+		break;
+	case Type::CHAR:
+		data = readDataFromBufferForCHAR(task, commandQueue, task.getAllData().size());
+		break;
+	case Type::DOUBLE:
+		data = readDataFromBufferForDOUBLE(task, commandQueue, task.getAllData().size());
+		break;
+	case Type::FLOAT:
+		data = readDataFromBufferForFLOAT(task, commandQueue, task.getAllData().size());
+		break;
+	case Type::STRING:
+		data = readDataFromBufferForCHAR(task, commandQueue, task.getAllData().size());
+		break;
+	default:
+		break;
+	}
+	task.setReturnData(data);
 }
 
 cl::Buffer Scheduler::generateBufferForUINT(void *data, cl::Context context, cl::CommandQueue queue, int count) {
@@ -139,27 +163,73 @@ cl::Buffer Scheduler::generateBufferForFLOAT(void *data, cl::Context context, cl
     return buffer;
 }
 
-void* SCHEDULER::Scheduler::Scheduler::readDataFromBufferForUINT(cl::Context context, cl::CommandQueue queue, int count)
+void* Scheduler::readDataFromBufferForUINT(Task task, cl::CommandQueue queue, int count)
 {
-	return nullptr;
+#ifdef _WINDOWS
+	uint32_t *data;
+	uint32_t* copiedData = new uint32_t[task.getLoad()];
+	queue.enqueueReadBuffer(task.readBuffer(), CL_TRUE,count, sizeof(uint32_t) * task.getLoad(),data);
+#endif // _WINDOWS
+#ifndef _WINDOWS
+	u_int32_t* data;
+	u_int32_t* copiedData = new u_int32_t[task.getLoad()];
+	queue.enqueueReadBuffer(task.readBuffer(), CL_TRUE, count, sizeof(u_int32_t) * task.getLoad(), data);
+#endif // !_WINDOWS
+	for (int i = 0; i < task.getLoad(); i++) {
+		copiedData[i] = data[i];
+	}
+	void* voidData = copiedData;
+	return voidData;
 }
 
-void* SCHEDULER::Scheduler::Scheduler::readDataFromBufferForINT(cl::Context context, cl::CommandQueue queue, int count)
+void* Scheduler::readDataFromBufferForINT(Task task, cl::CommandQueue queue, int count)
 {
-	return nullptr;
+	int32_t* data;
+	int32_t* copiedData = new int32_t[task.getLoad()];
+	queue.enqueueReadBuffer(task.readBuffer(), CL_TRUE, count, sizeof(int32_t) * task.getLoad(), data);
+
+	for (int i = 0; i < task.getLoad(); i++) {
+		copiedData[i] = data[i];
+	}
+	void* voidData = copiedData;
+	return voidData;
 }
 
-void* SCHEDULER::Scheduler::Scheduler::readDataFromBufferForCHAR(cl::Context context, cl::CommandQueue queue, int count)
+void* Scheduler::readDataFromBufferForCHAR(Task task, cl::CommandQueue queue, int count)
 {
-	return nullptr;
+	char* data;
+	char* copiedData = new char[task.getLoad()];
+	queue.enqueueReadBuffer(task.readBuffer(), CL_TRUE, count, sizeof(char) * task.getLoad(), data);
+
+	for (int i = 0; i < task.getLoad(); i++) {
+		copiedData[i] = data[i];
+	}
+	void* voidData = copiedData;
+	return voidData;
 }
 
-void* SCHEDULER::Scheduler::Scheduler::readDataFromBufferForDOUBLE(cl::Context context, cl::CommandQueue queue, int count)
+void* Scheduler::readDataFromBufferForDOUBLE(Task task, cl::CommandQueue queue, int count)
 {
-	return nullptr;
+	double* data;
+	double* copiedData = new double[task.getLoad()];
+	queue.enqueueReadBuffer(task.readBuffer(), CL_TRUE, count, sizeof(double) * task.getLoad(), data);
+
+	for (int i = 0; i < task.getLoad(); i++) {
+		copiedData[i] = data[i];
+	}
+	void* voidData = copiedData;
+	return voidData;
 }
 
-void* SCHEDULER::Scheduler::Scheduler::readDataFromBufferForFLOAT(cl::Context context, cl::CommandQueue queue, int count)
+void* Scheduler::readDataFromBufferForFLOAT(Task task, cl::CommandQueue queue, int count)
 {
-	return nullptr;
+	float* data;
+	float* copiedData = new float[task.getLoad()];
+	queue.enqueueReadBuffer(task.readBuffer(), CL_TRUE, count, sizeof(float) * task.getLoad(), data);
+
+	for (int i = 0; i < task.getLoad(); i++) {
+		copiedData[i] = data[i];
+	}
+	void* voidData = copiedData;
+	return voidData;
 }

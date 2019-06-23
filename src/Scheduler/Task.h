@@ -28,6 +28,7 @@ namespace SCHEDULER {
         cl::Program::Sources getSources();
 		void setReadBuffer(cl::Buffer readBuffer);
 		cl::Buffer readBuffer();
+		cl::Program getProgramm();
         void setProgam(cl::Program program);
         void setKernel(std::string kernelName);
 		void setLoad(int load);
@@ -38,6 +39,7 @@ namespace SCHEDULER {
         void setReturnDataType(Type type);
 		Type getReturnDataType();
         Task operator=(Task other);
+		void setReturnData(void* data);
     private:
         std::string KernelName;
         std::string Description;

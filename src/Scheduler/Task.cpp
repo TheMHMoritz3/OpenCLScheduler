@@ -55,6 +55,11 @@ cl::Buffer SCHEDULER::Task::Task::readBuffer()
 	return ReadBuffer;
 }
 
+cl::Program Task::getProgramm()
+{
+	return Program;
+}
+
 std::string Task::getDescription() {
     return Description;
 }
@@ -86,4 +91,9 @@ std::vector<std::pair<Type, void *>> Task::getAllData() {
 
 Task Task::operator=(Task other) {
     return other;
+}
+
+void Task::setReturnData(void* data)
+{
+	ReturnData = data;
 }
