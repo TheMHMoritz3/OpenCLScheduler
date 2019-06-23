@@ -27,6 +27,8 @@ namespace SCHEDULER {
         std::vector<Task> Tasks;
         std::vector<Device> Devices;
         void setRAMForCurrentTask(Task task, Device device, cl::Kernel kernel, cl::CommandQueue queue);
+		void setRAMBufferForOutput(Task task, Device device, cl::Kernel kernel);
+		void setKernelLoad(Task task, cl::Kernel kernel);
     private:
         cl::Buffer generateBufferForUINT(void* data,cl::Context context ,cl::CommandQueue queue, int count);
         cl::Buffer generateBufferForINT(void* data,cl::Context context ,cl::CommandQueue queue, int count);

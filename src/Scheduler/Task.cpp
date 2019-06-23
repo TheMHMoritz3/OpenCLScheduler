@@ -20,6 +20,15 @@ void Task::setKernel(std::string kernelName) {
     KernelName = kernelName;
 }
 
+void Task::setLoad(int load)
+{
+	Load = load;
+}
+
+int Task::getLoad() {
+	return Load;
+}
+
 void Task::addDescription(std::string desc) {
     Description=desc;
 }
@@ -54,6 +63,11 @@ std::pair<Type, void *> Task::getReturnData() {
 
 void Task::setReturnDataType(Type type) {
     ReturnDataType=type;
+}
+
+Type Task::getReturnDataType()
+{
+	return ReturnDataType;
 }
 
 std::vector<std::pair<Type, void *>> Task::getAllData() {
