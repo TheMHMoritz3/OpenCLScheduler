@@ -34,7 +34,7 @@ void ScheduleManager::searchForDevices() {
 void ScheduleManager::startSchedule() {
     switch(Type){
         case ScheduleType::STATIC:
-            ActiveScheduler = new StaticScheduler(Tasks);
+            ActiveScheduler = new StaticScheduler(Tasks, Devices);
             break;
         case ScheduleType::ASAPHC:
         case ScheduleType::LIST:

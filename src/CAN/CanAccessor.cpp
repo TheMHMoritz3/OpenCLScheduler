@@ -14,8 +14,8 @@ CanAccessor::CanAccessor(CanID id, int elementCount) {
     init();
 }
 
-CanErrorCode CanAccessor::didErrorOccur() {
-    return NoError;
+int CanAccessor::didErrorOccur() {
+    return ErrorCode;
 }
 
 std::vector<u_int32_t> CanAccessor::getData() {
@@ -29,7 +29,7 @@ std::vector<u_int32_t> CanAccessor::getData() {
 
 void CanAccessor::init() {
     Single = c3can_single_init("can0");
-//    C3CAN_CHECK_ERR(Single, exit, -1);
+    ErrorCode = c3can_single_get_error(Single)->code;
     c3can_single_filter_add(Single, IdCan, (C3CAN_SINGLE_FILTER_OPTS) 0);
 
 }
@@ -38,7 +38,7 @@ void CanAccessor::collectData() {
     struct timeval timestamp;
     for(int i = 0; i<ElementCount; i++){
         c3can_single_recv(Single, &Message, &timestamp);
-//        C3CAN_CHECK_ERR(Single, exit, -1);
+        ErrorCode = c3can_single_get_error(Single)->code;
         Data[i] = U32_DATA(c3can_message_get_payload(&Message));
     }
 }
