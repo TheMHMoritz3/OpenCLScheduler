@@ -71,11 +71,11 @@ cl::Program::Sources* ScheduleManager::convertSources(std::string file) {
     ifstream sourceFile(file);
     string kernel_code(istreambuf_iterator<char>(sourceFile), (istreambuf_iterator<char>()));
 
-    char cstr[kernel_code.length()+1];
+    char* cstr = new char[kernel_code.length()+1];
     strcpy(cstr, kernel_code.c_str());
 
     sources->push_back({cstr,kernel_code.length()+1});
-    cout<<"ScheduleManager::convertSources"<<sources->at(0).first<<endl;
+    //cout<<"ScheduleManager::convertSources"<<sources->at(0).first<<endl;
     return sources;
 }
 

@@ -6,7 +6,7 @@
 #include <stdint.h>
 #endif // _WINDOWS
 
-
+#include <iostream>
 #include "Scheduler.h"
 
 using namespace SCHEDULER;
@@ -84,8 +84,10 @@ void Scheduler::setRAMBufferForOutput(Task* task, Device device, cl::Kernel kern
 
 void Scheduler::setKernelLoad(Task* task, Device device, cl::Kernel kernel)
 {
-	cl::Buffer buffer_WORKLOAD(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(int));
-	kernel.setArg(task->getAllData().size(), task->getLoad());
+	int ErrorCode=0;
+	cl::Buffer buffer_WORKLOAD(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(int), &ErrorCode);
+	std::cout << "Error Code while setting load " << ErrorCode << std::endl;
+	kernel.setArg(task->getAllData().size()+1,task->getLoad());
 }
 
 void Scheduler::enqueueTak(Task* task, Device device, cl::CommandQueue commandQueue, cl::Kernel kernel)

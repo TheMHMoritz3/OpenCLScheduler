@@ -35,7 +35,7 @@ void Task::addDescription(std::string desc) {
 }
 
 void Task::setProgramSources(cl::Program::Sources* sources) {
-    std::cout<<"Task::setProgrammSources"<<sources->at(0).first<<std::endl;
+    //std::cout<<"Task::setProgrammSources"<<sources->at(0).first<<std::endl;
     Sources=sources;
 }
 

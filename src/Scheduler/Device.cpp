@@ -54,7 +54,6 @@ double Device::getComputeUnitUsage(int ComputeUnit) {
 void Device::generateProgramm(Task* task) {
 
     cl::Program program(OclContext, *task->getSources());
-    cout <<"Sources"<< task->getSources()->at(0).first<<endl;
 	if(program.build({OclDevice})!=CL_SUCCESS)
 		cout << " Error building: " << program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(OclDevice) << "\n";
 	else
