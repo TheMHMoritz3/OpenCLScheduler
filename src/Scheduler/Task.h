@@ -25,16 +25,17 @@ namespace SCHEDULER {
 		void setKernel(std::string kernelName);
 		void setLoad(int load);
 		void setReadBuffer(cl::Buffer readBuffer);
-		void setProgramSources(cl::Program::Sources sources);
+		void setProgramSources(cl::Program::Sources *sources);
 		void addData(void* value, Type type);
 		void addDescription(std::string desc);
 		void setReturnDataType(Type type);
 		void setReturnData(void* data);
+		void setFilePath(std::string filePath);
 
         int getId();
         std::pair<Type,void*> getReturnData();
         std::vector<std::pair<Type, void*>> getAllData();
-        cl::Program::Sources getSources();
+        cl::Program::Sources *getSources();
 		cl::Buffer readBuffer();
 		cl::Program getProgramm();
 		int getLoad();
@@ -42,11 +43,12 @@ namespace SCHEDULER {
         std::string getDescription();
 		Type getReturnDataType();
 		Task operator=(Task other);
+		std::string getFilePath();
 
     private:
         std::string KernelName;
         std::string Description;
-        cl::Program::Sources Sources;
+        cl::Program::Sources *Sources;
         cl::Program Program;
 		cl::Buffer ReadBuffer;
         int ID;
@@ -54,6 +56,7 @@ namespace SCHEDULER {
         std::vector<std::pair<Type, void*>> Data;
         void* ReturnData;
         Type ReturnDataType;
+        std::string FilePath;
     };
 }
 

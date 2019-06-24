@@ -3,6 +3,7 @@
 //
 
 #include "Task.h"
+#include <iostream>
 
 using namespace SCHEDULER;
 
@@ -33,7 +34,8 @@ void Task::addDescription(std::string desc) {
     Description=desc;
 }
 
-void Task::setProgramSources(cl::Program::Sources sources) {
+void Task::setProgramSources(cl::Program::Sources* sources) {
+    std::cout<<"Task::setProgrammSources"<<sources->at(0).first<<std::endl;
     Sources=sources;
 }
 
@@ -41,7 +43,7 @@ void Task::setProgam(cl::Program program) {
     Program=program;
 }
 
-cl::Program::Sources Task::getSources() {
+cl::Program::Sources* Task::getSources() {
     return Sources;
 }
 
@@ -96,4 +98,12 @@ Task Task::operator=(Task other) {
 void Task::setReturnData(void* data)
 {
 	ReturnData = data;
+}
+
+void Task::setFilePath(std::string filePath) {
+    FilePath=filePath;
+}
+
+std::string Task::getFilePath() {
+    return FilePath;
 }

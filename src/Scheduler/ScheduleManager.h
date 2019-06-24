@@ -37,7 +37,7 @@ namespace SCHEDULER {
         int getDeviceCount();
 
     private:
-		cl::Program::Sources convertSources(std::string file);
+		cl::Program::Sources* convertSources(std::string file);
 
         ScheduleType Type;
         std::vector<Task*> Tasks;
