@@ -28,7 +28,7 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 
 # add the executable
-add_library(Scheduler SHARED src/Scheduler/Device.cpp src/Scheduler/Device.h src/Scheduler/ScheduleManager.cpp src/Scheduler/ScheduleManager.h src/Scheduler/Scheduler.cpp src/Scheduler/Scheduler.h src/Scheduler/Task.cpp src/Scheduler/Task.h src/Scheduler/StaticScheduler.cpp src/Scheduler/StaticScheduler.h src/Scheduler/SchedulerNamespace.h)
+add_library(Scheduler SHARED src/Scheduler/Device.cpp src/Scheduler/Device.h src/Scheduler/ScheduleManager.cpp src/Scheduler/ScheduleManager.h src/Scheduler/Scheduler.cpp src/Scheduler/Scheduler.h src/Scheduler/Task.cpp src/Scheduler/Task.h src/Scheduler/StaticScheduler.cpp src/Scheduler/StaticScheduler.h src/Scheduler/SchedulerNamespace.h src/Scheduler/scheduler_global.h)
 target_link_libraries(Scheduler libOpenCL.so libsupc++.a)
 target_include_directories (Scheduler PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_options(Scheduler PUBLIC -Wall -Werror)

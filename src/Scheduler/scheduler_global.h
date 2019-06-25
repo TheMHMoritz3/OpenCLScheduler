@@ -8,4 +8,5 @@
 #define SCHEDULER_EXPORT __declspec(dllimport)
 #endif
 #else
+#define SCHEDULER_EXPORT
 #endif
