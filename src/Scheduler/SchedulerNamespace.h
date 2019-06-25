@@ -4,33 +4,22 @@
 
 #ifndef UI_SCHEDULERNAMESPACE_H
 #define UI_SCHEDULERNAMESPACE_H
+
+#include "scheduler_global.h"
+
 namespace SCHEDULER {
-#ifdef _WINDOWS
-	enum __declspec(dllexport) ScheduleType {
-#endif
-#ifndef _WINDOWS
-	enum ScheduleType {
-#endif // !_WINDOWS
+
+	enum SCHEDULER_EXPORT ScheduleType {
         LIST,
         ASAPHC,
         STATIC
     };
 
-#ifdef _WINDOWS
-	enum __declspec(dllexport) ErrorCodes {
-#endif
-#ifndef _WINDOWS
-		enum ErrorCodes {
-#endif // !_WINDOWS
+	enum SCHEDULER_EXPORT ErrorCodes {
         COMPILATION_NOT_POSSIBLE
     };
 
-#ifdef _WINDOWS
-	enum __declspec(dllexport) Type {
-#endif
-#ifndef _WINDOWS
-		enum Type {
-#endif // !_WINDOWS
+	enum SCHEDULER_EXPORT Type {
         INT,
         UINT,
         CHAR,
