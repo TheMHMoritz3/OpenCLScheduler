@@ -26,11 +26,11 @@ namespace UI {
 
 		void decorateValueData(SCHEDULER::Task* task);
 
-		void decorateFloatValue(void* data);
-		void decorateIntValue(void* data);
-		void decorateUIntValue(void* data);
-		void decorateCharValue(void* data);
-		void decorateDoubleValue(void* data);
+		void decorateFloatValue(SCHEDULER::Task* task,void* data);
+		void decorateIntValue(SCHEDULER::Task* task,void* data);
+		void decorateUIntValue(SCHEDULER::Task* task,void* data);
+		void decorateCharValue(SCHEDULER::Task* task,void* data);
+		void decorateDoubleValue(SCHEDULER::Task* task,void* data);
 
 		void askUserReturnData(SCHEDULER::Task* task);
 		void decorateUnitTestingMode(SCHEDULER::Task* task);

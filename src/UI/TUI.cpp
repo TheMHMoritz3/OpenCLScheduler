@@ -90,10 +90,7 @@ void TUI::setSchedule()
 void TUI::printData()
 {
 	for (SCHEDULER::Task* task : tasks) {
-		for (int i = 0; i < task->getLoad(); i++) {
-			cout << i << ". Return Value: \t";
-			decorateValueData(task);
-		}
+        decorateValueData(task);
 	}
 }
 
@@ -112,22 +109,22 @@ void TUI::decorateValueData(SCHEDULER::Task* task)
 	switch (task->getReturnDataType())
 	{
 	case SCHEDULER::INT:
-		decorateIntValue(task->getReturnData().second);
+		decorateIntValue(task,task->getReturnData().second);
 		break;
 	case SCHEDULER::UINT:
-		decorateUIntValue(task->getReturnData().second);
+		decorateUIntValue(task,task->getReturnData().second);
 		break;
 	case SCHEDULER::CHAR:
-		decorateCharValue(task->getReturnData().second);
+		decorateCharValue(task,task->getReturnData().second);
 		break;
 	case SCHEDULER::FLOAT:
-		decorateFloatValue(task->getReturnData().second);
+		decorateFloatValue(task,task->getReturnData().second);
 		break;
 	case SCHEDULER::DOUBLE:
-		decorateDoubleValue(task->getReturnData().second);
+		decorateDoubleValue(task,task->getReturnData().second);
 		break;
 	case SCHEDULER::STRING:
-		decorateCharValue(task->getReturnData().second);
+		decorateCharValue(task,task->getReturnData().second);
 		break;
 	default:
 		decorateError("Error: No Type providet in Return Value");
@@ -135,34 +132,49 @@ void TUI::decorateValueData(SCHEDULER::Task* task)
 	}
 }
 
-void TUI::decorateFloatValue(void* data)
+void TUI::decorateFloatValue(SCHEDULER::Task* task,void* data)
 {
 	float* value = (float*)data;
-	cout << *value << endl;
+    for (int i = 0; i < task->getLoad(); i++) {
+        cout << i << ". Return Value: \t"<<value[i]<<endl;
+
+    }
 }
 
-void TUI::decorateIntValue(void* data)
+void TUI::decorateIntValue(SCHEDULER::Task* task,void* data)
 {
 	uint32_t* value = (uint32_t*)data;
-	cout << *value << endl;
+    for (int i = 0; i < task->getLoad(); i++) {
+        cout << i << ". Return Value: \t"<<value[i]<<endl;
+
+    }
 }
 
-void TUI::decorateUIntValue(void* data)
+void TUI::decorateUIntValue(SCHEDULER::Task* task,void* data)
 {
 	uint32_t* value = (uint32_t*)data;
-	cout << *value << endl;
+    for (int i = 0; i < task->getLoad(); i++) {
+        cout << i << ". Return Value: \t"<<value[i]<<endl;
+
+    }
 }
 
-void TUI::decorateCharValue(void* data)
+void TUI::decorateCharValue(SCHEDULER::Task* task,void* data)
 {
 	char* value = (char*)data;
-	cout << *value << endl;
+    for (int i = 0; i < task->getLoad(); i++) {
+        cout << i << ". Return Value: \t"<<value[i]<<endl;
+
+    }
 }
 
-void TUI::decorateDoubleValue(void* data)
+void TUI::decorateDoubleValue(SCHEDULER::Task* task,void* data)
 {
 	double* value = (double*)data;
-	cout << *value << endl;
+    for (int i = 0; i < task->getLoad(); i++) {
+        cout << i << ". Return Value: \t"<<value[i]<<endl;
+
+    }
 }
 
 
@@ -212,7 +224,7 @@ SCHEDULER::Type TUI::getTypeFromUserForArg()
 	clear();
 	int value;
 	do {
-		decorateNormalMessage("Witch return type is your Kernel of?");
+		decorateNormalMessage("Witch type is this Arg of?");
 		decorateNormalMessage("0\t Integer");
 		decorateNormalMessage("1\t Unsinged Integer");
 		decorateNormalMessage("2\t Charakter");
