@@ -9,14 +9,10 @@
 #include <string>
 #include <CL/cl.hpp>
 #include "SchedulerNamespace.h"
+#include "scheduler_global.h"
 
 namespace SCHEDULER {
-#ifdef _WINDOWS
-	class __declspec(dllexport) Task {
-#endif
-#ifndef _WINDOWS
-	class Task {
-#endif // !_WINDOWS
+	class SCHEDULER_EXPORT Task {
     public:
         Task() = delete;
         Task(int id);

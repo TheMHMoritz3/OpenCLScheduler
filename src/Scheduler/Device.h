@@ -2,20 +2,15 @@
 // Created by moritz on 17.06.19.
 //
 
-#ifndef CAN_DEVICE_H
-#define CAN_DEVICE_H
+#ifndef SCHEDULER_DEVICE_H
+#define SCHEDULER_DEVICE_H
 
 #include <string>
 #include <CL/cl.hpp>
 #include "Task.h"
 
 namespace SCHEDULER {
-#ifdef _WINDOWS
-    class __declspec(dllexport) Device {
-#endif
-#ifndef _WINDOWS
 	class Device {
-#endif // !_WINDOWS
 
     public:
         Device(int id, cl::Device oclDevice);
@@ -40,4 +35,4 @@ namespace SCHEDULER {
     };
 }
 
-#endif //CAN_DEVICE_H
+#endif //SCHEDULER_DEVICE_H
