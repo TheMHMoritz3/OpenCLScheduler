@@ -17,33 +17,32 @@ Scheduler::Scheduler(std::vector<Task*> tasks, std::vector<Device> devices) {
 }
 
 void Scheduler::setRAMForCurrentTask(Task* task, Device device, cl::Kernel kernel, cl::CommandQueue queue) {
-    int i = 0;
+    int offset = 0;
     for(std::pair<Type,void*> value : task->getAllData()){
         cl::Buffer buffer;
         switch (value.first){
             case Type::UINT:
-                buffer = generateBufferForUINT(value.second,device.getDeviceContext(),queue,i);
+                buffer = generateBufferForUINT(value.second,device.getDeviceContext(),queue,offset);
                 break;
             case Type::INT:
-                buffer = generateBufferForINT(value.second,device.getDeviceContext(),queue,i);
+                buffer = generateBufferForINT(value.second,device.getDeviceContext(),queue,offset);
                 break;
             case Type::CHAR:
-                buffer = generateBufferForCHAR(value.second,device.getDeviceContext(),queue,i);
+                buffer = generateBufferForCHAR(value.second,device.getDeviceContext(),queue,offset);
                 break;
             case Type::DOUBLE:
-                buffer = generateBufferForDOUBLE(value.second,device.getDeviceContext(),queue,i);
+                buffer = generateBufferForDOUBLE(value.second,device.getDeviceContext(),queue,offset);
                 break;
             case Type::FLOAT:
-                buffer=generateBufferForFLOAT(value.second,device.getDeviceContext(),queue,i);
+                buffer=generateBufferForFLOAT(value.second,device.getDeviceContext(),queue,offset);
                 break;
             case Type::STRING:
-                buffer = generateBufferForCHAR(value.second,device.getDeviceContext(),queue,i);
+                buffer = generateBufferForCHAR(value.second,device.getDeviceContext(),queue,offset);
                 break;
             default:
                 break;
         }
-        kernel.setArg(i, buffer);
-        i++;
+        kernel.setArg(offset, buffer);
     }
 }
 
@@ -102,22 +101,22 @@ void Scheduler::readDataFromTask(Task* task, cl::CommandQueue commandQueue)
 	switch (task->getReturnDataType())
 	{
 	case Type::UINT:
-		data = readDataFromBufferForUINT(task, commandQueue, task->getAllData().size());
+		data = readDataFromBufferForUINT(task, commandQueue, 0);
 		break;
 	case Type::INT:
-		data = readDataFromBufferForINT(task, commandQueue, task->getAllData().size());
+		data = readDataFromBufferForINT(task, commandQueue, 0);
 		break;
 	case Type::CHAR:
-		data = readDataFromBufferForCHAR(task, commandQueue, task->getAllData().size());
+		data = readDataFromBufferForCHAR(task, commandQueue, 0);
 		break;
 	case Type::DOUBLE:
-		data = readDataFromBufferForDOUBLE(task, commandQueue, task->getAllData().size());
+		data = readDataFromBufferForDOUBLE(task, commandQueue, 0);
 		break;
 	case Type::FLOAT:
-		data = readDataFromBufferForFLOAT(task, commandQueue, task->getAllData().size());
+		data = readDataFromBufferForFLOAT(task, commandQueue, 0);
 		break;
 	case Type::STRING:
-		data = readDataFromBufferForCHAR(task, commandQueue, task->getAllData().size());
+		data = readDataFromBufferForCHAR(task, commandQueue, 0);
 		break;
 	default:
 		break;
