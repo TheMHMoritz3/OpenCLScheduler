@@ -35,6 +35,7 @@ void StaticScheduler::schedule() {
 				setRAMForCurrentTask(task, device, kernel, commandQueue);
 				setRAMBufferForOutput(task, device, kernel);
 				setKernelLoad(task, device, kernel);
+				enqueueTak(task, device, commandQueue, kernel);
 				readDataFromTask(task, commandQueue);
 			}
 		}

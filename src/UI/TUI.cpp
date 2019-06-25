@@ -248,22 +248,22 @@ void TUI::askUserForArrayData(SCHEDULER::Task* task, SCHEDULER::Type type, int l
 
 	switch (type) {
 	case SCHEDULER::INT:
-		askUserForIntegerArray(load);
+		data = askUserForIntegerArray(load);
 		break;
 	case SCHEDULER::UINT:
-		askUserForUIntegerArray(load);
+		data = askUserForUIntegerArray(load);
 		break;
 	case SCHEDULER::CHAR:
-		askUserForCharArray(load);
+		data = askUserForCharArray(load);
 		break;
 	case SCHEDULER::FLOAT:
-		askUserForFloatArray(load);
+		data = askUserForFloatArray(load);
 		break;
 	case SCHEDULER::DOUBLE:
-		askUserForDoubleArray(load);
+		data = askUserForDoubleArray(load);
 		break;
 	case SCHEDULER::STRING:
-		askUserForCharArray(load);
+		data = askUserForCharArray(load);
 		break;
 	default:
 		decorateError("Wrong Type given.");

@@ -91,7 +91,7 @@ void Scheduler::setKernelLoad(Task* task, Device device, cl::Kernel kernel)
 
 void Scheduler::enqueueTak(Task* task, Device device, cl::CommandQueue commandQueue, cl::Kernel kernel)
 {
-	commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(task->getAllData().size()),cl::NDRange(device.getMaxComputeUnits()));
+	commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(task->getLoad()),cl::NDRange(device.getMaxComputeUnits()));
 	commandQueue.finish();
 }
 
@@ -188,10 +188,12 @@ void* Scheduler::readDataFromBufferForINT(Task* task, cl::CommandQueue queue, in
 {
 	int32_t* data = new int32_t[task->getLoad()];
 	int32_t* copiedData = new int32_t[task->getLoad()];
-	queue.enqueueReadBuffer(task->readBuffer(), CL_TRUE, count, sizeof(int32_t) * task->getLoad(), data);
+	int ErrorCode = queue.enqueueReadBuffer(task->readBuffer(), CL_TRUE, count, sizeof(int32_t) * task->getLoad(), data);
+	std::cout << "ErrorCode from Reading: " << ErrorCode;
 	queue.finish();
 	for (int i = 0; i < task->getLoad(); i++) {
 		copiedData[i] = data[i];
+		std::cout << "Data from Reading: " << data[i];
 	}
 	void* voidData = copiedData;
 	return voidData;
@@ -229,8 +231,10 @@ void* Scheduler::readDataFromBufferForFLOAT(Task* task, cl::CommandQueue queue, 
 	float* copiedData = new float[task->getLoad()];
 	queue.enqueueReadBuffer(task->readBuffer(), CL_TRUE, count, sizeof(float) * task->getLoad(), data);
 	queue.finish();
+
 	for (int i = 0; i < task->getLoad(); i++) {
 		copiedData[i] = data[i];
+		std::cout << "Data from Reading: " << data[i];
 	}
 	void* voidData = copiedData;
 	return voidData;
