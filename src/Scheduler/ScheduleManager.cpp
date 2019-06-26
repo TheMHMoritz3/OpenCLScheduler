@@ -24,6 +24,7 @@ void ScheduleManager::searchForDevices() {
     for(cl::Platform platform : platforms){
         vector<cl::Device> devices;
         platform.getDevices(CL_DEVICE_TYPE_ALL, &devices);
+        cout << "Init Devices"<<endl;
         for(cl::Device device : devices){
             Device newDevice(device_id, device);
             Devices.push_back(newDevice);

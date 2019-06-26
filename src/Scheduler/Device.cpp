@@ -39,10 +39,6 @@ double Device::getDeviceUsage() {
     return 0.0;
 }
 
-void Device::schedule(Task tak, int computeUnit) {
-
-}
-
 int Device::getMaxComputeUnits() {
     return OclDevice.getInfo<CL_DEVICE_MAX_COMPUTE_UNITS>();
 }
