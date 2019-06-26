@@ -4,18 +4,22 @@
 
 #ifndef UI_SCHEDULERNAMESPACE_H
 #define UI_SCHEDULERNAMESPACE_H
+
+#include "scheduler_global.h"
+
 namespace SCHEDULER {
-    enum ScheduleType {
+
+	enum SCHEDULER_EXPORT ScheduleType {
         LIST,
         ASAPHC,
         STATIC
     };
 
-    enum ErrorCodes {
+	enum SCHEDULER_EXPORT ErrorCodes {
         COMPILATION_NOT_POSSIBLE
     };
 
-    enum Type {
+	enum SCHEDULER_EXPORT Type {
         INT,
         UINT,
         CHAR,

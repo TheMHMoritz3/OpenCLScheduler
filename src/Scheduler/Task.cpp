@@ -3,13 +3,14 @@
 //
 
 #include "Task.h"
+#include <iostream>
 
 using namespace SCHEDULER;
 
 
 Task::Task(int id) {
     ID=id;
-    ReturnData=NULL;
+    UnsignedIntValues=new std::vector<uint32_t*>();
 }
 
 int Task::getId() {
@@ -33,7 +34,7 @@ void Task::addDescription(std::string desc) {
     Description=desc;
 }
 
-void Task::setProgramSources(cl::Program::Sources sources) {
+void Task::setProgramSources(cl::Program::Sources* sources) {
     Sources=sources;
 }
 
@@ -41,16 +42,16 @@ void Task::setProgam(cl::Program program) {
     Program=program;
 }
 
-cl::Program::Sources Task::getSources() {
+cl::Program::Sources* Task::getSources() {
     return Sources;
 }
 
-void Task::setReadBuffer(cl::Buffer readBuffer)
+void Task::setReadBuffer(cl::Buffer *readBuffer)
 {
 	ReadBuffer = readBuffer;
 }
 
-cl::Buffer SCHEDULER::Task::Task::readBuffer()
+cl::Buffer* Task::readBuffer()
 {
 	return ReadBuffer;
 }
@@ -68,12 +69,12 @@ std::string Task::getKernelName() {
     return KernelName;
 }
 
-void Task::addData(void *value, Type type) {
+void Task::addData(std::vector<void*> value, Type type) {
     Data.emplace_back(type,value);
 }
 
-std::pair<Type, void *> Task::getReturnData() {
-    return std::pair<Type, void*>(ReturnDataType,ReturnData);
+std::pair<Type, std::vector<void *>> Task::getReturnData() {
+    return std::pair<Type, std::vector<void*>>(ReturnDataType,ReturnData);
 }
 
 void Task::setReturnDataType(Type type) {
@@ -85,7 +86,7 @@ Type Task::getReturnDataType()
 	return ReturnDataType;
 }
 
-std::vector<std::pair<Type, void *>> Task::getAllData() {
+std::vector<std::pair<Type, std::vector<void*>>> Task::getAllData() {
     return Data;
 }
 
@@ -93,7 +94,23 @@ Task Task::operator=(Task other) {
     return other;
 }
 
-void Task::setReturnData(void* data)
+void Task::setReturnData(std::vector<void*> data)
 {
 	ReturnData = data;
+}
+
+void Task::setFilePath(std::string filePath) {
+    FilePath=filePath;
+}
+
+std::string Task::getFilePath() {
+    return FilePath;
+}
+
+std::vector<uint32_t*>* Task::getUintValues() {
+    return UnsignedIntValues;
+}
+
+void Task::addUINTItems(uint32_t *items) {
+    UnsignedIntValues->push_back(items);
 }

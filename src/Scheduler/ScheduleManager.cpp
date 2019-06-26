@@ -24,6 +24,7 @@ void ScheduleManager::searchForDevices() {
     for(cl::Platform platform : platforms){
         vector<cl::Device> devices;
         platform.getDevices(CL_DEVICE_TYPE_ALL, &devices);
+        cout << "Init Devices"<<endl;
         for(cl::Device device : devices){
             Device newDevice(device_id, device);
             Devices.push_back(newDevice);
@@ -48,11 +49,13 @@ void ScheduleManager::setScheduleType(ScheduleType type) {
     Type=type;
 }
 
-void ScheduleManager::addTask(std::string filePath, std::string kernelName) {
-    Task task(getKernelCount());
-    task.setProgramSources(convertSources(filePath));
-    task.setKernel(kernelName);
+Task* ScheduleManager::addTask(std::string filePath, std::string kernelName) {
+    Task* task=new Task(getKernelCount());
+    task->setProgramSources(convertSources(filePath));
+    task->setFilePath(filePath);
+    task->setKernel(kernelName);
     Tasks.push_back(task);
+    return task;
 }
 
 bool ScheduleManager::isAddingTasksPossible() {
@@ -63,13 +66,16 @@ int ScheduleManager::getKernelCount() {
     return Tasks.size();
 }
 
-cl::Program::Sources ScheduleManager::convertSources(std::string file) {
-    cl::Program::Sources sources;
+cl::Program::Sources* ScheduleManager::convertSources(std::string file) {
+    cl::Program::Sources* sources = new cl::Program::Sources();
 
     ifstream sourceFile(file);
     string kernel_code(istreambuf_iterator<char>(sourceFile), (istreambuf_iterator<char>()));
-    sources.push_back({kernel_code.c_str(),kernel_code.length()});
 
+    char* cstr = new char[kernel_code.length()+1];
+    strcpy(cstr, kernel_code.c_str());
+
+    sources->push_back({cstr,kernel_code.length()+1});
     return sources;
 }
 
