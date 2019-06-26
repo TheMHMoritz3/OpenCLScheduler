@@ -39,7 +39,7 @@ namespace UI {
 
 		void askUserForArrayData(SCHEDULER::Task* task, SCHEDULER::Type type, int load);
 		std::vector<void*> askUserForIntegerArray(int load);
-		std::vector<void*> askUserForUIntegerArray(int load);
+		std::vector<void*> askUserForUIntegerArray(int load, SCHEDULER::Task* task);
 		std::vector<void*> askUserForCharArray(int load);
 		std::vector<void*> askUserForDoubleArray(int load);
 		std::vector<void*> askUserForFloatArray(int load);

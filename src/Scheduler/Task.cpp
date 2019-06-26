@@ -10,6 +10,7 @@ using namespace SCHEDULER;
 
 Task::Task(int id) {
     ID=id;
+    UnsignedIntValues=new std::vector<uint32_t*>();
 }
 
 int Task::getId() {
@@ -45,12 +46,12 @@ cl::Program::Sources* Task::getSources() {
     return Sources;
 }
 
-void Task::setReadBuffer(cl::Buffer readBuffer)
+void Task::setReadBuffer(cl::Buffer *readBuffer)
 {
 	ReadBuffer = readBuffer;
 }
 
-cl::Buffer SCHEDULER::Task::Task::readBuffer()
+cl::Buffer* Task::readBuffer()
 {
 	return ReadBuffer;
 }
@@ -104,4 +105,12 @@ void Task::setFilePath(std::string filePath) {
 
 std::string Task::getFilePath() {
     return FilePath;
+}
+
+std::vector<uint32_t*>* Task::getUintValues() {
+    return UnsignedIntValues;
+}
+
+void Task::addUINTItems(uint32_t *items) {
+    UnsignedIntValues->push_back(items);
 }

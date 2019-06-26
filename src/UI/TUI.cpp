@@ -247,7 +247,7 @@ void TUI::askUserForArrayData(SCHEDULER::Task* task, SCHEDULER::Type type, int l
 		data = askUserForIntegerArray(load);
 		break;
 	case SCHEDULER::UINT:
-		data = askUserForUIntegerArray(load);
+		data = askUserForUIntegerArray(load, task);
 		break;
 	case SCHEDULER::CHAR:
 		data = askUserForCharArray(load);
@@ -283,19 +283,21 @@ std::vector<void*> TUI::askUserForIntegerArray(int load)
 	return returnData;
 }
 
-std::vector<void*> TUI::askUserForUIntegerArray(int load)
+std::vector<void*> TUI::askUserForUIntegerArray(int load, SCHEDULER::Task* task)
 {
 	std::vector<void*> returnData;
 	uint32_t* values = new uint32_t[load];
 	for (int j = 0; j < load; j++) {
-		decorateNormalMessage("Entry: " + (char)j);
+		decorateNormalMessage("Float Entry: " + (char)j);
 		uint32_t value;
 		cin >> value;
 		values[j] = value;
 		cout << value<<endl;
 		returnData.emplace_back(&values[j]);
 		cout << &value << endl;
+        returnData.emplace_back(&values[j]);
 	}
+    task->addUINTItems(values);
 	return returnData;
 }
 

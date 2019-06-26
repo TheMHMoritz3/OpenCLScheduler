@@ -20,19 +20,20 @@ namespace SCHEDULER {
 		void setProgam(cl::Program program);
 		void setKernel(std::string kernelName);
 		void setLoad(int load);
-		void setReadBuffer(cl::Buffer readBuffer);
+		void setReadBuffer(cl::Buffer* readBuffer);
 		void setProgramSources(cl::Program::Sources *sources);
 		void addData(std::vector<void*> value, Type type);
 		void addDescription(std::string desc);
 		void setReturnDataType(Type type);
 		void setReturnData(std::vector<void*> data);
 		void setFilePath(std::string filePath);
+		void addUINTItems(uint32_t* items);
 
         int getId();
         std::pair<Type,std::vector<void*>> getReturnData();
         std::vector<std::pair<Type, std::vector<void*>>> getAllData();
         cl::Program::Sources *getSources();
-		cl::Buffer readBuffer();
+		cl::Buffer *readBuffer();
 		cl::Program getProgramm();
 		int getLoad();
         std::string getKernelName();
@@ -40,19 +41,21 @@ namespace SCHEDULER {
 		Type getReturnDataType();
 		Task operator=(Task other);
 		std::string getFilePath();
+		std::vector<uint32_t*>* getUintValues();
 
     private:
         std::string KernelName;
         std::string Description;
         cl::Program::Sources *Sources;
         cl::Program Program;
-		cl::Buffer ReadBuffer;
+		cl::Buffer *ReadBuffer;
         int ID;
 		int Load;
         std::vector<std::pair<Type, std::vector<void*>>> Data;
         std::vector<void*> ReturnData;
         Type ReturnDataType;
         std::string FilePath;
+        std::vector<uint32_t*>* UnsignedIntValues;
     };
 }
 
