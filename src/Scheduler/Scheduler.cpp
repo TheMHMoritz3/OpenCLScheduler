@@ -131,7 +131,7 @@ cl::Buffer Scheduler::generateBufferForUINT(std::vector<void*> data, cl::Context
 		uintRamDataToAdd[i] = *((uint32_t*)data.at(i));
 	}
 
-	std::cout<<"RamSize"<<sizeof(u_int32_t)*data.size();
+	std::cout<<"RamSize"<<sizeof(uint32_t)*data.size();
 
     cl::Buffer buffer(context,CL_MEM_READ_WRITE,sizeof(uint32_t)*data.size());
     int errorCode = queue.enqueueWriteBuffer(buffer, CL_TRUE, count, sizeof(uint32_t) * data.size(), uintRamDataToAdd);

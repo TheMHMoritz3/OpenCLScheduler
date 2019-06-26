@@ -19,6 +19,7 @@ StaticScheduler::StaticScheduler(std::vector<Task*> tasks, std::vector<Device> d
 
 void StaticScheduler::schedule() {
 	for (Device device : Devices) {
+		cout << "Device Name: " << device.getName();
 		cl::CommandQueue commandQueue(device.getDeviceContext(), device.getOclDevice(), ErrorCode);
 		CommandQueues.push_back(commandQueue);
 		for (Task* task : Tasks) {
