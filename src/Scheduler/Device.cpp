@@ -3,6 +3,8 @@
 //
 
 #include "Device.h"
+#include <iostream>
+
 using namespace std;
 using namespace SCHEDULER;
 
@@ -37,10 +39,6 @@ double Device::getDeviceUsage() {
     return 0.0;
 }
 
-void Device::schedule(Task tak, int computeUnit) {
-
-}
-
 int Device::getMaxComputeUnits() {
     return OclDevice.getInfo<CL_DEVICE_MAX_COMPUTE_UNITS>();
 }
@@ -49,9 +47,13 @@ double Device::getComputeUnitUsage(int ComputeUnit) {
     return 0;
 }
 
-void Device::generateProgramm(Task task) {
-    cl::Program program(OclContext, task.getSources());
-    task.setProgam(program);
+void Device::generateProgramm(Task* task) {
+
+    cl::Program program(OclContext, *task->getSources());
+	if(program.build({OclDevice})!=CL_SUCCESS)
+		cout << " Error building: " << program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(OclDevice) << "\n";
+
+    task->setProgam(program);
 }
 
 cl::Context Device::getDeviceContext() {

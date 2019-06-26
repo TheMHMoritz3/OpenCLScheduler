@@ -2,234 +2,260 @@
 // Created by moritz on 17.06.19.
 //
 
-#ifdef _WINDOWS
 #include <stdint.h>
-#endif // _WINDOWS
 
 
+#include <iostream>
 #include "Scheduler.h"
 
 using namespace SCHEDULER;
 
-Scheduler::Scheduler(std::vector<Task> tasks, std::vector<Device> devices) {
+Scheduler::Scheduler(std::vector<Task*> tasks, std::vector<Device> devices) {
     Tasks=tasks;
     Devices=devices;
 }
 
-void Scheduler::setRAMForCurrentTask(Task task, Device device, cl::Kernel kernel, cl::CommandQueue queue) {
-    int i = 0;
-    for(std::pair<Type,void*> value : task.getAllData()){
-        cl::Buffer buffer;
+void Scheduler::setRAMForCurrentTask(Task* task, Device device, cl::Kernel kernel, cl::CommandQueue queue) {
+    int count = 0;
+    for(std::pair<Type, std::vector<void*>> value : task->getAllData()){
+        cl::Buffer *buffer;
         switch (value.first){
             case Type::UINT:
-                buffer = generateBufferForUINT(value.second,device.getDeviceContext(),queue,i);
+                buffer = generateBufferForUINT(value.second,device.getDeviceContext(),queue,0);
                 break;
             case Type::INT:
-                buffer = generateBufferForINT(value.second,device.getDeviceContext(),queue,i);
+                buffer = generateBufferForINT(value.second,device.getDeviceContext(),queue,0);
                 break;
             case Type::CHAR:
-                buffer = generateBufferForCHAR(value.second,device.getDeviceContext(),queue,i);
+                buffer = generateBufferForCHAR(value.second,device.getDeviceContext(),queue,0);
                 break;
             case Type::DOUBLE:
-                buffer = generateBufferForDOUBLE(value.second,device.getDeviceContext(),queue,i);
+                buffer = generateBufferForDOUBLE(value.second,device.getDeviceContext(),queue,0);
                 break;
             case Type::FLOAT:
-                buffer=generateBufferForFLOAT(value.second,device.getDeviceContext(),queue,i);
+                buffer = generateBufferForFLOAT(value.second,device.getDeviceContext(),queue,0);
                 break;
             case Type::STRING:
-                buffer = generateBufferForCHAR(value.second,device.getDeviceContext(),queue,i);
+                buffer = generateBufferForCHAR(value.second,device.getDeviceContext(),queue,0);
                 break;
             default:
-                break;
+				break;
         }
-        kernel.setArg(i, buffer);
-        i++;
+        kernel.setArg(count, *buffer);
+		count++;
     }
 }
 
-void Scheduler::setRAMBufferForOutput(Task task, Device device, cl::Kernel kernel)
+void Scheduler::setRAMBufferForOutput(Task* task, Device device, cl::Kernel kernel)
 {
-	cl::Buffer buffer;
-	switch (task.getReturnDataType())
+	cl::Buffer *buffer;
+	switch (task->getReturnDataType())
 	{
 	case Type::UINT:
-#ifdef _WINDOWS
-		buffer = cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(uint32_t) * task.getLoad());
-#endif // _WINDOWS
-#ifndef _WINDOWS
-		buffer = cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(u_int32_t) * task.getLoad());
-#endif // !_WINDOWS
+		buffer = new cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(uint32_t) * task->getLoad());
 		break;
 	case Type::INT:
-		buffer = cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(int32_t) * task.getLoad());
+		buffer = new cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(int32_t) * task->getLoad());
 		break;
 	case Type::CHAR:
-		buffer = cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(char) * task.getLoad());
+		buffer = new cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(char) * task->getLoad());
 		break;
 	case Type::DOUBLE:
-		buffer = cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(double) * task.getLoad());
+		buffer = new cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(double) * task->getLoad());
 		break;
 	case Type::FLOAT:
-		buffer = cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(float) * task.getLoad());
+		buffer = new cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(float) * task->getLoad());
 		break;
 	case Type::STRING:
-		buffer = cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(char) * task.getLoad());
+		buffer = new cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(char) * task->getLoad());
 		break;
 	default:
 		break;
 	}
-	task.setReadBuffer(buffer);
-	kernel.setArg(task.getAllData().size() + 1, buffer);
+	task->setReadBuffer(buffer);
+	kernel.setArg(task->getAllData().size(), *buffer);
 }
 
-void Scheduler::setKernelLoad(Task task, Device device, cl::Kernel kernel)
+void Scheduler::setKernelLoad(Task* task, Device device, cl::Kernel kernel)
 {
-	cl::Buffer buffer_WORKLOAD(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(int));
-	kernel.setArg(task.getAllData().size() + 2, task.getLoad());
+	int ErrorCode=0;
+	cl::Buffer* buffer_WORKLOAD = new cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(int), &ErrorCode);
+	kernel.setArg(task->getAllData().size()+1,task->getLoad());
 }
 
-void Scheduler::enqueueTak(Task task, Device device, cl::CommandQueue commandQueue, cl::Kernel kernel)
+void Scheduler::enqueueTak(Task* task, Device device, cl::CommandQueue commandQueue, cl::Kernel kernel)
 {
-	commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(task.getAllData().size()),cl::NDRange(device.getMaxComputeUnits()));
+	commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(1),cl::NDRange(1));
 	commandQueue.finish();
 }
 
-void Scheduler::readDataFromTask(Task task, cl::CommandQueue commandQueue)
+void Scheduler::readDataFromTask(Task* task, cl::CommandQueue commandQueue)
 {
-	void* data;
-	switch (task.getReturnDataType())
+	std::vector<void*> data;
+	switch (task->getReturnDataType())
 	{
 	case Type::UINT:
-		data = readDataFromBufferForUINT(task, commandQueue, task.getAllData().size());
+		data = readDataFromBufferForUINT(task, commandQueue, 0);
 		break;
 	case Type::INT:
-		data = readDataFromBufferForINT(task, commandQueue, task.getAllData().size());
+		data = readDataFromBufferForINT(task, commandQueue, 0);
 		break;
 	case Type::CHAR:
-		data = readDataFromBufferForCHAR(task, commandQueue, task.getAllData().size());
+		data = readDataFromBufferForCHAR(task, commandQueue, 0);
 		break;
 	case Type::DOUBLE:
-		data = readDataFromBufferForDOUBLE(task, commandQueue, task.getAllData().size());
+		data = readDataFromBufferForDOUBLE(task, commandQueue, 0);
 		break;
 	case Type::FLOAT:
-		data = readDataFromBufferForFLOAT(task, commandQueue, task.getAllData().size());
+		data = readDataFromBufferForFLOAT(task, commandQueue, 0);
 		break;
 	case Type::STRING:
-		data = readDataFromBufferForCHAR(task, commandQueue, task.getAllData().size());
+		data = readDataFromBufferForCHAR(task, commandQueue, 0);
 		break;
 	default:
 		break;
 	}
-	task.setReturnData(data);
+	task->setReturnData(data);
 }
 
-cl::Buffer Scheduler::generateBufferForUINT(void *data, cl::Context context, cl::CommandQueue queue, int count) {
-#ifdef _WINDOWS
-	uint32_t* uintRamDataToAdd = (uint32_t*)data;
-#endif // _WINDOWS
-#ifndef _WINDOWS
-	u_int32_t* uintRamDataToAdd = (u_int32_t*)data;
-#endif // !_WINDOWS
-    cl::Buffer buffer(context,CL_MEM_READ_WRITE,sizeof(*uintRamDataToAdd));
-    queue.enqueueWriteBuffer(buffer, CL_TRUE, count, sizeof(*uintRamDataToAdd), uintRamDataToAdd);
+cl::Buffer* Scheduler::generateBufferForUINT(std::vector<void*> data, cl::Context context, cl::CommandQueue queue, int count) {
+	uint32_t* uintRamDataToAdd = new uint32_t[data.size()];
+
+	for (long unsigned int i = 0; i < data.size(); i++)
+	{
+		uintRamDataToAdd[i] = *((uint32_t*)data.at(i));
+	}
+
+
+    cl::Buffer *buffer=new cl::Buffer(context,CL_MEM_READ_WRITE,sizeof(uint32_t)*data.size());
+    queue.enqueueWriteBuffer(*buffer, CL_TRUE, count, sizeof(uint32_t) * data.size(), uintRamDataToAdd);
     return buffer;
 }
 
-cl::Buffer Scheduler::generateBufferForINT(void *data, cl::Context context, cl::CommandQueue queue, int count) {
-    int32_t* intRamDataToAdd = (int32_t *)data;
-    cl::Buffer buffer(context, CL_MEM_READ_WRITE, sizeof(*intRamDataToAdd));
-    queue.enqueueWriteBuffer(buffer,CL_TRUE,count, sizeof(*intRamDataToAdd),intRamDataToAdd);
+cl::Buffer* Scheduler::generateBufferForINT(std::vector<void*> data, cl::Context context, cl::CommandQueue queue, int count) {
+    int32_t* intRamDataToAdd = new int32_t[data.size()];
+
+	for (long unsigned int i = 0; i < data.size(); i++)
+	{
+		intRamDataToAdd[i] = *((int32_t*)data.at(i));
+	}
+
+    cl::Buffer* buffer=new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(int32_t) * data.size());
+    queue.enqueueWriteBuffer(*buffer,CL_TRUE,count, sizeof(int32_t) * data.size(),intRamDataToAdd);
     return buffer;
 }
 
-cl::Buffer Scheduler::generateBufferForCHAR(void *data, cl::Context context, cl::CommandQueue queue, int count) {
-    char* charRamDataToAdd = (char *)data;
-    cl::Buffer buffer(context, CL_MEM_READ_WRITE, sizeof(*charRamDataToAdd));
-    queue.enqueueWriteBuffer(buffer,CL_TRUE,count, sizeof(*charRamDataToAdd),charRamDataToAdd);
+cl::Buffer* Scheduler::generateBufferForCHAR(std::vector<void*> data, cl::Context context, cl::CommandQueue queue, int count) {
+    char* charRamDataToAdd = new char[data.size()];
+
+	for (long unsigned int i = 0; i < data.size(); i++)
+	{
+		charRamDataToAdd[i] = *((char*)data.at(i));
+	}
+
+    cl::Buffer *buffer = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(char) * data.size());
+    queue.enqueueWriteBuffer(*buffer,CL_TRUE,count, sizeof(char) * data.size(),charRamDataToAdd);
     return buffer;
 }
 
-cl::Buffer Scheduler::generateBufferForDOUBLE(void *data, cl::Context context, cl::CommandQueue queue, int count) {
-    double* doubleRamDataToAdd = (double *)data;
-    cl::Buffer buffer(context, CL_MEM_READ_WRITE, sizeof(*doubleRamDataToAdd));
-    queue.enqueueWriteBuffer(buffer,CL_TRUE,count, sizeof(*doubleRamDataToAdd),doubleRamDataToAdd);
+cl::Buffer* Scheduler::generateBufferForDOUBLE(std::vector<void*> data, cl::Context context, cl::CommandQueue queue, int count) {
+    double* doubleRamDataToAdd = new double[data.size()];
+
+	for (long unsigned int i = 0; i < data.size(); i++)
+	{
+		doubleRamDataToAdd[i] = *((double*)data.at(i));
+	}
+
+    cl::Buffer *buffer = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(double) * data.size());
+    queue.enqueueWriteBuffer(*buffer,CL_TRUE,count, sizeof(double) * data.size(),doubleRamDataToAdd);
     return buffer;
 }
 
-cl::Buffer Scheduler::generateBufferForFLOAT(void *data, cl::Context context, cl::CommandQueue queue, int count) {
-    float* doubleRamDataToAdd = (float *)data;
-    cl::Buffer buffer(context, CL_MEM_READ_WRITE, sizeof(*doubleRamDataToAdd));
-    queue.enqueueWriteBuffer(buffer,CL_TRUE,count, sizeof(*doubleRamDataToAdd),doubleRamDataToAdd);
+cl::Buffer* Scheduler::generateBufferForFLOAT(std::vector<void*> data, cl::Context context, cl::CommandQueue queue, int count) {
+    float* floatRamDataToAdd = new float[data.size()];
+
+	for (long unsigned int i = 0; i < data.size(); i++)
+	{
+		floatRamDataToAdd[i] = *((float*)data.at(i));
+	}
+
+    cl::Buffer *buffer = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(float) * data.size());
+    queue.enqueueWriteBuffer(*buffer,CL_TRUE,count, sizeof(float) * data.size(), floatRamDataToAdd);
     return buffer;
 }
 
-void* Scheduler::readDataFromBufferForUINT(Task task, cl::CommandQueue queue, int count)
+std::vector<void*> Scheduler::readDataFromBufferForUINT(Task* task, cl::CommandQueue queue, int count)
 {
-#ifdef _WINDOWS
-	uint32_t* data = {};
-	uint32_t* copiedData = new uint32_t[task.getLoad()];
-	queue.enqueueReadBuffer(task.readBuffer(), CL_TRUE,count, sizeof(uint32_t) * task.getLoad(),data);
-#endif // _WINDOWS
-#ifndef _WINDOWS
-	u_int32_t* data = {};
-	u_int32_t* copiedData = new u_int32_t[task.getLoad()];
-	queue.enqueueReadBuffer(task.readBuffer(), CL_TRUE, count, sizeof(u_int32_t) * task.getLoad(), data);
-#endif // !_WINDOWS
-	for (int i = 0; i < task.getLoad(); i++) {
+	uint32_t* data = new uint32_t[task->getLoad()];
+	uint32_t* copiedData = new uint32_t[task->getLoad()];
+	std::vector<void*> returnData;
+	queue.enqueueReadBuffer(*task->readBuffer(), CL_TRUE,count, sizeof(uint32_t) * task->getLoad(),data);
+	queue.finish();
+	for (int i = 0; i < task->getLoad(); i++) {
 		copiedData[i] = data[i];
+		void* value = &copiedData[i];
+		returnData.emplace_back(value);
 	}
-	void* voidData = copiedData;
-	return voidData;
+	return returnData;
 }
 
-void* Scheduler::readDataFromBufferForINT(Task task, cl::CommandQueue queue, int count)
+std::vector<void*> Scheduler::readDataFromBufferForINT(Task* task, cl::CommandQueue queue, int count)
 {
-	int32_t* data = {};
-	int32_t* copiedData = new int32_t[task.getLoad()];
-	queue.enqueueReadBuffer(task.readBuffer(), CL_TRUE, count, sizeof(int32_t) * task.getLoad(), data);
-
-	for (int i = 0; i < task.getLoad(); i++) {
+	int32_t* data = new int32_t[task->getLoad()];
+	int32_t* copiedData = new int32_t[task->getLoad()];
+	std::vector<void*> returnData;
+	queue.enqueueReadBuffer(*task->readBuffer(), CL_TRUE, count, sizeof(int32_t) * task->getLoad(), data);
+	queue.finish();
+	for (int i = 0; i < task->getLoad(); i++) {
 		copiedData[i] = data[i];
+		void* value = &copiedData[i];
+		returnData.emplace_back(value);
 	}
-	void* voidData = copiedData;
-	return voidData;
+	return returnData;
 }
 
-void* Scheduler::readDataFromBufferForCHAR(Task task, cl::CommandQueue queue, int count)
+std::vector<void*> Scheduler::readDataFromBufferForCHAR(Task* task, cl::CommandQueue queue, int count)
 {
-	char* data = {};
-	char* copiedData = new char[task.getLoad()];
-	queue.enqueueReadBuffer(task.readBuffer(), CL_TRUE, count, sizeof(char) * task.getLoad(), data);
-
-	for (int i = 0; i < task.getLoad(); i++) {
+	char* data = new char[task->getLoad()];
+	char* copiedData = new char[task->getLoad()];
+	std::vector<void*> returnData;
+	queue.enqueueReadBuffer(*task->readBuffer(), CL_TRUE, count, sizeof(char) * task->getLoad(), data);
+	queue.finish();
+	for (int i = 0; i < task->getLoad(); i++) {
 		copiedData[i] = data[i];
+		void* value = &copiedData[i];
+		returnData.emplace_back(value);
 	}
-	void* voidData = copiedData;
-	return voidData;
+	return returnData;
 }
 
-void* Scheduler::readDataFromBufferForDOUBLE(Task task, cl::CommandQueue queue, int count)
+std::vector<void*> Scheduler::readDataFromBufferForDOUBLE(Task* task, cl::CommandQueue queue, int count)
 {
-	double* data = {};
-	double* copiedData = new double[task.getLoad()];
-	queue.enqueueReadBuffer(task.readBuffer(), CL_TRUE, count, sizeof(double) * task.getLoad(), data);
-
-	for (int i = 0; i < task.getLoad(); i++) {
+	double* data = new double[task->getLoad()];
+	double* copiedData = new double[task->getLoad()];
+	std::vector<void*> returnData;
+	queue.enqueueReadBuffer(*task->readBuffer(), CL_TRUE, count, sizeof(double) * task->getLoad(), data);
+	queue.finish();
+	for (int i = 0; i < task->getLoad(); i++) {
 		copiedData[i] = data[i];
+		void* value = &copiedData[i];
+		returnData.emplace_back(value);
 	}
-	void* voidData = copiedData;
-	return voidData;
+	return returnData;
 }
 
-void* Scheduler::readDataFromBufferForFLOAT(Task task, cl::CommandQueue queue, int count)
+std::vector<void*> Scheduler::readDataFromBufferForFLOAT(Task* task, cl::CommandQueue queue, int count)
 {
-	float* data = {};
-	float* copiedData = new float[task.getLoad()];
-	queue.enqueueReadBuffer(task.readBuffer(), CL_TRUE, count, sizeof(float) * task.getLoad(), data);
+	float* data = new  float[task->getLoad()];
+	float* copiedData = new float[task->getLoad()];
+	std::vector<void*> returnData;
+	queue.enqueueReadBuffer(*task->readBuffer(), CL_TRUE, count, sizeof(float) * task->getLoad(), data);
+	queue.finish();
 
-	for (int i = 0; i < task.getLoad(); i++) {
+	for (int i = 0; i < task->getLoad(); i++) {
 		copiedData[i] = data[i];
+		void* value = &copiedData[i];
+		returnData.emplace_back(value);
 	}
-	void* voidData = copiedData;
-	return voidData;
+	return returnData;
 }
