@@ -100,7 +100,7 @@ void TUI::clear()
 #ifdef _WINDOWS
 	system("cls");
 #else
-//	system("clear");
+	system("clear");
 #endif // !_WINDOWS
 
 }
@@ -274,7 +274,7 @@ std::vector<void*> TUI::askUserForIntegerArray(int load)
 	std::vector<void*> returnData;
 	int32_t* values = new int32_t[load];
 	for (int j = 0; j < load; j++) {
-		decorateNormalMessage("Entry: " + (char)j);
+		cout <<j<< ". Integer Entry: "<<endl;
 		int value;
 		cin >> value;
 		values[j] = value;
@@ -288,7 +288,7 @@ std::vector<void*> TUI::askUserForUIntegerArray(int load, SCHEDULER::Task* task)
 	std::vector<void*> returnData;
 	uint32_t* values = new uint32_t[load];
 	for (int j = 0; j < load; j++) {
-		decorateNormalMessage("Float Entry: " + (char)j);
+		cout << j << ". U-Integer Entry: " << endl;
 		uint32_t value;
 		cin >> value;
 		values[j] = value;
@@ -306,7 +306,7 @@ std::vector<void*> TUI::askUserForCharArray(int load)
 	std::vector<void*> returnData;
 	char* values = new char[load];
 	for (int j = 0; j < load; j++) {
-		decorateNormalMessage("Entry: " + (char)j);
+		cout << j << ". Char Entry: " << endl;
 		char value;
 		cin >> value;
 		values[j] = value;
@@ -320,7 +320,7 @@ std::vector<void*> TUI::askUserForDoubleArray(int load)
 	std::vector<void*> returnData;
 	double* values = new double[load];
 	for (int j = 0; j < load; j++) {
-		decorateNormalMessage("Entry: " + (char)j);
+		cout << j << ". Double Entry: " << endl;
 		double value;
 		cin >> value;
 		values[j] = value;
@@ -334,7 +334,7 @@ std::vector<void*> TUI::askUserForFloatArray(int load)
 	std::vector<void*> returnData;
 	float* values = new float[load];
 	for (int j = 0; j < load; j++) {
-		decorateNormalMessage("Entry: " + (char)j);
+		cout << j << ". Float Entry: " << endl;
 		float value;
 		cin >> value;
 		values[j] = value;
