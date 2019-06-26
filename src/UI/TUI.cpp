@@ -100,7 +100,7 @@ void TUI::clear()
 #ifdef _WINDOWS
 	system("cls");
 #else
-	system("clear");
+//	system("clear");
 #endif // !_WINDOWS
 
 }

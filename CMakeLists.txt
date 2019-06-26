@@ -1,6 +1,7 @@
 cmake_minimum_required (VERSION 3.10)
 
 set (CMAKE_CXX_COMPILER /usr/bin/g++)
+STRING(REPLACE "-O2" "-Od" CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_RELEASE})
 
 project(CAN DESCRIPTION "C3CAN Interface Libary")
 # The version number.

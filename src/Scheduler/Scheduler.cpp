@@ -2,9 +2,7 @@
 // Created by moritz on 17.06.19.
 //
 
-#ifdef _WINDOWS
 #include <stdint.h>
-#endif // _WINDOWS
 
 
 #include <iostream>
@@ -89,7 +87,7 @@ void Scheduler::setKernelLoad(Task* task, Device device, cl::Kernel kernel)
 
 void Scheduler::enqueueTak(Task* task, Device device, cl::CommandQueue commandQueue, cl::Kernel kernel)
 {
-	commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(1/*task->getLoad()*/),cl::NDRange(1/*device.getMaxComputeUnits()*/));
+	commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(1),cl::NDRange(1));
 	commandQueue.finish();
 }
 
