@@ -7,9 +7,9 @@ __kernel void xAxis(global const unsigned int* A, global float* B, const int WLO
 	int i;
 	for (i = 0; i < WLOAD; ++i)
 	{
+	    printf("WLOAD: %d \n", WLOAD);
 		B[gid + i]= asin(alpha(A[gid+i]));
 	}
-	printf("Done");
 }
 
 __kernel void yAxis(global const unsigned int* A, global float* B, const int WLOAD) {

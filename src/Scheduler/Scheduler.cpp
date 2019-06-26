@@ -43,7 +43,8 @@ void Scheduler::setRAMForCurrentTask(Task* task, Device device, cl::Kernel kerne
             default:
                 break;
         }
-        kernel.setArg(count, buffer);
+        int returnvlaue = kernel.setArg(count, buffer);
+        std::cout<<"Error Code: "<<returnvlaue;
 		count++;
     }
 }
@@ -54,12 +55,7 @@ void Scheduler::setRAMBufferForOutput(Task* task, Device device, cl::Kernel kern
 	switch (task->getReturnDataType())
 	{
 	case Type::UINT:
-#ifdef _WINDOWS
 		buffer = cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(uint32_t) * task->getLoad());
-#endif // _WINDOWS
-#ifndef _WINDOWS
-		buffer = cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(u_int32_t) * task->getLoad());
-#endif // !_WINDOWS
 		break;
 	case Type::INT:
 		buffer = cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(int32_t) * task->getLoad());
@@ -88,6 +84,7 @@ void Scheduler::setKernelLoad(Task* task, Device device, cl::Kernel kernel)
 	int ErrorCode=0;
 	cl::Buffer buffer_WORKLOAD(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(int), &ErrorCode);
 	kernel.setArg(task->getAllData().size()+1,task->getLoad());
+	std::cout<<"ErrorCode: "<<ErrorCode;
 }
 
 void Scheduler::enqueueTak(Task* task, Device device, cl::CommandQueue commandQueue, cl::Kernel kernel)
@@ -128,20 +125,24 @@ void Scheduler::readDataFromTask(Task* task, cl::CommandQueue commandQueue)
 cl::Buffer Scheduler::generateBufferForUINT(std::vector<void*> data, cl::Context context, cl::CommandQueue queue, int count) {
 	uint32_t* uintRamDataToAdd = new uint32_t[data.size()];
 
-	for (int i = 0; i < data.size(); i++)
+	for (long unsigned int i = 0; i < data.size(); i++)
 	{
+	    std::cout<<"Value: "<<*((uint32_t*)data.at(i))<<std::endl;
 		uintRamDataToAdd[i] = *((uint32_t*)data.at(i));
 	}
 
+	std::cout<<"RamSize"<<sizeof(u_int32_t)*data.size();
+
     cl::Buffer buffer(context,CL_MEM_READ_WRITE,sizeof(uint32_t)*data.size());
-    queue.enqueueWriteBuffer(buffer, CL_TRUE, count, sizeof(uint32_t) * data.size(), uintRamDataToAdd);
+    int errorCode = queue.enqueueWriteBuffer(buffer, CL_TRUE, count, sizeof(uint32_t) * data.size(), uintRamDataToAdd);
+    std::cout <<"Error code: "<<errorCode;
     return buffer;
 }
 
 cl::Buffer Scheduler::generateBufferForINT(std::vector<void*> data, cl::Context context, cl::CommandQueue queue, int count) {
     int32_t* intRamDataToAdd = new int32_t[data.size()];
 
-	for (int i = 0; i < data.size(); i++)
+	for (long unsigned int i = 0; i < data.size(); i++)
 	{
 		intRamDataToAdd[i] = *((int32_t*)data.at(i));
 	}
@@ -154,10 +155,10 @@ cl::Buffer Scheduler::generateBufferForINT(std::vector<void*> data, cl::Context 
 cl::Buffer Scheduler::generateBufferForCHAR(std::vector<void*> data, cl::Context context, cl::CommandQueue queue, int count) {
     char* charRamDataToAdd = new char[data.size()];
 
-	for (int i = 0; i < data.size(); i++)
+	for (long unsigned int i = 0; i < data.size(); i++)
 	{
 		charRamDataToAdd[i] = *((char*)data.at(i));
-	};
+	}
 
     cl::Buffer buffer(context, CL_MEM_READ_WRITE, sizeof(char) * data.size());
     queue.enqueueWriteBuffer(buffer,CL_TRUE,count, sizeof(char) * data.size(),charRamDataToAdd);
@@ -167,10 +168,10 @@ cl::Buffer Scheduler::generateBufferForCHAR(std::vector<void*> data, cl::Context
 cl::Buffer Scheduler::generateBufferForDOUBLE(std::vector<void*> data, cl::Context context, cl::CommandQueue queue, int count) {
     double* doubleRamDataToAdd = new double[data.size()];
 
-	for (int i = 0; i < data.size(); i++)
+	for (long unsigned int i = 0; i < data.size(); i++)
 	{
 		doubleRamDataToAdd[i] = *((double*)data.at(i));
-	};
+	}
 
     cl::Buffer buffer(context, CL_MEM_READ_WRITE, sizeof(double) * data.size());
     queue.enqueueWriteBuffer(buffer,CL_TRUE,count, sizeof(double) * data.size(),doubleRamDataToAdd);
@@ -180,10 +181,10 @@ cl::Buffer Scheduler::generateBufferForDOUBLE(std::vector<void*> data, cl::Conte
 cl::Buffer Scheduler::generateBufferForFLOAT(std::vector<void*> data, cl::Context context, cl::CommandQueue queue, int count) {
     float* floatRamDataToAdd = new float[data.size()];
 
-	for (int i = 0; i < data.size(); i++)
+	for (long unsigned int i = 0; i < data.size(); i++)
 	{
 		floatRamDataToAdd[i] = *((float*)data.at(i));
-	};
+	}
 
     cl::Buffer buffer(context, CL_MEM_READ_WRITE, sizeof(float) * data.size());
     queue.enqueueWriteBuffer(buffer,CL_TRUE,count, sizeof(float) * data.size(), floatRamDataToAdd);

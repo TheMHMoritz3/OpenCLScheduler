@@ -135,7 +135,7 @@ void TUI::decorateValueData(SCHEDULER::Task* task)
 
 void TUI::decorateFloatValue(SCHEDULER::Task* task, std::vector<void*> data)
 {
-	for (int i = 0; i < data.size(); i++) {
+	for (long unsigned int i = 0; i < data.size(); i++) {
 		float value = *((float*)data.at(i));
         cout << i << ". Return Value: \t"<<value<<endl;
     }
@@ -143,7 +143,7 @@ void TUI::decorateFloatValue(SCHEDULER::Task* task, std::vector<void*> data)
 
 void TUI::decorateIntValue(SCHEDULER::Task* task, std::vector<void*> data)
 {
-	for (int i = 0; i < data.size(); i++) {
+	for (long unsigned int i = 0; i < data.size(); i++) {
 		int32_t value = *((int32_t*)data.at(i));
 		cout << i << ". Return Value: \t" << value << endl;
 	}
@@ -151,7 +151,7 @@ void TUI::decorateIntValue(SCHEDULER::Task* task, std::vector<void*> data)
 
 void TUI::decorateUIntValue(SCHEDULER::Task* task, std::vector<void*> data)
 {
-	for (int i = 0; i < data.size(); i++) {
+	for (long unsigned int i = 0; i < data.size(); i++) {
 		uint32_t value = *((uint32_t*)data.at(i));
 		cout << i << ". Return Value: \t" << value << endl;
 	}
@@ -159,7 +159,7 @@ void TUI::decorateUIntValue(SCHEDULER::Task* task, std::vector<void*> data)
 
 void TUI::decorateCharValue(SCHEDULER::Task* task, std::vector<void*> data)
 {
-	for (int i = 0; i < data.size(); i++) {
+	for (long unsigned int i = 0; i < data.size(); i++) {
 		char value = *((char*)data.at(i));
 		cout << i << ". Return Value: \t" << value << endl;
 	}
@@ -167,7 +167,7 @@ void TUI::decorateCharValue(SCHEDULER::Task* task, std::vector<void*> data)
 
 void TUI::decorateDoubleValue(SCHEDULER::Task* task, std::vector<void*> data)
 {
-	for (int i = 0; i < data.size(); i++) {
+	for (long unsigned int i = 0; i < data.size(); i++) {
 		double value = *((double*)data.at(i));
 		cout << i << ". Return Value: \t" << value << endl;
 	}
