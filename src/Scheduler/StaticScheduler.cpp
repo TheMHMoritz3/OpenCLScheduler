@@ -19,7 +19,7 @@ StaticScheduler::StaticScheduler(std::vector<Task*> tasks, std::vector<Device> d
 
 void StaticScheduler::schedule() {
 	for (Device device : Devices) {
-		cout << "Device Name: " << device.getName();
+		cout << "Device Name: " << device.getName()<<endl;
 		cl::CommandQueue commandQueue(device.getDeviceContext(), device.getOclDevice(), ErrorCode);
 		CommandQueues.push_back(commandQueue);
 		for (Task* task : Tasks) {
@@ -34,7 +34,7 @@ void StaticScheduler::schedule() {
 				readDataFromTask(task, commandQueue);
 			}
 			else
-				cout << "Kernel Creation Resolved Error: " << ErrorCode;
+				cout << "Kernel Creation Resolved Error: " << ErrorCode<<endl;
 		}
 	}
 }
