@@ -39,9 +39,9 @@ void Scheduler::setRAMForCurrentTask(Task* task, Device device, cl::Kernel kerne
                 buffer = generateBufferForCHAR(value.second,device.getDeviceContext(),queue,0);
                 break;
             default:
-                break;
+				break;
         }
-        int returnvlaue = kernel.setArg(count, buffer);
+        int returnvlaue = kernel.setArg(count, *buffer);
         std::cout<<"Error Code: "<<returnvlaue;
 		count++;
     }
@@ -74,7 +74,7 @@ void Scheduler::setRAMBufferForOutput(Task* task, Device device, cl::Kernel kern
 		break;
 	}
 	task->setReadBuffer(buffer);
-	kernel.setArg(task->getAllData().size(), &buffer);
+	kernel.setArg(task->getAllData().size(), *buffer);
 }
 
 void Scheduler::setKernelLoad(Task* task, Device device, cl::Kernel kernel)
