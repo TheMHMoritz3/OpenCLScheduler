@@ -29,16 +29,16 @@ namespace SCHEDULER {
 		void enqueueTak(Task* task, Device device, cl::CommandQueue commandQueue, cl::Kernel kernel);
 		void readDataFromTask(Task* task, cl::CommandQueue commandQueue);
     private:
-        cl::Buffer generateBufferForUINT(void* data,cl::Context context ,cl::CommandQueue queue, int count);
-        cl::Buffer generateBufferForINT(void* data,cl::Context context ,cl::CommandQueue queue, int count);
-        cl::Buffer generateBufferForCHAR(void* data,cl::Context context ,cl::CommandQueue queue, int count);
-        cl::Buffer generateBufferForDOUBLE(void* data,cl::Context context ,cl::CommandQueue queue, int count);
-        cl::Buffer generateBufferForFLOAT(void* data,cl::Context context ,cl::CommandQueue queue, int count);
-		void* readDataFromBufferForUINT(Task* task, cl::CommandQueue queue, int count);
-		void* readDataFromBufferForINT(Task* task, cl::CommandQueue queue, int count);
-		void* readDataFromBufferForCHAR(Task* task, cl::CommandQueue queue, int count);
-		void* readDataFromBufferForDOUBLE(Task* task, cl::CommandQueue queue, int count);
-		void* readDataFromBufferForFLOAT(Task* task, cl::CommandQueue queue, int count);
+        cl::Buffer generateBufferForUINT(std::vector<void*>,cl::Context context ,cl::CommandQueue queue, int count);
+        cl::Buffer generateBufferForINT(std::vector<void*>,cl::Context context ,cl::CommandQueue queue, int count);
+        cl::Buffer generateBufferForCHAR(std::vector<void*>,cl::Context context ,cl::CommandQueue queue, int count);
+        cl::Buffer generateBufferForDOUBLE(std::vector<void*>,cl::Context context ,cl::CommandQueue queue, int count);
+        cl::Buffer generateBufferForFLOAT(std::vector<void*>,cl::Context context ,cl::CommandQueue queue, int count);
+		std::vector<void*> readDataFromBufferForUINT(Task* task, cl::CommandQueue queue, int count);
+		std::vector<void*> readDataFromBufferForINT(Task* task, cl::CommandQueue queue, int count);
+		std::vector<void*> readDataFromBufferForCHAR(Task* task, cl::CommandQueue queue, int count);
+		std::vector<void*> readDataFromBufferForDOUBLE(Task* task, cl::CommandQueue queue, int count);
+		std::vector<void*> readDataFromBufferForFLOAT(Task* task, cl::CommandQueue queue, int count);
     };
 }
 

@@ -75,7 +75,6 @@ cl::Program::Sources* ScheduleManager::convertSources(std::string file) {
     strcpy(cstr, kernel_code.c_str());
 
     sources->push_back({cstr,kernel_code.length()+1});
-    //cout<<"ScheduleManager::convertSources"<<sources->at(0).first<<endl;
     return sources;
 }
 

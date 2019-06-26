@@ -6,6 +6,7 @@
 #include "../Scheduler/Task.h"
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 using namespace UI;
 using namespace std;
@@ -132,49 +133,44 @@ void TUI::decorateValueData(SCHEDULER::Task* task)
 	}
 }
 
-void TUI::decorateFloatValue(SCHEDULER::Task* task,void* data)
+void TUI::decorateFloatValue(SCHEDULER::Task* task, std::vector<void*> data)
 {
-	float* value = (float*)data;
-    for (int i = 0; i < task->getLoad(); i++) {
-        cout << i << ". Return Value: \t"<<value[i]<<endl;
-
+	for (int i = 0; i < data.size(); i++) {
+		float value = *((float*)data.at(i));
+        cout << i << ". Return Value: \t"<<value<<endl;
     }
 }
 
-void TUI::decorateIntValue(SCHEDULER::Task* task,void* data)
+void TUI::decorateIntValue(SCHEDULER::Task* task, std::vector<void*> data)
 {
-	uint32_t* value = (uint32_t*)data;
-    for (int i = 0; i < task->getLoad(); i++) {
-        cout << i << ". Return Value: \t"<<value[i]<<endl;
-
-    }
+	for (int i = 0; i < data.size(); i++) {
+		int32_t value = *((int32_t*)data.at(i));
+		cout << i << ". Return Value: \t" << value << endl;
+	}
 }
 
-void TUI::decorateUIntValue(SCHEDULER::Task* task,void* data)
+void TUI::decorateUIntValue(SCHEDULER::Task* task, std::vector<void*> data)
 {
-	uint32_t* value = (uint32_t*)data;
-    for (int i = 0; i < task->getLoad(); i++) {
-        cout << i << ". Return Value: \t"<<value[i]<<endl;
-
-    }
+	for (int i = 0; i < data.size(); i++) {
+		uint32_t value = *((uint32_t*)data.at(i));
+		cout << i << ". Return Value: \t" << value << endl;
+	}
 }
 
-void TUI::decorateCharValue(SCHEDULER::Task* task,void* data)
+void TUI::decorateCharValue(SCHEDULER::Task* task, std::vector<void*> data)
 {
-	char* value = (char*)data;
-    for (int i = 0; i < task->getLoad(); i++) {
-        cout << i << ". Return Value: \t"<<value[i]<<endl;
-
-    }
+	for (int i = 0; i < data.size(); i++) {
+		char value = *((char*)data.at(i));
+		cout << i << ". Return Value: \t" << value << endl;
+	}
 }
 
-void TUI::decorateDoubleValue(SCHEDULER::Task* task,void* data)
+void TUI::decorateDoubleValue(SCHEDULER::Task* task, std::vector<void*> data)
 {
-	double* value = (double*)data;
-    for (int i = 0; i < task->getLoad(); i++) {
-        cout << i << ". Return Value: \t"<<value[i]<<endl;
-
-    }
+	for (int i = 0; i < data.size(); i++) {
+		double value = *((double*)data.at(i));
+		cout << i << ". Return Value: \t" << value << endl;
+	}
 }
 
 
@@ -244,7 +240,7 @@ SCHEDULER::Type TUI::getTypeFromUserForArg()
 void TUI::askUserForArrayData(SCHEDULER::Task* task, SCHEDULER::Type type, int load)
 {
 	clear();
-	void* data = NULL;
+	std::vector<void*> data;
 
 	switch (type) {
 	case SCHEDULER::INT:
@@ -273,62 +269,74 @@ void TUI::askUserForArrayData(SCHEDULER::Task* task, SCHEDULER::Type type, int l
 	task->addData(data, type);
 }
 
-void* TUI::askUserForIntegerArray(int load)
+std::vector<void*> TUI::askUserForIntegerArray(int load)
 {
+	std::vector<void*> returnData;
 	int32_t* values = new int32_t[load];
 	for (int j = 0; j < load; j++) {
-		decorateNormalMessage("Entry: " + j);
+		decorateNormalMessage("Entry: " + (char)j);
 		int value;
 		cin >> value;
 		values[j] = value;
+		returnData.emplace_back(&value);
 	}
-	return values;
+	return returnData;
 }
 
-void* TUI::askUserForUIntegerArray(int load)
+std::vector<void*> TUI::askUserForUIntegerArray(int load)
 {
+	std::vector<void*> returnData;
 	uint32_t* values = new uint32_t[load];
 	for (int j = 0; j < load; j++) {
-		decorateNormalMessage("Entry: " + j);
-		int value;
+		decorateNormalMessage("Entry: " + (char)j);
+		uint32_t value;
 		cin >> value;
 		values[j] = value;
+		cout << value<<endl;
+		returnData.emplace_back(&values[j]);
+		cout << &value << endl;
 	}
-	return values;
+	return returnData;
 }
 
-void* TUI::askUserForCharArray(int load)
+std::vector<void*> TUI::askUserForCharArray(int load)
 {
+	std::vector<void*> returnData;
 	char* values = new char[load];
 	for (int j = 0; j < load; j++) {
-		decorateNormalMessage("Entry: " + j);
-		int value;
+		decorateNormalMessage("Entry: " + (char)j);
+		char value;
 		cin >> value;
 		values[j] = value;
+		returnData.emplace_back(&values[j]);
 	}
-	return values;
+	return returnData;
 }
 
-void* TUI::askUserForDoubleArray(int load)
+std::vector<void*> TUI::askUserForDoubleArray(int load)
 {
+	std::vector<void*> returnData;
 	double* values = new double[load];
 	for (int j = 0; j < load; j++) {
-		decorateNormalMessage("Entry: " + j);
-		int value;
+		decorateNormalMessage("Entry: " + (char)j);
+		double value;
 		cin >> value;
 		values[j] = value;
+		returnData.emplace_back(&values[j]);
 	}
-	return values;
+	return returnData;
 }
 
-void* TUI::askUserForFloatArray(int load)
+std::vector<void*> TUI::askUserForFloatArray(int load)
 {
+	std::vector<void*> returnData;
 	float* values = new float[load];
 	for (int j = 0; j < load; j++) {
-		decorateNormalMessage("Entry: " + j);
-		int value;
+		decorateNormalMessage("Entry: " + (char)j);
+		float value;
 		cin >> value;
 		values[j] = value;
+		returnData.emplace_back(&values[j]);
 	}
-	return values;
+	return returnData;
 }

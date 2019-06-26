@@ -8,6 +8,7 @@
 #include "../Scheduler/ScheduleManager.h"
 #include "../Scheduler/Task.h"
 #include <string>
+#include <vector>
 
 namespace UI {
     class TUI {
@@ -26,22 +27,22 @@ namespace UI {
 
 		void decorateValueData(SCHEDULER::Task* task);
 
-		void decorateFloatValue(SCHEDULER::Task* task,void* data);
-		void decorateIntValue(SCHEDULER::Task* task,void* data);
-		void decorateUIntValue(SCHEDULER::Task* task,void* data);
-		void decorateCharValue(SCHEDULER::Task* task,void* data);
-		void decorateDoubleValue(SCHEDULER::Task* task,void* data);
+		void decorateFloatValue(SCHEDULER::Task* task,std::vector<void*> data);
+		void decorateIntValue(SCHEDULER::Task* task, std::vector<void*> data);
+		void decorateUIntValue(SCHEDULER::Task* task, std::vector<void*> data);
+		void decorateCharValue(SCHEDULER::Task* task, std::vector<void*> data);
+		void decorateDoubleValue(SCHEDULER::Task* task, std::vector<void*> data);
 
 		void askUserReturnData(SCHEDULER::Task* task);
 		void decorateUnitTestingMode(SCHEDULER::Task* task);
 		SCHEDULER::Type getTypeFromUserForArg();
 
 		void askUserForArrayData(SCHEDULER::Task* task, SCHEDULER::Type type, int load);
-		void* askUserForIntegerArray(int load);
-		void* askUserForUIntegerArray(int load);
-		void* askUserForCharArray(int load);
-		void* askUserForDoubleArray(int load);
-		void* askUserForFloatArray(int load);
+		std::vector<void*> askUserForIntegerArray(int load);
+		std::vector<void*> askUserForUIntegerArray(int load);
+		std::vector<void*> askUserForCharArray(int load);
+		std::vector<void*> askUserForDoubleArray(int load);
+		std::vector<void*> askUserForFloatArray(int load);
 
         SCHEDULER::ScheduleManager* ScheduleManager;
 		bool IsInUnitTestingMode;

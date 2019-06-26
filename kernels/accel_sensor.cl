@@ -5,12 +5,11 @@ float alpha(int input) {
 __kernel void xAxis(global const unsigned int* A, global float* B, const int WLOAD) {
 	int gid = get_global_id(0) * WLOAD;
 	int i;
-
 	for (i = 0; i < WLOAD; ++i)
 	{
 		B[gid + i]= asin(alpha(A[gid+i]));
-		printf ("floats: %4.2f \n", B[gid + i]);
 	}
+	printf("Done");
 }
 
 __kernel void yAxis(global const unsigned int* A, global float* B, const int WLOAD) {

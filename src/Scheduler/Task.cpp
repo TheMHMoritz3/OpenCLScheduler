@@ -10,7 +10,6 @@ using namespace SCHEDULER;
 
 Task::Task(int id) {
     ID=id;
-    ReturnData=NULL;
 }
 
 int Task::getId() {
@@ -35,7 +34,6 @@ void Task::addDescription(std::string desc) {
 }
 
 void Task::setProgramSources(cl::Program::Sources* sources) {
-    //std::cout<<"Task::setProgrammSources"<<sources->at(0).first<<std::endl;
     Sources=sources;
 }
 
@@ -70,12 +68,12 @@ std::string Task::getKernelName() {
     return KernelName;
 }
 
-void Task::addData(void *value, Type type) {
+void Task::addData(std::vector<void*> value, Type type) {
     Data.emplace_back(type,value);
 }
 
-std::pair<Type, void *> Task::getReturnData() {
-    return std::pair<Type, void*>(ReturnDataType,ReturnData);
+std::pair<Type, std::vector<void *>> Task::getReturnData() {
+    return std::pair<Type, std::vector<void*>>(ReturnDataType,ReturnData);
 }
 
 void Task::setReturnDataType(Type type) {
@@ -87,7 +85,7 @@ Type Task::getReturnDataType()
 	return ReturnDataType;
 }
 
-std::vector<std::pair<Type, void *>> Task::getAllData() {
+std::vector<std::pair<Type, std::vector<void*>>> Task::getAllData() {
     return Data;
 }
 
@@ -95,7 +93,7 @@ Task Task::operator=(Task other) {
     return other;
 }
 
-void Task::setReturnData(void* data)
+void Task::setReturnData(std::vector<void*> data)
 {
 	ReturnData = data;
 }

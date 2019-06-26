@@ -22,15 +22,15 @@ namespace SCHEDULER {
 		void setLoad(int load);
 		void setReadBuffer(cl::Buffer readBuffer);
 		void setProgramSources(cl::Program::Sources *sources);
-		void addData(void* value, Type type);
+		void addData(std::vector<void*> value, Type type);
 		void addDescription(std::string desc);
 		void setReturnDataType(Type type);
-		void setReturnData(void* data);
+		void setReturnData(std::vector<void*> data);
 		void setFilePath(std::string filePath);
 
         int getId();
-        std::pair<Type,void*> getReturnData();
-        std::vector<std::pair<Type, void*>> getAllData();
+        std::pair<Type,std::vector<void*>> getReturnData();
+        std::vector<std::pair<Type, std::vector<void*>>> getAllData();
         cl::Program::Sources *getSources();
 		cl::Buffer readBuffer();
 		cl::Program getProgramm();
@@ -49,8 +49,8 @@ namespace SCHEDULER {
 		cl::Buffer ReadBuffer;
         int ID;
 		int Load;
-        std::vector<std::pair<Type, void*>> Data;
-        void* ReturnData;
+        std::vector<std::pair<Type, std::vector<void*>>> Data;
+        std::vector<void*> ReturnData;
         Type ReturnDataType;
         std::string FilePath;
     };

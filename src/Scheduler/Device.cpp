@@ -56,8 +56,7 @@ void Device::generateProgramm(Task* task) {
     cl::Program program(OclContext, *task->getSources());
 	if(program.build({OclDevice})!=CL_SUCCESS)
 		cout << " Error building: " << program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(OclDevice) << "\n";
-	else
-	    cout << "Success" <<endl;
+
     task->setProgam(program);
 }
 
