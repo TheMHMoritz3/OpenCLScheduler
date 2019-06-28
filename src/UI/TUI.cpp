@@ -298,7 +298,6 @@ std::vector<void*> TUI::askUserForUIntegerArray(int load, SCHEDULER::Task* task)
 		cout << &value << endl;
         returnData.emplace_back(&values[j]);
 	}
-    task->addUINTItems(values);
 	return returnData;
 }
 

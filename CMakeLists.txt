@@ -12,7 +12,7 @@ set (CAN_VERSION_MINOR 0)
 include_directories("${PROJECT_BINARY_DIR}")
 
 # add the executable
-add_library(CAN SHARED src/CAN/CanAccessor.cpp src/CAN/CanAccessor.h src/CAN/CanNamespace.h src/CAN/CanManager.cpp src/CAN/CanManager.h)
+add_library(CAN SHARED src/CAN/CanAccessor.cpp src/CAN/CanAccessor.h src/CAN/CanNamespace.h src/CAN/CanManager.cpp src/CAN/CanManager.h src/CAN/can_global.h)
 target_link_libraries(CAN pthread libsupc++.a c3can_core c3can_error)
 
 target_compile_options(CAN PUBLIC -Wall)

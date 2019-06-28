@@ -11,9 +11,10 @@
 
 #include "CanNamespace.h"
 #include "CanAccessor.h"
+#include "can_global.h"
 
 namespace CAN {
-    class CanManager {
+    class CAN_EXPORT CanManager {
     public:
         CanManager();
         void create(CanID id, int count);

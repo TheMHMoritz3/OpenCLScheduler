@@ -26,7 +26,6 @@ namespace SCHEDULER {
 		void addDescription(std::string desc);
 		void setReturnDataType(Type type);
 		void setReturnData(std::vector<void*> data);
-		void setFilePath(std::string filePath);
 		void addUINTItems(uint32_t* items);
 
         int getId();
@@ -40,8 +39,6 @@ namespace SCHEDULER {
         std::string getDescription();
 		Type getReturnDataType();
 		Task operator=(Task other);
-		std::string getFilePath();
-		std::vector<uint32_t*>* getUintValues();
 
     private:
         std::string KernelName;
@@ -54,8 +51,7 @@ namespace SCHEDULER {
         std::vector<std::pair<Type, std::vector<void*>>> Data;
         std::vector<void*> ReturnData;
         Type ReturnDataType;
-        std::string FilePath;
-        std::vector<uint32_t*>* UnsignedIntValues;
+        std::vector<Task*> DependandTask;
     };
 }
 
