@@ -107,6 +107,7 @@ void TUI::clear()
 
 void TUI::decorateValueData(SCHEDULER::Task* task)
 {
+    decorateNormalMessage("Printing Data of: " + task->getKernelName());
 	switch (task->getReturnDataType())
 	{
 	case SCHEDULER::INT:

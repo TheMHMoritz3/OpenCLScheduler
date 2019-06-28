@@ -20,30 +20,35 @@ int CanAccessor::didErrorOccur() {
 
 std::vector<u_int32_t> CanAccessor::getData() {
     Thread.join();
+#ifndef _WINDOWS
     std::vector<u_int32_t> data;
     for(int i = 0; i<ElementCount; i++){
         data.push_back(Data[i]);
     }
+#endif
     return data;
 }
 
 void CanAccessor::init() {
+#ifndef _WINDOWS
     Single = c3can_single_init("can0");
     ErrorCode = c3can_single_get_error(Single)->code;
     c3can_single_filter_add(Single, IdCan, (C3CAN_SINGLE_FILTER_OPTS) 0);
-
+#endif
 }
 
 void CanAccessor::collectData() {
     struct timeval timestamp;
     for(int i = 0; i<ElementCount; i++){
+#ifndef _WINDOWS
         c3can_single_recv(Single, &Message, &timestamp);
         ErrorCode = c3can_single_get_error(Single)->code;
         Data[i] = U32_DATA(c3can_message_get_payload(&Message));
+#endif
     }
 }
 
 void CanAccessor::startCollectingData() {
 
-    Thread=std::thread([=](){collectData();});
+    Thread=std::thread([=] {collectData();});
 }
