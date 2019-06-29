@@ -6,10 +6,13 @@
 #define DEVICEINFO_CANACCESSOR_H
 
 #include <vector>
+#ifndef _WINDOWS
 #include <sys/param.h>
-#include <thread>
 #include <c3can/error/extended.h>
 #include <c3can/core.h>
+#endif
+#include <thread>
+
 #include "CanNamespace.h"
 
 namespace CAN {
@@ -18,15 +21,17 @@ namespace CAN {
         CanAccessor()= delete;
         CanAccessor(CanID id, int elementCount);
         int didErrorOccur();
-        std::vector<u_int32_t> getData();
+        std::vector<uint32_t> getData();
         void startCollectingData();
     private:
         void collectData();
         void init();
         int ElementCount;
-        u_int32_t* Data;
+        uint32_t* Data;
+#ifndef _WINDOWS
         c3can_single* Single;
         c3can_message Message;
+#endif
         CanID IdCan;
         std::thread Thread;
         int ErrorCode;

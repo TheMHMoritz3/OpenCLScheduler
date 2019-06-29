@@ -15,6 +15,9 @@ add_library(CAN SHARED src/CAN/CanAccessor.cpp src/CAN/CanAccessor.h src/CAN/Can
 if(UNIX)
 target_link_libraries(CAN pthread c3can_core c3can_error)
 endif(UNIX)
+if(WIN32)
+#target_link_libraries(CAN )
+endif(WIN32)
 target_compile_options(CAN PUBLIC -Wall)
 
 
@@ -32,8 +35,13 @@ include_directories("${PROJECT_BINARY_DIR}")
 add_library(Scheduler SHARED src/Scheduler/Device.cpp src/Scheduler/Device.h src/Scheduler/ScheduleManager.cpp src/Scheduler/ScheduleManager.h src/Scheduler/Scheduler.cpp src/Scheduler/Scheduler.h src/Scheduler/Task.cpp src/Scheduler/Task.h src/Scheduler/StaticScheduler.cpp src/Scheduler/StaticScheduler.h src/Scheduler/SchedulerNamespace.h src/Scheduler/scheduler_global.h)
 if(UNIX)
 target_link_libraries(Scheduler libOpenCL.so)
-endif(UNIX)
 target_include_directories (Scheduler PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+endif(UNIX)
+if(WIN32)
+target_link_libraries(Scheduler $ENV{OCL_ROOT}/lib/x86_64/opencl.lib)
+target_include_directories (Scheduler PUBLIC $ENV{OCL_ROOT}/include ${CMAKE_CURRENT_SOURCE_DIR})
+endif(WIN32)
+
 target_compile_options(Scheduler PUBLIC -Wall)
 
 #target_link_options(deviceinfo PUBLIC -lOpenCL PUBLIC -lsupc++)

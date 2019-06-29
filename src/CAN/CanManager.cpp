@@ -42,6 +42,6 @@ double CanManager::getSamplingRate(CAN::CanID id) {
     }
 }
 
-vector<u_int32_t> CanManager::getData(CAN::CanID id) {
+vector<uint32_t> CanManager::getData(CAN::CanID id) {
     return CanThreadMap.at(id)->getData();
 }
