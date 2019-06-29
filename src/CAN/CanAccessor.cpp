@@ -18,10 +18,10 @@ int CanAccessor::didErrorOccur() {
     return ErrorCode;
 }
 
-std::vector<u_int32_t> CanAccessor::getData() {
+std::vector<uint32_t> CanAccessor::getData() {
     Thread.join();
+	std::vector<uint32_t> data;
 #ifndef _WINDOWS
-    std::vector<u_int32_t> data;
     for(int i = 0; i<ElementCount; i++){
         data.push_back(Data[i]);
     }
@@ -38,7 +38,9 @@ void CanAccessor::init() {
 }
 
 void CanAccessor::collectData() {
+#ifndef _WINDOWS
     struct timeval timestamp;
+#endif
     for(int i = 0; i<ElementCount; i++){
 #ifndef _WINDOWS
         c3can_single_recv(Single, &Message, &timestamp);
