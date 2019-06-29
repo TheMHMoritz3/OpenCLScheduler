@@ -7,6 +7,7 @@
 
 #include "../Scheduler/ScheduleManager.h"
 #include "../Scheduler/Task.h"
+#include "../CAN/CanManager.h"
 #include <string>
 #include <vector>
 
@@ -15,12 +16,18 @@ namespace UI {
     public:
         void start();
 
+        void toggleUnitTestMode();
     private:
         void decorateError(std::string errorText);
 		void decorateNormalMessage(std::string message);
         void addKernelMenu();
 
 		void setSchedule();
+
+		void decorateNormalMode();
+
+		void activateCanBus();
+
 
 		void printData();
 		void clear();
@@ -45,6 +52,8 @@ namespace UI {
 		std::vector<void*> askUserForFloatArray(int load);
 
         SCHEDULER::ScheduleManager* ScheduleManager;
+        CAN::CanManager* CanManager;
+
 		bool IsInUnitTestingMode;
 
 		std::vector<SCHEDULER::Task*> tasks;

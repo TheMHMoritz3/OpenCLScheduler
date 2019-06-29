@@ -5,8 +5,10 @@
 #ifndef CAN_CANNAMESPACE_H
 #define CAN_CANNAMESPACE_H
 
+#include "can_global.h"
+
 namespace CAN{
-    enum CanID{
+    enum CAN_EXPORT CanID{
         WheelFrontRight = 0x008,
         WheelFrontLeft = 0x009,
         WheelRearLeft = 0x00a,
@@ -17,7 +19,7 @@ namespace CAN{
         Temperature = 0x192
     };
 
-    enum CanErrorCode{
+    enum CAN_EXPORT CanErrorCode{
         NoError = 0,
         KernelError,
         ArgError,

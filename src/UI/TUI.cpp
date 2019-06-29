@@ -12,7 +12,6 @@ using namespace UI;
 using namespace std;
 
 void TUI::start() {
-	IsInUnitTestingMode = true;
 	ScheduleManager = new SCHEDULER::ScheduleManager();
 	ScheduleManager->searchForDevices();
 
@@ -62,7 +61,6 @@ void TUI::addKernelMenu() {
 			if (!fileIsOpen)
 				decorateError(filepath + " File could not be opened");
 		} while (!fileIsOpen);
-		//TODO Adding Dependancys CAN  and Handover
 		decorateNormalMessage("Adding Kernels: Please type in the Kernel name:");
 		string kernelName;
 		cin >> kernelName;
@@ -70,8 +68,10 @@ void TUI::addKernelMenu() {
 		askUserReturnData(task);
 		if (IsInUnitTestingMode)
 			decorateUnitTestingMode(task);
+		else
+            decorateNormalMode();
 
-		decorateNormalMessage("Adding Kernels: Do you want to add another Kernel (Yes/no)?");
+		cout<<"Adding Kernels: Do you want to add another Kernel (Yes/no)?"<<endl;
 		cin >> userInput;
 	}
 }
@@ -209,7 +209,7 @@ void TUI::decorateUnitTestingMode(SCHEDULER::Task* task)
 	task->setReturnDataType(SCHEDULER::Type::FLOAT);
 	for (int i = 0; i < argcount; i++) {
 		clear();
-		decorateNormalMessage("Setting Args of Array: " + i);
+		cout<<"Setting Args of Array: " <<i<<endl;
 		SCHEDULER::Type type = getTypeFromUserForArg();
 		askUserForArrayData(task, type, load);
 	}
@@ -341,4 +341,17 @@ std::vector<void*> TUI::askUserForFloatArray(int load)
 		returnData.emplace_back(&values[j]);
 	}
 	return returnData;
+}
+
+void TUI::toggleUnitTestMode() {
+    IsInUnitTestingMode = true;
+    decorateNormalMessage("Is in UnitTesting Mode");
+}
+
+void TUI::decorateNormalMode() {
+    activateCanBus();
+}
+
+void TUI::activateCanBus() {
+    CanManager = new CAN::CanManager();
 }
