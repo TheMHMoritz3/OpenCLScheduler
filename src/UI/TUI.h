@@ -14,6 +14,8 @@
 namespace UI {
     class TUI {
     public:
+		TUI();
+
         void start();
 
         void toggleUnitTestMode();
@@ -24,7 +26,7 @@ namespace UI {
 
 		void setSchedule();
 
-		void decorateNormalMode();
+		void decorateNormalMode(SCHEDULER::Task* task);
 
 		void activateCanBus();
 
@@ -40,6 +42,8 @@ namespace UI {
 		void decorateCharValue(SCHEDULER::Task* task, std::vector<void*> data);
 		void decorateDoubleValue(SCHEDULER::Task* task, std::vector<void*> data);
 
+		void decorateOtherTask(SCHEDULER::Task* task);
+		void decorateCan(SCHEDULER::Task* task, int load);
 		void askUserReturnData(SCHEDULER::Task* task);
 		void decorateUnitTestingMode(SCHEDULER::Task* task);
 		SCHEDULER::Type getTypeFromUserForArg();

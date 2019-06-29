@@ -4,12 +4,18 @@
 
 #include "TUI.h"
 #include "../Scheduler/Task.h"
+#include "../CAN/CanNamespace.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
 
 using namespace UI;
 using namespace std;
+
+TUI::TUI()
+{
+	IsInUnitTestingMode = false;
+}
 
 void TUI::start() {
 	ScheduleManager = new SCHEDULER::ScheduleManager();
@@ -48,8 +54,8 @@ void TUI::addKernelMenu() {
 	std::string userInput = "";
 	while ((userInput.compare("no") != 0) && ((userInput.compare("n") != 0))) {
 		clear();
-		cout << "Found Devices: " << ScheduleManager->getDeviceCount()<<endl;
-		cout << "Kernel count: " << ScheduleManager->getKernelCount()<<endl;
+		cout << "Found Devices: " << ScheduleManager->getDeviceCount() << endl;
+		cout << "Kernel count: " << ScheduleManager->getKernelCount() << endl;
 		bool fileIsOpen = false;
 		string filepath;
 		do {
@@ -69,9 +75,9 @@ void TUI::addKernelMenu() {
 		if (IsInUnitTestingMode)
 			decorateUnitTestingMode(task);
 		else
-            decorateNormalMode();
+			decorateNormalMode(task);
 
-		cout<<"Adding Kernels: Do you want to add another Kernel (Yes/no)?"<<endl;
+		cout << "Adding Kernels: Do you want to add another Kernel (Yes/no)?" << endl;
 		cin >> userInput;
 	}
 }
@@ -91,7 +97,7 @@ void TUI::setSchedule()
 void TUI::printData()
 {
 	for (SCHEDULER::Task* task : tasks) {
-        decorateValueData(task);
+		decorateValueData(task);
 	}
 }
 
@@ -107,26 +113,26 @@ void TUI::clear()
 
 void TUI::decorateValueData(SCHEDULER::Task* task)
 {
-    decorateNormalMessage("Printing Data of: " + task->getKernelName());
+	decorateNormalMessage("Printing Data of: " + task->getKernelName());
 	switch (task->getReturnDataType())
 	{
 	case SCHEDULER::INT:
-		decorateIntValue(task,task->getReturnData().second);
+		decorateIntValue(task, task->getReturnData().second);
 		break;
 	case SCHEDULER::UINT:
-		decorateUIntValue(task,task->getReturnData().second);
+		decorateUIntValue(task, task->getReturnData().second);
 		break;
 	case SCHEDULER::CHAR:
-		decorateCharValue(task,task->getReturnData().second);
+		decorateCharValue(task, task->getReturnData().second);
 		break;
 	case SCHEDULER::FLOAT:
-		decorateFloatValue(task,task->getReturnData().second);
+		decorateFloatValue(task, task->getReturnData().second);
 		break;
 	case SCHEDULER::DOUBLE:
-		decorateDoubleValue(task,task->getReturnData().second);
+		decorateDoubleValue(task, task->getReturnData().second);
 		break;
 	case SCHEDULER::STRING:
-		decorateCharValue(task,task->getReturnData().second);
+		decorateCharValue(task, task->getReturnData().second);
 		break;
 	default:
 		decorateError("Error: No Type providet in Return Value");
@@ -138,8 +144,8 @@ void TUI::decorateFloatValue(SCHEDULER::Task* task, std::vector<void*> data)
 {
 	for (long unsigned int i = 0; i < data.size(); i++) {
 		float value = *((float*)data.at(i));
-        cout << i << ". Return Value: \t"<<value<<endl;
-    }
+		cout << i << ". Return Value: \t" << value << endl;
+	}
 }
 
 void TUI::decorateIntValue(SCHEDULER::Task* task, std::vector<void*> data)
@@ -174,6 +180,89 @@ void TUI::decorateDoubleValue(SCHEDULER::Task* task, std::vector<void*> data)
 	}
 }
 
+void TUI::decorateOtherTask(SCHEDULER::Task* task)
+{
+	int i = 0;
+	int value;
+	do {
+		decorateNormalMessage("Which task do you want to add?");
+		for (SCHEDULER::Task* task : tasks)
+		{
+			cout << i << "\t" << task->getKernelName()<<endl;
+			i++;
+		}
+		cin >> value;
+		if (!((value >= 0) && (value < tasks.size())))
+		{
+			clear();
+			decorateError("Please Type in a correct Value.");
+		}
+	} while (!((value >= 0) && (value < tasks.size())));
+
+	for(int i =0 ;i<tasks.size(); i++)
+	{
+		if(i=value)
+		{
+			task->addDependandTask(tasks.at(i));
+		}
+	}
+}
+
+void TUI::decorateCan(SCHEDULER::Task* task, int load)
+{
+	clear();
+	int value;
+	do {
+		decorateNormalMessage("Which CAN ID do you want to add?");
+		decorateNormalMessage("0\t Wheel Front Right");
+		decorateNormalMessage("1\t Wheel Front Left");
+		decorateNormalMessage("2\t Wheel Rear Left");
+		decorateNormalMessage("3\t Wheel Rear Right");
+		decorateNormalMessage("4\t Battery Voltage");
+		decorateNormalMessage("5\t Acceleration Longitudinal");
+		decorateNormalMessage("6\t Acceleration Lateral");
+		decorateNormalMessage("7\t Temperature");
+		cin >> value;
+		if (!((value >= 0) && (value <= 7)))
+		{
+			clear();
+			decorateError("Please Type in a correct Value.");
+		}
+	} while (!((value >= 0) && (value <= 7)));
+
+	switch (value)
+	{
+	case 0:
+		CanManager->create(CAN::WheelFrontRight, load);
+		break;
+	case 1:
+		CanManager->create(CAN::WheelFrontLeft, load);
+		break;
+	case 2:
+		CanManager->create(CAN::WheelRearLeft, load);
+		break;
+	case 3:
+		CanManager->create(CAN::WheelRearRight, load);
+		break;
+	case 4:
+		CanManager->create(CAN::BatteryVoltage, load);
+		break;
+	case 5:
+		CanManager->create(CAN::AccelerationLongitudinal, load);
+		break;
+	case 6:
+		CanManager->create(CAN::AccelerationLateral, load);
+		break;
+	case 7:
+		CanManager->create(CAN::Temperature, load);
+		break;
+	default:
+		break;
+	}
+	//TODO give Task the Data.
+
+}
+
 
 void TUI::askUserReturnData(SCHEDULER::Task* task)
 {
@@ -188,12 +277,12 @@ void TUI::askUserReturnData(SCHEDULER::Task* task)
 		decorateNormalMessage("4\t Double");
 		decorateNormalMessage("5\t String");
 		cin >> value;
-		if (!((value >= 0) && (value <= 10)))
+		if (!((value >= 0) && (value <= 5)))
 		{
 			clear();
 			decorateError("Please Type in a correct Value.");
 		}
-	} while (!((value >= 0) && (value <= 10)));
+	} while (!((value >= 0) && (value <= 5)));
 	task->setReturnDataType((SCHEDULER::Type)value);
 }
 
@@ -209,7 +298,7 @@ void TUI::decorateUnitTestingMode(SCHEDULER::Task* task)
 	task->setReturnDataType(SCHEDULER::Type::FLOAT);
 	for (int i = 0; i < argcount; i++) {
 		clear();
-		cout<<"Setting Args of Array: " <<i<<endl;
+		cout << "Setting Args of Array: " << i << endl;
 		SCHEDULER::Type type = getTypeFromUserForArg();
 		askUserForArrayData(task, type, load);
 	}
@@ -275,7 +364,7 @@ std::vector<void*> TUI::askUserForIntegerArray(int load)
 	std::vector<void*> returnData;
 	int32_t* values = new int32_t[load];
 	for (int j = 0; j < load; j++) {
-		cout <<j<< ". Integer Entry: "<<endl;
+		cout << j << ". Integer Entry: " << endl;
 		int value;
 		cin >> value;
 		values[j] = value;
@@ -293,10 +382,10 @@ std::vector<void*> TUI::askUserForUIntegerArray(int load, SCHEDULER::Task* task)
 		uint32_t value;
 		cin >> value;
 		values[j] = value;
-		cout << value<<endl;
+		cout << value << endl;
 		returnData.emplace_back(&values[j]);
 		cout << &value << endl;
-        returnData.emplace_back(&values[j]);
+		returnData.emplace_back(&values[j]);
 	}
 	return returnData;
 }
@@ -344,14 +433,52 @@ std::vector<void*> TUI::askUserForFloatArray(int load)
 }
 
 void TUI::toggleUnitTestMode() {
-    IsInUnitTestingMode = true;
-    decorateNormalMessage("Is in UnitTesting Mode");
+	IsInUnitTestingMode = true;
+	decorateNormalMessage("Is in UnitTesting Mode");
 }
 
-void TUI::decorateNormalMode() {
-    activateCanBus();
+void TUI::decorateNormalMode(SCHEDULER::Task* task) {
+	activateCanBus();
+	decorateNormalMessage("How many Arguments do you want to set for Task?");
+	int argCount;
+	cin >> argCount;
+	for(int i = 0; i<argCount; i++)
+	{
+		int value;
+		do {
+			cout << "ARG: " << i <<endl;
+			decorateNormalMessage("Where does the Data from this Task come from?");
+			decorateNormalMessage("0\tUser Input");
+			decorateNormalMessage("1\tOther Task");
+			decorateNormalMessage("2\tCAN Bus");
+			cin >> value;
+			if (!((value >= 0) && (value <= 2)))
+			{
+				clear();
+				decorateError("Please Type in a correct Value.");
+			}
+		} while (!((value >= 0) && (value <= 2)));
+		task->setDataDependancy((SCHEDULER::DependancyType)value);
+
+		int load;
+		decorateNormalMessage("How big is the Array of Arguments?");
+		cin >> load;
+
+		if (task->dependancyType() == SCHEDULER::UserInput) {
+			SCHEDULER::Type type = getTypeFromUserForArg();
+			askUserForArrayData(task, type, load);
+		}else if(task->dependancyType() == SCHEDULER::OutsideDependancy)
+		{
+			decorateCan(task, load);
+		}else
+		{
+			decorateOtherTask(task);
+		}
+		
+	}
+	
 }
 
 void TUI::activateCanBus() {
-    CanManager = new CAN::CanManager();
+	CanManager = new CAN::CanManager();
 }

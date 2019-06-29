@@ -16,6 +16,7 @@ int main(int count, char** values){
     if(count <= 1){
         cout<<"No Arguments given Starting normal."<<endl;
     }else{
+		cout << values[1]<<endl;
         tui.toggleUnitTestMode();
     }
 

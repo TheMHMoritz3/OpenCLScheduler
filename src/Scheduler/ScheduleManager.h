@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <string>
+#include <functional>
 #include <CL/cl.hpp>
 
 #include "SchedulerNamespace.h"
@@ -22,7 +23,8 @@ namespace SCHEDULER {
 		void searchForDevices();
         void startSchedule();
         void setScheduleType(ScheduleType type);
-        Task* addTask(std::string filePath, std::string kernelName);
+
+		Task* addTask(std::string filePath, std::string kernelName);
         bool isAddingTasksPossible();
         int getKernelCount();
         int getDeviceCount();

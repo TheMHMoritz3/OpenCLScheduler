@@ -25,9 +25,9 @@ namespace SCHEDULER {
         void generateProgramm(Task* task);
         cl::Context getDeviceContext();
 		cl::Device getOclDevice();
-        Device operator=(Device other);
+        Device& operator=(Device& other);
     private:
-        cl::Device const OclDevice;
+        cl::Device OclDevice;
         cl::Context OclContext;
         int Id;
     };

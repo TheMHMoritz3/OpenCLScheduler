@@ -27,6 +27,13 @@ namespace SCHEDULER {
         DOUBLE,
         STRING
     };
+
+	enum SCHEDULER_EXPORT DependancyType
+	{
+		UserInput,
+		OtherTask,
+		OutsideDependancy
+	};
 }
 
 #endif //UI_SCHEDULERNAMESPACE_H

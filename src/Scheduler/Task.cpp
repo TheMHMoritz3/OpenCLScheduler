@@ -10,6 +10,7 @@ using namespace SCHEDULER;
 
 Task::Task(int id) {
     ID=id;
+	IsCalculationDone = false;
 }
 
 int Task::getId() {
@@ -93,7 +94,28 @@ Task Task::operator=(Task other) {
     return other;
 }
 
+DependancyType Task::dependancyType()
+{
+	return DepType;
+}
+
+bool Task::isCalculationDone()
+{
+	return IsCalculationDone;
+}
+
 void Task::setReturnData(std::vector<void*> data)
 {
 	ReturnData = data;
+	IsCalculationDone = true;
+}
+
+void Task::setDataDependancy(SCHEDULER::DependancyType type)
+{
+	DepType = type;
+}
+
+void Task::addDependandTask(SCHEDULER::Task* task)
+{
+	DependandTasks.push_back(task);
 }
