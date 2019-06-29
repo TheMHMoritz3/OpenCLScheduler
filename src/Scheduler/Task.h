@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <string>
+#include <functional>
 #include <CL/cl.hpp>
 #include "SchedulerNamespace.h"
 #include "scheduler_global.h"
@@ -28,6 +29,7 @@ namespace SCHEDULER {
 		void setReturnData(std::vector<void*> data);
 		void setDataDependancy(SCHEDULER::DependancyType type);
 		void addDependandTask(SCHEDULER::Task* task);
+		void setExternalDataMethod(std::function<void(void)> externalFunctionData);
 
         int getId();
         std::pair<Type,std::vector<void*>> getReturnData();
@@ -57,6 +59,7 @@ namespace SCHEDULER {
         std::vector<Task*> DependandTasks;
 		DependancyType DepType;
 		bool IsCalculationDone;
+		std::function<void(void)> GetExternalData;
 
     };
 }

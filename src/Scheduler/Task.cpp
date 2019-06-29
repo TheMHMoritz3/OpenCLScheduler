@@ -119,3 +119,8 @@ void Task::addDependandTask(SCHEDULER::Task* task)
 {
 	DependandTasks.push_back(task);
 }
+
+void Task::setExternalDataMethod(std::function<void()> externalFunctionData)
+{
+	GetExternalData = externalFunctionData;
+}

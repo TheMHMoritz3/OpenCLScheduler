@@ -15,6 +15,8 @@ using namespace std;
 TUI::TUI()
 {
 	IsInUnitTestingMode = false;
+	CanManager = nullptr;
+	ScheduleManager = nullptr;
 }
 
 void TUI::start() {
@@ -234,33 +236,63 @@ void TUI::decorateCan(SCHEDULER::Task* task, int load)
 	{
 	case 0:
 		CanManager->create(CAN::WheelFrontRight, load);
+		task->setExternalDataMethod([=]()
+			{
+				CanManager->getData(CAN::WheelFrontRight);
+			});
 		break;
 	case 1:
 		CanManager->create(CAN::WheelFrontLeft, load);
+		task->setExternalDataMethod([=]()
+			{
+				CanManager->getData(CAN::WheelFrontLeft);
+			});
 		break;
 	case 2:
 		CanManager->create(CAN::WheelRearLeft, load);
+		task->setExternalDataMethod([=]()
+			{
+				CanManager->getData(CAN::WheelRearLeft);
+			});
 		break;
 	case 3:
 		CanManager->create(CAN::WheelRearRight, load);
+		task->setExternalDataMethod([=]()
+			{
+				CanManager->getData(CAN::WheelRearRight);
+			});
 		break;
 	case 4:
 		CanManager->create(CAN::BatteryVoltage, load);
+		task->setExternalDataMethod([=]()
+			{
+				CanManager->getData(CAN::BatteryVoltage);
+			});
 		break;
 	case 5:
 		CanManager->create(CAN::AccelerationLongitudinal, load);
+		task->setExternalDataMethod([=]()
+			{
+				CanManager->getData(CAN::AccelerationLongitudinal);
+			});
 		break;
 	case 6:
 		CanManager->create(CAN::AccelerationLateral, load);
+		task->setExternalDataMethod([=]()
+			{
+				CanManager->getData(CAN::AccelerationLateral);
+			});
 		break;
 	case 7:
 		CanManager->create(CAN::Temperature, load);
+		task->setExternalDataMethod([=]()
+			{
+				CanManager->getData(CAN::Temperature);
+			});
 		break;
 	default:
 		break;
 	}
-	//TODO give Task the Data.
-
 }
 
 
