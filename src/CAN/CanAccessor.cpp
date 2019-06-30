@@ -67,6 +67,6 @@ void CanAccessor::collectData() {
 
 void CanAccessor::startCollectingData() {
 
-//    Thread=std::thread([=] {collectData();});
-    collectData();
+    Thread=std::thread([=] {collectData();});
+    //collectData();
 }
