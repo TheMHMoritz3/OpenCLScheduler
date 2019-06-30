@@ -21,7 +21,7 @@ namespace CAN {
         CanAccessor()= delete;
         CanAccessor(CanID id, int elementCount);
         int didErrorOccur();
-        std::vector<uint32_t> getData();
+        std::vector<uint32_t*> getData();
         void startCollectingData();
     private:
         void collectData();

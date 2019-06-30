@@ -46,6 +46,8 @@ namespace SCHEDULER {
 		bool isCalculationDone();
 
     private:
+		void readDataFromOtherThread();
+
         std::string KernelName;
         std::string Description;
         cl::Program::Sources *Sources;

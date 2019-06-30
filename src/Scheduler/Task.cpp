@@ -87,6 +87,14 @@ Type Task::getReturnDataType()
 }
 
 std::vector<std::pair<Type, std::vector<void*>>> Task::getAllData() {
+	if(DepType==OutsideDependancy)
+	{
+		GetExternalData();
+	}
+	if(DepType==OtherTask)
+	{
+		readDataFromOtherThread();
+	}
     return Data;
 }
 
@@ -102,6 +110,15 @@ DependancyType Task::dependancyType()
 bool Task::isCalculationDone()
 {
 	return IsCalculationDone;
+}
+
+void Task::readDataFromOtherThread()
+{
+	for(Task* task : DependandTasks)
+	{
+		std::vector<void*> data = task->getReturnData().second;
+		Data.push_back(std::pair<Type,std::vector<void*>>(task->getReturnData().first, data));
+	}
 }
 
 void Task::setReturnData(std::vector<void*> data)

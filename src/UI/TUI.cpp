@@ -238,56 +238,104 @@ void TUI::decorateCan(SCHEDULER::Task* task, int load)
 		CanManager->create(CAN::WheelFrontRight, load);
 		task->setExternalDataMethod([=]()
 			{
-				CanManager->getData(CAN::WheelFrontRight);
+				std::vector<uint32_t*> dataSet  = CanManager->getData(CAN::WheelFrontRight);
+				std::vector<void*> taskData;
+				for(uint32_t* data : dataSet)
+				{
+					taskData.push_back(data);
+				}
+				task->addData(taskData, SCHEDULER::UINT);
 			});
 		break;
 	case 1:
 		CanManager->create(CAN::WheelFrontLeft, load);
 		task->setExternalDataMethod([=]()
 			{
-				CanManager->getData(CAN::WheelFrontLeft);
+				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::WheelFrontLeft);
+				std::vector<void*> taskData;
+				for (uint32_t* data : dataSet)
+				{
+					taskData.push_back(data);
+				}
+				task->addData(taskData, SCHEDULER::UINT);
 			});
 		break;
 	case 2:
 		CanManager->create(CAN::WheelRearLeft, load);
 		task->setExternalDataMethod([=]()
 			{
-				CanManager->getData(CAN::WheelRearLeft);
+				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::WheelRearLeft);
+				std::vector<void*> taskData;
+				for (uint32_t* data : dataSet)
+				{
+					taskData.push_back(data);
+				}
+				task->addData(taskData, SCHEDULER::UINT);
 			});
 		break;
 	case 3:
 		CanManager->create(CAN::WheelRearRight, load);
 		task->setExternalDataMethod([=]()
 			{
-				CanManager->getData(CAN::WheelRearRight);
+				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::WheelRearRight);
+				std::vector<void*> taskData;
+				for (uint32_t* data : dataSet)
+				{
+					taskData.push_back(data);
+				}
+				task->addData(taskData, SCHEDULER::UINT);
 			});
 		break;
 	case 4:
 		CanManager->create(CAN::BatteryVoltage, load);
 		task->setExternalDataMethod([=]()
 			{
-				CanManager->getData(CAN::BatteryVoltage);
+				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::BatteryVoltage);
+				std::vector<void*> taskData;
+				for (uint32_t* data : dataSet)
+				{
+					taskData.push_back(data);
+				}
+				task->addData(taskData, SCHEDULER::UINT);
 			});
 		break;
 	case 5:
 		CanManager->create(CAN::AccelerationLongitudinal, load);
 		task->setExternalDataMethod([=]()
 			{
-				CanManager->getData(CAN::AccelerationLongitudinal);
+				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::AccelerationLongitudinal);
+				std::vector<void*> taskData;
+				for (uint32_t* data : dataSet)
+				{
+					taskData.push_back(data);
+				}
+				task->addData(taskData, SCHEDULER::UINT);
 			});
 		break;
 	case 6:
 		CanManager->create(CAN::AccelerationLateral, load);
 		task->setExternalDataMethod([=]()
 			{
-				CanManager->getData(CAN::AccelerationLateral);
+				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::AccelerationLateral);
+				std::vector<void*> taskData;
+				for (uint32_t* data : dataSet)
+				{
+					taskData.push_back(data);
+				}
+				task->addData(taskData, SCHEDULER::UINT);
 			});
 		break;
 	case 7:
 		CanManager->create(CAN::Temperature, load);
 		task->setExternalDataMethod([=]()
 			{
-				CanManager->getData(CAN::Temperature);
+				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::Temperature);
+				std::vector<void*> taskData;
+				for (uint32_t* data : dataSet)
+				{
+					taskData.push_back(data);
+				}
+				task->addData(taskData, SCHEDULER::UINT);
 			});
 		break;
 	default:
@@ -499,9 +547,11 @@ void TUI::decorateNormalMode(SCHEDULER::Task* task) {
 		if (task->dependancyType() == SCHEDULER::UserInput) {
 			SCHEDULER::Type type = getTypeFromUserForArg();
 			askUserForArrayData(task, type, load);
+			task->setLoad(load);
 		}else if(task->dependancyType() == SCHEDULER::OutsideDependancy)
 		{
 			decorateCan(task, load);
+			task->setLoad(load);
 		}else
 		{
 			decorateOtherTask(task);

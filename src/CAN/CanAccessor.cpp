@@ -18,12 +18,12 @@ int CanAccessor::didErrorOccur() {
     return ErrorCode;
 }
 
-std::vector<uint32_t> CanAccessor::getData() {
+std::vector<uint32_t*> CanAccessor::getData() {
     Thread.join();
-	std::vector<uint32_t> data;
+	std::vector<uint32_t*> data;
 #ifndef _WINDOWS
     for(int i = 0; i<ElementCount; i++){
-        data.push_back(Data[i]);
+        data.push_back(&Data[i]);
     }
 #endif
     return data;
