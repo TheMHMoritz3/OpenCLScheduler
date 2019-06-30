@@ -22,14 +22,15 @@ int CanAccessor::didErrorOccur() {
 }
 
 std::vector<uint32_t*> CanAccessor::getData() {
-    Thread.join();
-	std::vector<uint32_t*> data;
+//    Thread.join();
+	std::vector<uint32_t*>* data = new std::vector<uint32_t*>();
 #ifndef _WINDOWS
     for(int i = 0; i<ElementCount; i++){
-        data.push_back(&Data[i]);
+        std::cout<<"Data: "<<Data[i];
+        data->push_back(&Data[i]);
     }
 #endif
-    return data;
+    return *data;
 }
 
 void CanAccessor::init() {
@@ -50,11 +51,11 @@ void CanAccessor::collectData() {
     for(int i = 0; i<ElementCount; i++){
 #ifndef _WINDOWS
         try {
-            c3can_message canMessage;
-            c3can_single_recv(Single, &canMessage, &timestamp);
+            c3can_message* canMessage = new c3can_message();
+            c3can_single_recv(Single, canMessage, &timestamp);
             ErrorCode = c3can_single_get_error(Single)->code;
-            std::cout<<"Red Data ErrorCode "<<ErrorCode<<std::endl;
-            Data[i] = U32_DATA(c3can_message_get_payload(&canMessage));
+            Data[i] = U32_DATA(c3can_message_get_payload(canMessage));
+            std::cout<<"Read Data ErrorCode "<<ErrorCode<<" - "<<Data[i]<<std::endl;
         } catch(std::exception ex){
             std::cout<<"Exception Occured"<<ex.what()<<std::endl;
             std::cout<<"Error Code"<<ErrorCode<<std::endl;
@@ -67,6 +68,6 @@ void CanAccessor::collectData() {
 
 void CanAccessor::startCollectingData() {
 
-    Thread=std::thread([=] {collectData();});
-    //collectData();
+    //Thread=std::thread([=] {collectData();});
+    collectData();
 }
