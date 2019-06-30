@@ -65,7 +65,7 @@ cl::Device Device::getOclDevice()
 	return OclDevice;
 }
 
-Device& Device::operator=(Device& other) {
+Device Device::operator=(Device other) {
 	OclDevice = other.OclDevice;
 	OclContext = other.OclContext;
     return *this;
