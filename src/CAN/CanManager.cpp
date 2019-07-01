@@ -12,16 +12,16 @@ CanManager::CanManager() {
 }
 
 void CanManager::create(CAN::CanID id, int count) {
-    CanAccessor accessor = CanAccessor(id, count);
-    accessor.startCollectingData();
-    CanThreadMap.insert(pair<int, CanAccessor*>(id,&accessor));
+    CanAccessor *accessor = new CanAccessor(id, count);
+    accessor->startCollectingData();
+    CanThreadMap.insert(pair<int, CanAccessor*>(id,accessor));
 }
 
 void CanManager::create(std::vector<CAN::CanID> ids, int count) {
     for(CanID id : ids){
-        CanAccessor accessor = CanAccessor(id, count);
-        accessor.startCollectingData();
-        CanThreadMap.insert(pair<int, CanAccessor*>(id,&accessor));
+        CanAccessor *accessor = new CanAccessor(id, count);
+        accessor->startCollectingData();
+        CanThreadMap.insert(pair<int, CanAccessor*>(id,accessor));
     }
 }
 

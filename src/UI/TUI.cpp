@@ -239,10 +239,14 @@ void TUI::decorateCan(SCHEDULER::Task* task, int load)
 		task->setExternalDataMethod([=]()
 			{
 				std::vector<uint32_t*> dataSet  = CanManager->getData(CAN::WheelFrontRight);
+				uint32_t* DataSet = new uint32_t[dataSet.size()];
 				std::vector<void*> taskData;
+				int i = 0;
 				for(uint32_t* data : dataSet)
 				{
-					taskData.push_back(data);
+				    DataSet[i]=*data;
+					taskData.push_back(&DataSet[i]);
+				    i++;
 				}
 				task->addData(taskData, SCHEDULER::UINT);
 			});
@@ -252,11 +256,15 @@ void TUI::decorateCan(SCHEDULER::Task* task, int load)
 		task->setExternalDataMethod([=]()
 			{
 				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::WheelFrontLeft);
-				std::vector<void*> taskData;
-				for (uint32_t* data : dataSet)
-				{
-					taskData.push_back(data);
-				}
+                uint32_t* DataSet = new uint32_t[dataSet.size()];
+                std::vector<void*> taskData;
+                int i = 0;
+                for(uint32_t* data : dataSet)
+                {
+                    DataSet[i]=*data;
+                    taskData.push_back(&DataSet[i]);
+                    i++;
+                }
 				task->addData(taskData, SCHEDULER::UINT);
 			});
 		break;
@@ -265,11 +273,15 @@ void TUI::decorateCan(SCHEDULER::Task* task, int load)
 		task->setExternalDataMethod([=]()
 			{
 				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::WheelRearLeft);
-				std::vector<void*> taskData;
-				for (uint32_t* data : dataSet)
-				{
-					taskData.push_back(data);
-				}
+                uint32_t* DataSet = new uint32_t[dataSet.size()];
+                std::vector<void*> taskData;
+                int i = 0;
+                for(uint32_t* data : dataSet)
+                {
+                    DataSet[i]=*data;
+                    taskData.push_back(&DataSet[i]);
+                    i++;
+                }
 				task->addData(taskData, SCHEDULER::UINT);
 			});
 		break;
@@ -278,11 +290,15 @@ void TUI::decorateCan(SCHEDULER::Task* task, int load)
 		task->setExternalDataMethod([=]()
 			{
 				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::WheelRearRight);
-				std::vector<void*> taskData;
-				for (uint32_t* data : dataSet)
-				{
-					taskData.push_back(data);
-				}
+                uint32_t* DataSet = new uint32_t[dataSet.size()];
+                std::vector<void*> taskData;
+                int i = 0;
+                for(uint32_t* data : dataSet)
+                {
+                    DataSet[i]=*data;
+                    taskData.push_back(&DataSet[i]);
+                    i++;
+                }
 				task->addData(taskData, SCHEDULER::UINT);
 			});
 		break;
@@ -291,11 +307,15 @@ void TUI::decorateCan(SCHEDULER::Task* task, int load)
 		task->setExternalDataMethod([=]()
 			{
 				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::BatteryVoltage);
-				std::vector<void*> taskData;
-				for (uint32_t* data : dataSet)
-				{
-					taskData.push_back(data);
-				}
+                uint32_t* DataSet = new uint32_t[dataSet.size()];
+                std::vector<void*> taskData;
+                int i = 0;
+                for(uint32_t* data : dataSet)
+                {
+                    DataSet[i]=*data;
+                    taskData.push_back(&DataSet[i]);
+                    i++;
+                }
 				task->addData(taskData, SCHEDULER::UINT);
 			});
 		break;
@@ -304,11 +324,15 @@ void TUI::decorateCan(SCHEDULER::Task* task, int load)
 		task->setExternalDataMethod([=]()
 			{
 				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::AccelerationLongitudinal);
-				std::vector<void*> taskData;
-				for (uint32_t* data : dataSet)
-				{
-					taskData.push_back(data);
-				}
+                uint32_t* DataSet = new uint32_t[dataSet.size()];
+                std::vector<void*> taskData;
+                int i = 0;
+                for(uint32_t* data : dataSet)
+                {
+                    DataSet[i]=*data;
+                    taskData.push_back(&DataSet[i]);
+                    i++;
+                }
 				task->addData(taskData, SCHEDULER::UINT);
 			});
 		break;
@@ -317,11 +341,15 @@ void TUI::decorateCan(SCHEDULER::Task* task, int load)
 		task->setExternalDataMethod([=]()
 			{
 				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::AccelerationLateral);
-				std::vector<void*> taskData;
-				for (uint32_t* data : dataSet)
-				{
-					taskData.push_back(data);
-				}
+                uint32_t* DataSet = new uint32_t[dataSet.size()];
+                std::vector<void*> taskData;
+                int i = 0;
+                for(uint32_t* data : dataSet)
+                {
+                    DataSet[i]=*data;
+                    taskData.push_back(&DataSet[i]);
+                    i++;
+                }
 				task->addData(taskData, SCHEDULER::UINT);
 			});
 		break;
@@ -330,11 +358,15 @@ void TUI::decorateCan(SCHEDULER::Task* task, int load)
 		task->setExternalDataMethod([=]()
 			{
 				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::Temperature);
-				std::vector<void*> taskData;
-				for (uint32_t* data : dataSet)
-				{
-					taskData.push_back(data);
-				}
+                uint32_t* DataSet = new uint32_t[dataSet.size()];
+                std::vector<void*> taskData;
+                int i = 0;
+                for(uint32_t* data : dataSet)
+                {
+                    DataSet[i]=*data;
+                    taskData.push_back(&DataSet[i]);
+                    i++;
+                }
 				task->addData(taskData, SCHEDULER::UINT);
 			});
 		break;
@@ -558,6 +590,7 @@ void TUI::decorateNormalMode(SCHEDULER::Task* task) {
 		}
 		
 	}
+	tasks.emplace_back(task);
 	
 }
 
