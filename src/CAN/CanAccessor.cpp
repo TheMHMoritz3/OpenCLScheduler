@@ -26,7 +26,7 @@ std::vector<uint32_t*> CanAccessor::getData() {
 	std::vector<uint32_t*>* data = new std::vector<uint32_t*>();
 #ifndef _WINDOWS
     for(int i = 0; i<ElementCount; i++){
-        std::cout<<"Data: "<<Data[i];
+        std::cout<<"Data: "<<Data[i]<<std::endl;
         data->push_back(&Data[i]);
     }
 #endif

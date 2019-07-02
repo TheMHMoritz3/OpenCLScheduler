@@ -11,6 +11,7 @@ using namespace SCHEDULER;
 Task::Task(int id) {
     ID=id;
 	IsCalculationDone = false;
+    IsDataSet = false;
 }
 
 int Task::getId() {
@@ -71,6 +72,7 @@ std::string Task::getKernelName() {
 
 void Task::addData(std::vector<void*> value, Type type) {
     Data.emplace_back(type,value);
+    IsDataSet = true;
 }
 
 std::pair<Type, std::vector<void *>> Task::getReturnData() {
@@ -87,13 +89,15 @@ Type Task::getReturnDataType()
 }
 
 std::vector<std::pair<Type, std::vector<void*>>> Task::getAllData() {
-	if(DepType==OutsideDependancy)
+	if((DepType==OutsideDependancy)&&(!IsDataSet))
 	{
 		GetExternalData();
+		IsDataSet=true;
 	}
-	if(DepType==OtherTask)
+	if((DepType==OtherTask)&&(!IsDataSet))
 	{
 		readDataFromOtherThread();
+		IsDataSet=true;
 	}
     return Data;
 }

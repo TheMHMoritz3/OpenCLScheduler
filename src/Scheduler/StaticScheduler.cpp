@@ -20,12 +20,13 @@ StaticScheduler::StaticScheduler(std::vector<Task*> tasks, std::vector<Device> d
 void StaticScheduler::schedule() {
 	for (Device device : Devices) {
 		cout << "Device Name: " << device.getName()<<endl;
-		cl::CommandQueue commandQueue(device.getDeviceContext(), device.getOclDevice(), ErrorCode);
+		cl::CommandQueue commandQueue(device.getDeviceContext(), device.getOclDevice());
 		CommandQueues.push_back(commandQueue);
 		for (Task* task : Tasks) {
 			device.generateProgramm(task);
 
 			cl::Kernel kernel = cl::Kernel(task->getProgramm(), task->getKernelName().c_str(),  &ErrorCode);
+            cout << "ErrorCode Setting Up Kernel "<<ErrorCode<<endl;
 			if (ErrorCode == CL_SUCCESS) {
 				setRAMForCurrentTask(task, device, kernel, commandQueue);
 				setRAMBufferForOutput(task, device, kernel);

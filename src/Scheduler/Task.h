@@ -61,6 +61,7 @@ namespace SCHEDULER {
         std::vector<Task*> DependandTasks;
 		DependancyType DepType;
 		bool IsCalculationDone;
+		bool IsDataSet;
 		std::function<void(void)> GetExternalData;
 
     };
