@@ -4,7 +4,7 @@
 
 #include "Device.h"
 #include <iostream>
-
+#include "ScheduleManager.h"
 using namespace std;
 using namespace SCHEDULER;
 
@@ -50,8 +50,8 @@ double Device::getComputeUnitUsage(int ComputeUnit) {
 void Device::generateProgramm(Task* task) {
 
     cl::Program program(OclContext, *task->getSources());
-	if(program.build({OclDevice})!=CL_SUCCESS)
-		cout << " Error building: " << program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(OclDevice) << "\n";
+	if (program.build({ OclDevice }) != CL_SUCCESS)
+		cout << "Error building: " << program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(OclDevice) << endl;
 
     task->setProgam(program);
 }
@@ -60,11 +60,13 @@ cl::Context Device::getDeviceContext() {
     return OclContext;
 }
 
-cl::Device SCHEDULER::Device::Device::getOclDevice()
+cl::Device Device::getOclDevice()
 {
 	return OclDevice;
 }
 
 Device Device::operator=(Device other) {
-    return other;
+	OclDevice = other.OclDevice;
+	OclContext = other.OclContext;
+    return *this;
 }

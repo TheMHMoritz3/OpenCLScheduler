@@ -11,11 +11,14 @@ using namespace UI;
 
 
 int main(int count, char** values){
-    if(count == 0){
-        cout<<"No Arguments given Starting normal."<<endl;
-    }
-
     TUI tui;
+
+    if(count <= 1){
+        cout<<"No Arguments given Starting normal."<<endl;
+    }else{
+		cout << values[1]<<endl;
+        tui.toggleUnitTestMode();
+    }
 
     tui.start();
 

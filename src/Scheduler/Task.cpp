@@ -10,7 +10,8 @@ using namespace SCHEDULER;
 
 Task::Task(int id) {
     ID=id;
-    UnsignedIntValues=new std::vector<uint32_t*>();
+	IsCalculationDone = false;
+    IsDataSet = false;
 }
 
 int Task::getId() {
@@ -71,6 +72,7 @@ std::string Task::getKernelName() {
 
 void Task::addData(std::vector<void*> value, Type type) {
     Data.emplace_back(type,value);
+    IsDataSet = true;
 }
 
 std::pair<Type, std::vector<void *>> Task::getReturnData() {
@@ -87,6 +89,16 @@ Type Task::getReturnDataType()
 }
 
 std::vector<std::pair<Type, std::vector<void*>>> Task::getAllData() {
+	if((DepType==OutsideDependancy)&&(!IsDataSet))
+	{
+		GetExternalData();
+		IsDataSet=true;
+	}
+	if((DepType==OtherTask)&&(!IsDataSet))
+	{
+		readDataFromOtherThread();
+		IsDataSet=true;
+	}
     return Data;
 }
 
@@ -94,23 +106,42 @@ Task Task::operator=(Task other) {
     return other;
 }
 
+DependancyType Task::dependancyType()
+{
+	return DepType;
+}
+
+bool Task::isCalculationDone()
+{
+	return IsCalculationDone;
+}
+
+void Task::readDataFromOtherThread()
+{
+	for(Task* task : DependandTasks)
+	{
+		std::vector<void*> data = task->getReturnData().second;
+		Data.push_back(std::pair<Type,std::vector<void*>>(task->getReturnData().first, data));
+	}
+}
+
 void Task::setReturnData(std::vector<void*> data)
 {
 	ReturnData = data;
+	IsCalculationDone = true;
 }
 
-void Task::setFilePath(std::string filePath) {
-    FilePath=filePath;
+void Task::setDataDependancy(SCHEDULER::DependancyType type)
+{
+	DepType = type;
 }
 
-std::string Task::getFilePath() {
-    return FilePath;
+void Task::addDependandTask(SCHEDULER::Task* task)
+{
+	DependandTasks.push_back(task);
 }
 
-std::vector<uint32_t*>* Task::getUintValues() {
-    return UnsignedIntValues;
-}
-
-void Task::addUINTItems(uint32_t *items) {
-    UnsignedIntValues->push_back(items);
+void Task::setExternalDataMethod(std::function<void()> externalFunctionData)
+{
+	GetExternalData = externalFunctionData;
 }

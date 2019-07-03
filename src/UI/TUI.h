@@ -7,20 +7,29 @@
 
 #include "../Scheduler/ScheduleManager.h"
 #include "../Scheduler/Task.h"
+#include "../CAN/CanManager.h"
 #include <string>
 #include <vector>
 
 namespace UI {
     class TUI {
     public:
+		TUI();
+
         void start();
 
+        void toggleUnitTestMode();
     private:
         void decorateError(std::string errorText);
 		void decorateNormalMessage(std::string message);
         void addKernelMenu();
 
 		void setSchedule();
+
+		void decorateNormalMode(SCHEDULER::Task* task);
+
+		void activateCanBus();
+
 
 		void printData();
 		void clear();
@@ -33,6 +42,8 @@ namespace UI {
 		void decorateCharValue(SCHEDULER::Task* task, std::vector<void*> data);
 		void decorateDoubleValue(SCHEDULER::Task* task, std::vector<void*> data);
 
+		void decorateOtherTask(SCHEDULER::Task* task);
+		void decorateCan(SCHEDULER::Task* task, int load);
 		void askUserReturnData(SCHEDULER::Task* task);
 		void decorateUnitTestingMode(SCHEDULER::Task* task);
 		SCHEDULER::Type getTypeFromUserForArg();
@@ -45,6 +56,8 @@ namespace UI {
 		std::vector<void*> askUserForFloatArray(int load);
 
         SCHEDULER::ScheduleManager* ScheduleManager;
+        CAN::CanManager* CanManager;
+
 		bool IsInUnitTestingMode;
 
 		std::vector<SCHEDULER::Task*> tasks;

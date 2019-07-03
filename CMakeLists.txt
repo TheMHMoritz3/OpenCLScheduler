@@ -1,7 +1,6 @@
 cmake_minimum_required (VERSION 3.10)
 
 set (CMAKE_CXX_COMPILER /usr/bin/g++)
-STRING(REPLACE "-O2" "-Od" CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_RELEASE})
 
 project(CAN DESCRIPTION "C3CAN Interface Libary")
 # The version number.
@@ -12,12 +11,15 @@ set (CAN_VERSION_MINOR 0)
 include_directories("${PROJECT_BINARY_DIR}")
 
 # add the executable
-add_library(CAN SHARED src/CAN/CanAccessor.cpp src/CAN/CanAccessor.h src/CAN/CanNamespace.h src/CAN/CanManager.cpp src/CAN/CanManager.h)
-target_link_libraries(CAN pthread libsupc++.a c3can_core c3can_error)
-
+add_library(CAN SHARED src/CAN/CanAccessor.cpp src/CAN/CanAccessor.h src/CAN/CanNamespace.h src/CAN/CanManager.cpp src/CAN/CanManager.h src/CAN/can_global.h)
+if(UNIX)
+target_link_libraries(CAN pthread c3can_core c3can_error)
+endif(UNIX)
+if(WIN32)
+#target_link_libraries(CAN )
+endif(WIN32)
 target_compile_options(CAN PUBLIC -Wall)
 
-#target_link_options(deviceinfo PUBLIC -lOpenCL PUBLIC -lsupc++)
 
 project(Scheduler DESCRIPTION "Scheduler Interface Libary")
 # The version number.
@@ -31,8 +33,15 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 # add the executable
 add_library(Scheduler SHARED src/Scheduler/Device.cpp src/Scheduler/Device.h src/Scheduler/ScheduleManager.cpp src/Scheduler/ScheduleManager.h src/Scheduler/Scheduler.cpp src/Scheduler/Scheduler.h src/Scheduler/Task.cpp src/Scheduler/Task.h src/Scheduler/StaticScheduler.cpp src/Scheduler/StaticScheduler.h src/Scheduler/SchedulerNamespace.h src/Scheduler/scheduler_global.h)
-target_link_libraries(Scheduler libOpenCL.so libsupc++.a)
+if(UNIX)
+target_link_libraries(Scheduler libOpenCL.so)
 target_include_directories (Scheduler PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+endif(UNIX)
+if(WIN32)
+target_link_libraries(Scheduler $ENV{OCL_ROOT}/lib/x86_64/opencl.lib)
+target_include_directories (Scheduler PUBLIC $ENV{OCL_ROOT}/include ${CMAKE_CURRENT_SOURCE_DIR})
+endif(WIN32)
+
 target_compile_options(Scheduler PUBLIC -Wall)
 
 #target_link_options(deviceinfo PUBLIC -lOpenCL PUBLIC -lsupc++)
@@ -48,7 +57,7 @@ include_directories("${PROJECT_BINARY_DIR}")
 # add the executable
 add_executable(UI src/UI/main.cpp src/UI/TUI.cpp src/UI/TUI.h)
 add_dependencies(UI Scheduler CAN)
-target_link_libraries(UI LINK_PUBLIC Scheduler CAN libsupc++.a)
+target_link_libraries(UI LINK_PUBLIC Scheduler CAN)
 
 target_compile_options(UI PUBLIC -Wall)
 

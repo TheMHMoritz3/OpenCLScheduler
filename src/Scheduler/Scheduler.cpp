@@ -41,7 +41,7 @@ void Scheduler::setRAMForCurrentTask(Task* task, Device device, cl::Kernel kerne
             default:
 				break;
         }
-        kernel.setArg(count, *buffer);
+        ErrorCode = kernel.setArg(count, *buffer);
 		count++;
     }
 }
@@ -85,8 +85,8 @@ void Scheduler::setKernelLoad(Task* task, Device device, cl::Kernel kernel)
 
 void Scheduler::enqueueTak(Task* task, Device device, cl::CommandQueue commandQueue, cl::Kernel kernel)
 {
-	commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(1),cl::NDRange(1));
-	commandQueue.finish();
+    commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(1),cl::NDRange(1));
+    commandQueue.finish();
 }
 
 void Scheduler::readDataFromTask(Task* task, cl::CommandQueue commandQueue)
@@ -128,7 +128,7 @@ cl::Buffer* Scheduler::generateBufferForUINT(std::vector<void*> data, cl::Contex
 
 
     cl::Buffer *buffer=new cl::Buffer(context,CL_MEM_READ_WRITE,sizeof(uint32_t)*data.size());
-    queue.enqueueWriteBuffer(*buffer, CL_TRUE, count, sizeof(uint32_t) * data.size(), uintRamDataToAdd);
+    ErrorCode = queue.enqueueWriteBuffer(*buffer, CL_TRUE, count, sizeof(uint32_t) * data.size(), uintRamDataToAdd);
     return buffer;
 }
 
