@@ -12,12 +12,9 @@ float alpha(int input) {
 __kernel void xAxis(global const unsigned int* input, global float* result, const int WLOAD) {
 	int gid = get_global_id(0) * WLOAD;
 
-	printf("xAxis started");
 
 	for (int i = 0; i < WLOAD; ++i)
-	{
        result[gid + i]= asin(alpha(input[gid+i]));
-    }
 }
 
 /*   Berechnet die Beschleunigung auf der Y-Achse

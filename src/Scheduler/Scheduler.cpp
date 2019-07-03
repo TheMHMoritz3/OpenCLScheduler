@@ -42,7 +42,6 @@ void Scheduler::setRAMForCurrentTask(Task* task, Device device, cl::Kernel kerne
 				break;
         }
         ErrorCode = kernel.setArg(count, *buffer);
-        std::cout<<"Setting RAM Errorcode: "<<ErrorCode;
 		count++;
     }
 }
@@ -74,8 +73,7 @@ void Scheduler::setRAMBufferForOutput(Task* task, Device device, cl::Kernel kern
 		break;
 	}
 	task->setReadBuffer(buffer);
-	ErrorCode = kernel.setArg(task->getAllData().size(), *buffer);
-    std::cout<<"Setting RAM Output Errorcode: "<<ErrorCode<<" Float Size "<<buffer->getInfo<CL_MEM_SIZE>()<<std::endl;
+	kernel.setArg(task->getAllData().size(), *buffer);
 }
 
 void Scheduler::setKernelLoad(Task* task, Device device, cl::Kernel kernel)
@@ -87,9 +85,8 @@ void Scheduler::setKernelLoad(Task* task, Device device, cl::Kernel kernel)
 
 void Scheduler::enqueueTak(Task* task, Device device, cl::CommandQueue commandQueue, cl::Kernel kernel)
 {
-    ErrorCode = commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(1),cl::NDRange(1));
+    commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(1),cl::NDRange(1));
     commandQueue.finish();
-    std::cout<<"Running Errorcode: "<<ErrorCode;
 }
 
 void Scheduler::readDataFromTask(Task* task, cl::CommandQueue commandQueue)
@@ -127,13 +124,11 @@ cl::Buffer* Scheduler::generateBufferForUINT(std::vector<void*> data, cl::Contex
 	for (long unsigned int i = 0; i < data.size(); i++)
 	{
 		uintRamDataToAdd[i] = *((uint32_t*)data.at(i));
-		std::cout<<"Data before setting"<<uintRamDataToAdd[i]<<std::endl;
 	}
 
 
     cl::Buffer *buffer=new cl::Buffer(context,CL_MEM_READ_WRITE,sizeof(uint32_t)*data.size());
     ErrorCode = queue.enqueueWriteBuffer(*buffer, CL_TRUE, count, sizeof(uint32_t) * data.size(), uintRamDataToAdd);
-    std::cout<<"Setting Data Error Code "<<ErrorCode<<std::endl;
     return buffer;
 }
 
