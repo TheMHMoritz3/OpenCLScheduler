@@ -12,7 +12,7 @@ using namespace CAN;
 
 CanAccessor::CanAccessor(CanID id, int elementCount) {
     IdCan = id;
-    ElementCount=elementCount;
+    ElementCount = elementCount;
     init();
     Data = new uint32_t[ElementCount];
 }
@@ -21,12 +21,11 @@ int CanAccessor::didErrorOccur() {
     return ErrorCode;
 }
 
-std::vector<uint32_t*> CanAccessor::getData() {
+std::vector<uint32_t *> CanAccessor::getData() {
 //    Thread.join();
-	std::vector<uint32_t*>* data = new std::vector<uint32_t*>();
+    std::vector<uint32_t *> *data = new std::vector<uint32_t *>();
 #ifndef _WINDOWS
-    for(int i = 0; i<ElementCount; i++){
-        std::cout<<"Data: "<<Data[i]<<std::endl;
+    for (int i = 0; i < ElementCount; i++) {
         data->push_back(&Data[i]);
     }
 #endif
@@ -37,10 +36,8 @@ void CanAccessor::init() {
 #ifndef _WINDOWS
     Single = c3can_single_init("can0");
     ErrorCode = c3can_single_get_error(Single)->code;
-    std::cout<<"Can Init ErrorCode "<<ErrorCode<<std::endl;
     c3can_single_filter_add(Single, IdCan, (C3CAN_SINGLE_FILTER_OPTS) 0);
     ErrorCode = c3can_single_get_error(Single)->code;
-    std::cout<<"Can set Filter ErrorCode "<<ErrorCode<<std::endl;
 #endif
 }
 
@@ -48,20 +45,12 @@ void CanAccessor::collectData() {
 #ifndef _WINDOWS
     struct timeval timestamp;
 #endif
-    for(int i = 0; i<ElementCount; i++){
+    for (int i = 0; i < ElementCount; i++) {
 #ifndef _WINDOWS
-        try {
-            c3can_message* canMessage = new c3can_message();
-            c3can_single_recv(Single, canMessage, &timestamp);
-            ErrorCode = c3can_single_get_error(Single)->code;
-            Data[i] = U32_DATA(c3can_message_get_payload(canMessage));
-            std::cout<<"Read Data ErrorCode "<<ErrorCode<<" - "<<Data[i]<<std::endl;
-        } catch(std::exception ex){
-            std::cout<<"Exception Occured"<<ex.what()<<std::endl;
-            std::cout<<"Error Code"<<ErrorCode<<std::endl;
-        } catch(...){
-            std::cout<<"Error Code"<<ErrorCode<<std::endl;
-        }
+        c3can_message *canMessage = new c3can_message();
+        c3can_single_recv(Single, canMessage, &timestamp);
+        ErrorCode = c3can_single_get_error(Single)->code;
+        Data[i] = U32_DATA(c3can_message_get_payload(canMessage));
 #endif
     }
 }
