@@ -28,14 +28,14 @@ CanManager::CanManager() {
 void CanManager::create(CAN::CanID id, int count) {
     CanAccessor *accessor = new CanAccessor(id, count);
     accessor->startCollectingData();
-    CanThreadMap.insert(pair<int, CanAccessor*>(id,accessor));
+    CanThreadMap.insert(pair<int, CanAccessor*>((int)id,accessor));
 }
 
 void CanManager::create(std::vector<CAN::CanID> ids, int count) {
     for(CanID id : ids){
         CanAccessor *accessor = new CanAccessor(id, count);
         accessor->startCollectingData();
-        CanThreadMap.insert(pair<int, CanAccessor*>(id,accessor));
+        CanThreadMap.insert(pair<int, CanAccessor*>((int)id,accessor));
     }
 }
 
@@ -57,5 +57,5 @@ double CanManager::getSamplingRate(CAN::CanID id) {
 }
 
 vector<uint32_t*> CanManager::getData(CAN::CanID id) {
-    return CanThreadMap.at(id)->getData();
+    return CanThreadMap.at((int)id)->getData();
 }

@@ -29,7 +29,7 @@ using namespace std;
 TUI::TUI()
 {
 	IsInUnitTestingMode = false;
-	CanManager = nullptr;
+    activateCanBus();
 	ScheduleManager = nullptr;
 }
 
@@ -564,7 +564,7 @@ void TUI::toggleUnitTestMode() {
 }
 
 void TUI::decorateNormalMode(SCHEDULER::Task* task) {
-	activateCanBus();
+
 	decorateNormalMessage("How many Arguments do you want to set for Task?");
 	int argCount;
 	cin >> argCount;
