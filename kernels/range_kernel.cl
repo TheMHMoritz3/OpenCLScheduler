@@ -10,16 +10,17 @@
  *          Minimum Battery Voltage = 5,5v
  *          Charge of Battery lasts 2h
  */
-__kernel void distance(global const float* inputVoltage, global const float* speed, global float* result, const int WLOAD) {
+__kernel void dist(global const float* inputVoltage, global const float* speed, global float* result, const int WLOAD) {
     int gid = get_global_id(0) * WLOAD;
-    int const maxDuration = 2;
-    float const minVoltage = 5.5;
-    float const maxVoltage = 7.5;
-    float const maxVoltageDelta = maxVoltage - minVoltage;
+
+    int maxDuration = 2;
+    float minVoltage = 5.5;
+    float maxVoltage = 7.5;
+    float maxVoltageDelta = maxVoltage - minVoltage;
 
     for (int i = 0; i < WLOAD; ++i){
         float voltageDelta = maxVoltage - inputVoltage[gid+i];
-        float percentage = maxVoltageDelta/voltageDelta;
+        float percentage = voltageDelta/maxVoltageDelta;
         result[gid+i] = speed[gid+i]*percentage*maxDuration;
     }
 }
