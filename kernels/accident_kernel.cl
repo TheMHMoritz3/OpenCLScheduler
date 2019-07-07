@@ -21,7 +21,7 @@ __kernel void accidentConst(global const float* input, global const int* min, gl
     int gid = get_global_id(0) * wLoad;
 
     for (int i = 0; i < wLoad; ++i)
-        result[gid+i] = inRange( input[gid+i], min, max);
+        result[gid+i] = inRange( input[gid+i], min[gid+i], max[gid+i]);
 }
 
 //TODO: Insert peak detection
