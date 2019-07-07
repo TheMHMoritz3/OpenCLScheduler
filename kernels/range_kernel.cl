@@ -1,9 +1,9 @@
 /*   Errechnet die verbleibende fahrbare Distanz anhand der aktuellen Verbrauchswerte
  *      input: Der Batteriestatus
  *
- *      result: Das errechnete mögliche Distanz
+ *      result: Die errechnete mögliche Distanz
  *
- *      wLoad:   Wert 1 für voll parallele Ausführung, Wert MAX_ITEM_SIZE_PER_WORKGROUP für vollständig sequenzielle Ausführung.
+ *      wLoad:  Wert 1 für voll parallele Ausführung, Wert MAX_ITEM_SIZE_PER_WORKGROUP für vollständig sequenzielle Ausführung.
  *
  *      Assumptions:
  *          Maximum Battery Voltage = 7,5v
@@ -17,7 +17,7 @@ __kernel void dist(global const float* inputVoltage, global const float* speed, 
     float minVoltage = 5.5;
     float maxVoltage = 7.5;
     float maxVoltageDelta = maxVoltage - minVoltage;
-
+    //TODO prüfen ob Formel bei kürzlichen Geschwindigkeitsänderungen nach längerer gleicher Geschwindigkeit Sinn macht
     for (int i = 0; i < WLOAD; ++i){
         float voltageDelta = maxVoltage - inputVoltage[gid+i];
         float percentage = voltageDelta/maxVoltageDelta;
