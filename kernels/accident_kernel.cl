@@ -17,7 +17,7 @@ int inRange(int value, const int min, const int max){
  *
  *       wLoad: Wert 1 für voll parallele Ausführung, Wert MAX_ITEM_SIZE_PER_WORKGROUP für vollständig sequenzielle Ausführung.
  */
-__kernel void accidentConst(global const float* input, global int* result, global const int min, global const int max, const int wLoad) {
+__kernel void accidentConst(global const float* input, global const int* min, global const int* max, global int* result, const int wLoad) {
     int gid = get_global_id(0) * wLoad;
 
     for (int i = 0; i < wLoad; ++i)
