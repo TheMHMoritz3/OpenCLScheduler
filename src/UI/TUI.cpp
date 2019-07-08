@@ -217,7 +217,7 @@ void TUI::decorateOtherTask(SCHEDULER::Task* task)
 
 	for(int i =0 ;i<tasks.size(); i++)
 	{
-		if(i=value)
+		if(i==value)
 		{
 			task->addDependandTask(tasks.at(i));
 		}
