@@ -38,6 +38,8 @@ void TUI::start() {
 	ScheduleManager->searchForDevices();
 
 	if (ScheduleManager->isAddingTasksPossible()) {
+	    decorateNormalMessage("Do you want to use the preset?");
+	    //TODO Preset einfügen
 		addKernelMenu();
 		setSchedule();
 		printData();
