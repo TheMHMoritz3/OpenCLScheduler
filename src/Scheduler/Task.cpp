@@ -134,6 +134,7 @@ void Task::readDataFromOtherThread()
 {
 	for(Task* task : DependandTasks)
 	{
+	    Load = task->getLoad();
 		std::vector<void*> data = task->getReturnData().second;
 		Data.push_back(std::pair<Type,std::vector<void*>>(task->getReturnData().first, data));
 	}

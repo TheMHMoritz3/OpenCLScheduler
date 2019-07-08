@@ -133,64 +133,65 @@ void TUI::decorateValueData(SCHEDULER::Task* task)
 	switch (task->getReturnDataType())
 	{
 	case SCHEDULER::INT:
-		decorateIntValue(task, task->getReturnData().second);
+		decorateIntValue(task, task->getReturnData().second, task->getLoad());
 		break;
 	case SCHEDULER::UINT:
-		decorateUIntValue(task, task->getReturnData().second);
+		decorateUIntValue(task, task->getReturnData().second, task->getLoad());
 		break;
 	case SCHEDULER::CHAR:
-		decorateCharValue(task, task->getReturnData().second);
+		decorateCharValue(task, task->getReturnData().second, task->getLoad());
 		break;
 	case SCHEDULER::FLOAT:
-		decorateFloatValue(task, task->getReturnData().second);
+		decorateFloatValue(task, task->getReturnData().second, task->getLoad());
 		break;
 	case SCHEDULER::DOUBLE:
-		decorateDoubleValue(task, task->getReturnData().second);
+		decorateDoubleValue(task, task->getReturnData().second, task->getLoad());
 		break;
 	case SCHEDULER::STRING:
-		decorateCharValue(task, task->getReturnData().second);
+		decorateCharValue(task, task->getReturnData().second, task->getLoad());
 		break;
 	default:
-		decorateError("Error: No Type providet in Return Value");
+		decorateError("Error: No Type provided in Return Value");
 		break;
 	}
 }
 
-void TUI::decorateFloatValue(SCHEDULER::Task* task, std::vector<void*> data)
+void TUI::decorateFloatValue(SCHEDULER::Task* task, std::vector<void*> data, int load)
 {
-	for (long unsigned int i = 0; i < data.size(); i++) {
+    cout<<"Data Size: "<<data.size()<<endl;
+	for (long unsigned int i = 0; i < load; i++) {
 		float value = *((float*)data.at(i));
 		cout << i << ". Return Value: \t" << value << endl;
 	}
 }
 
-void TUI::decorateIntValue(SCHEDULER::Task* task, std::vector<void*> data)
+void TUI::decorateIntValue(SCHEDULER::Task* task, std::vector<void*> data, int load)
 {
-	for (long unsigned int i = 0; i < data.size(); i++) {
+	for (long unsigned int i = 0; i < load; i++) {
 		int32_t value = *((int32_t*)data.at(i));
 		cout << i << ". Return Value: \t" << value << endl;
 	}
 }
 
-void TUI::decorateUIntValue(SCHEDULER::Task* task, std::vector<void*> data)
+void TUI::decorateUIntValue(SCHEDULER::Task* task, std::vector<void*> data, int load)
 {
-	for (long unsigned int i = 0; i < data.size(); i++) {
+	for (long unsigned int i = 0; i < load; i++) {
 		uint32_t value = *((uint32_t*)data.at(i));
 		cout << i << ". Return Value: \t" << value << endl;
 	}
 }
 
-void TUI::decorateCharValue(SCHEDULER::Task* task, std::vector<void*> data)
+void TUI::decorateCharValue(SCHEDULER::Task* task, std::vector<void*> data, int load)
 {
-	for (long unsigned int i = 0; i < data.size(); i++) {
+	for (long unsigned int i = 0; i < load; i++) {
 		char value = *((char*)data.at(i));
 		cout << i << ". Return Value: \t" << value << endl;
 	}
 }
 
-void TUI::decorateDoubleValue(SCHEDULER::Task* task, std::vector<void*> data)
+void TUI::decorateDoubleValue(SCHEDULER::Task* task, std::vector<void*> data, int load)
 {
-	for (long unsigned int i = 0; i < data.size(); i++) {
+	for (long unsigned int i = 0; i < load; i++) {
 		double value = *((double*)data.at(i));
 		cout << i << ". Return Value: \t" << value << endl;
 	}
