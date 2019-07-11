@@ -61,7 +61,7 @@ __kernel void tractionControl(global const float* speedF, global const float* sp
         if((resultRL == 2)&&(resultRR == 3))
             result[gid+i]=7;
 
-        if((resultRL == 3)&&(resultRR == 2)
+        if((resultRL == 3)&&(resultRR == 2))
             result[gid+i]=8;
     }
 }

@@ -258,7 +258,6 @@ void TUI::decorateCan(SCHEDULER::Task* task, int load)
 	addCanMethod(task,load,value);
 }
 
-
 void TUI::askUserReturnData(SCHEDULER::Task* task)
 {
 	clear();
@@ -534,14 +533,14 @@ void TUI::applyStaticMode() {
     speedCalcFR->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
     addCanMethod(speedCalcFR,DefaultStaticModeLoad,0);
     tasks.emplace_back(speedCalcFR);
-//    //Task speedCalcFL
-//    decorateNormalMessage("speedCalcFL");
-//    SCHEDULER::Task* speedCalcFL = ScheduleManager->addTask("kernels/speed_kernel.cl", "speedCalc");
-//    speedCalcFL->setReturnDataType(SCHEDULER::Type::FLOAT);
-//    speedCalcFL->setLoad(DefaultStaticModeLoad);
-//    speedCalcFL->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
-//    addCanMethod(speedCalcFL,DefaultStaticModeLoad,1);
-//    tasks.emplace_back(speedCalcFL);
+    //Task speedCalcFL
+    decorateNormalMessage("speedCalcFL");
+    SCHEDULER::Task* speedCalcFL = ScheduleManager->addTask("kernels/speed_kernel.cl", "speedCalc");
+    speedCalcFL->setReturnDataType(SCHEDULER::Type::FLOAT);
+    speedCalcFL->setLoad(DefaultStaticModeLoad);
+    speedCalcFL->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
+    addCanMethod(speedCalcFL,DefaultStaticModeLoad,1);
+    tasks.emplace_back(speedCalcFL);
     //Task speedCalcRR
     decorateNormalMessage("speedCalcRR");
     SCHEDULER::Task* speedCalcRR = ScheduleManager->addTask("kernels/speed_kernel.cl", "speedCalc");
@@ -550,24 +549,23 @@ void TUI::applyStaticMode() {
     speedCalcRR->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
     addCanMethod(speedCalcRR,DefaultStaticModeLoad,3);
     tasks.emplace_back(speedCalcRR);
-//    //Task speedCalcRL
-//    decorateNormalMessage("speedCalcRL");
-//    SCHEDULER::Task* speedCalcRL = ScheduleManager->addTask("kernels/speed_kernel.cl", "speedCalc");
-//    speedCalcRL->setReturnDataType(SCHEDULER::Type::FLOAT);
-//    speedCalcRL->setLoad(DefaultStaticModeLoad);
-//    speedCalcRL->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
-//    addCanMethod(speedCalcRL,DefaultStaticModeLoad,2);
-//    tasks.emplace_back(speedCalcRL);
+    //Task speedCalcRL
+    decorateNormalMessage("speedCalcRL");
+    SCHEDULER::Task* speedCalcRL = ScheduleManager->addTask("kernels/speed_kernel.cl", "speedCalc");
+    speedCalcRL->setReturnDataType(SCHEDULER::Type::FLOAT);
+    speedCalcRL->setLoad(DefaultStaticModeLoad);
+    speedCalcRL->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
+    addCanMethod(speedCalcRL,DefaultStaticModeLoad,2);
+    tasks.emplace_back(speedCalcRL);
     //Task median
     SCHEDULER::Task* median = ScheduleManager->addTask("kernels/speed_kernel.cl", "median");
     median->setReturnDataType(SCHEDULER::Type::FLOAT);
     median->setLoad(DefaultStaticModeLoad);
     median->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
-    median->addDependandTask(speedCalcRR);
+    median->addDependandTask(speedCalcFL);
     median->addDependandTask(speedCalcFR);
     tasks.emplace_back(median);
     //Task range
-    decorateNormalMessage("range");
     SCHEDULER::Task* range = ScheduleManager->addTask("kernels/range_kernel.cl", "dist");
     range->setReturnDataType(SCHEDULER::Type::FLOAT);
     range->setLoad(DefaultStaticModeLoad);
@@ -575,7 +573,56 @@ void TUI::applyStaticMode() {
     range->addDependandTask(batteryCalc);
     range->addDependandTask(median);
     tasks.emplace_back(range);
-
+    //Task tractionControl
+    SCHEDULER::Task* tractionControl = ScheduleManager->addTask("kernels/traction_kernel.cl", "tractionControl");
+    tractionControl->setReturnDataType(SCHEDULER::Type::INT);
+    tractionControl->setLoad(DefaultStaticModeLoad);
+    tractionControl->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
+    tractionControl->addDependandTask(median);
+    tractionControl->addDependandTask(speedCalcRL);
+    tractionControl->addDependandTask(speedCalcRR);
+    tasks.emplace_back(tractionControl);
+    //Task turningRadius
+    SCHEDULER::Task* turningRadius = ScheduleManager->addTask("kernels/turn_radius_kernel.cl", "radius");
+    turningRadius->setReturnDataType(SCHEDULER::Type::FLOAT);
+    turningRadius->setLoad(DefaultStaticModeLoad);
+    turningRadius->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
+    turningRadius->addDependandTask(speedCalcFR);
+    turningRadius->addDependandTask(speedCalcFL);
+    tasks.emplace_back(turningRadius);
+    //Task distanceTracker
+    SCHEDULER::Task* distanceTracker = ScheduleManager->addTask("kernels/distanceTracker.cl", "distanceTracker");
+    distanceTracker->setReturnDataType(SCHEDULER::Type::FLOAT);
+    distanceTracker->setLoad(DefaultStaticModeLoad);
+    float distanceTracerDistanceFloat=10.0f;
+    std::vector<void*> distanceTracerDistance;
+    for(int i = 0; i<DefaultStaticModeLoad; i++){
+        distanceTracerDistance.push_back(&distanceTracerDistanceFloat);
+    }
+    distanceTracker->addData(distanceTracerDistance,SCHEDULER::FLOAT);
+    float distanceTracerTimeFloat=10.0f;
+    std::vector<void*> distanceTracerTime;
+    for(int i = 0; i<DefaultStaticModeLoad; i++){
+        distanceTracerDistance.push_back(&distanceTracerTimeFloat);
+    }
+    distanceTracker->addData(distanceTracerDistance,SCHEDULER::FLOAT);
+    distanceTracker->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
+    distanceTracker->addDependandTask(median);
+    tasks.emplace_back(distanceTracker);
+    //Task cruiseControl
+    SCHEDULER::Task* cruiseControl = ScheduleManager->addTask("kernels/cruiseControl.cl", "cruiseControl");
+    cruiseControl->setReturnDataType(SCHEDULER::Type::FLOAT);
+    cruiseControl->setLoad(DefaultStaticModeLoad);
+    int cruiseControlvaluesInt=10;
+    std::vector<void*> cruiseControlvalues;
+    for(int i = 0; i<DefaultStaticModeLoad; i++){
+        cruiseControlvalues.push_back(&cruiseControlvaluesInt);
+    }
+    cruiseControl->addData(cruiseControlvalues,SCHEDULER::INT);
+    cruiseControl->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
+    cruiseControl->addDependandTask(xAxis);
+    cruiseControl->addDependandTask(median);
+    tasks.emplace_back(cruiseControl);
 
     cout << "Kernel count: " << ScheduleManager->getKernelCount() << endl;
 }
