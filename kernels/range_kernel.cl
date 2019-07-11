@@ -21,6 +21,13 @@ __kernel void dist(global const float* inputVoltage, global const float* speed, 
     for (int i = 0; i < WLOAD; ++i){
         float voltageDelta = maxVoltage - inputVoltage[gid+i];
         float percentage = voltageDelta/maxVoltageDelta;
-        result[gid+i] = speed[gid+i]*percentage*maxDuration;
+        if(speed[gid+i]>1)
+        {
+            result[gid+i] = speed[gid+i]*percentage*maxDuration;
+        }
+        else
+        {
+            result[gid+i] = percentage*maxDuration;
+        }
     }
 }

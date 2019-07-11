@@ -486,6 +486,7 @@ void TUI::applyStaticMode() {
     clear();
     cout << "Found Devices: " << ScheduleManager->getDeviceCount() << endl;
     //Task xAxis
+    decorateNormalMessage("xAxis");
     SCHEDULER::Task* xAxis = ScheduleManager->addTask("kernels/accel_sensor.cl", "xAxis");
     xAxis->setReturnDataType(SCHEDULER::Type::FLOAT);
     xAxis->setLoad(DefaultStaticModeLoad);
@@ -493,6 +494,7 @@ void TUI::applyStaticMode() {
     addCanMethod(xAxis,DefaultStaticModeLoad,5);
     tasks.emplace_back(xAxis);
     //Task yAxis
+    decorateNormalMessage("yAxis");
     SCHEDULER::Task* yAxis = ScheduleManager->addTask("kernels/accel_sensor.cl", "yAxis");
     yAxis->setReturnDataType(SCHEDULER::Type::FLOAT);
     yAxis->setLoad(DefaultStaticModeLoad);
@@ -500,6 +502,7 @@ void TUI::applyStaticMode() {
     addCanMethod(yAxis,DefaultStaticModeLoad,6);
     tasks.emplace_back(yAxis);
     //Task dualAxis
+    decorateNormalMessage("dualAxis");
     SCHEDULER::Task* dualAxis = ScheduleManager->addTask("kernels/accel_sensor.cl", "dualAxis");
     dualAxis->setReturnDataType(SCHEDULER::Type::FLOAT);
     dualAxis->setLoad(DefaultStaticModeLoad);
@@ -508,6 +511,7 @@ void TUI::applyStaticMode() {
     addCanMethod(dualAxis,DefaultStaticModeLoad,6);
     tasks.emplace_back(dualAxis);
     //Task batteryCalc
+    decorateNormalMessage("batteryCalc");
     SCHEDULER::Task* batteryCalc = ScheduleManager->addTask("kernels/battery_kernel.cl", "batteryCalc");
     batteryCalc->setReturnDataType(SCHEDULER::Type::FLOAT);
     batteryCalc->setLoad(DefaultStaticModeLoad);
@@ -515,12 +519,62 @@ void TUI::applyStaticMode() {
     addCanMethod(batteryCalc,DefaultStaticModeLoad,4);
     tasks.emplace_back(batteryCalc);
     //Task temp
+    decorateNormalMessage("temp");
     SCHEDULER::Task* temp = ScheduleManager->addTask("kernels/temp_kernel.cl", "temp");
     temp->setReturnDataType(SCHEDULER::Type::FLOAT);
     temp->setLoad(DefaultStaticModeLoad);
     temp->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
     addCanMethod(temp,DefaultStaticModeLoad,7);
     tasks.emplace_back(temp);
+    //Task speedCalcFR
+    decorateNormalMessage("speedCalcFR");
+    SCHEDULER::Task* speedCalcFR = ScheduleManager->addTask("kernels/speed_kernel.cl", "speedCalc");
+    speedCalcFR->setReturnDataType(SCHEDULER::Type::FLOAT);
+    speedCalcFR->setLoad(DefaultStaticModeLoad);
+    speedCalcFR->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
+    addCanMethod(speedCalcFR,DefaultStaticModeLoad,0);
+    tasks.emplace_back(speedCalcFR);
+//    //Task speedCalcFL
+//    decorateNormalMessage("speedCalcFL");
+//    SCHEDULER::Task* speedCalcFL = ScheduleManager->addTask("kernels/speed_kernel.cl", "speedCalc");
+//    speedCalcFL->setReturnDataType(SCHEDULER::Type::FLOAT);
+//    speedCalcFL->setLoad(DefaultStaticModeLoad);
+//    speedCalcFL->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
+//    addCanMethod(speedCalcFL,DefaultStaticModeLoad,1);
+//    tasks.emplace_back(speedCalcFL);
+    //Task speedCalcRR
+    decorateNormalMessage("speedCalcRR");
+    SCHEDULER::Task* speedCalcRR = ScheduleManager->addTask("kernels/speed_kernel.cl", "speedCalc");
+    speedCalcRR->setReturnDataType(SCHEDULER::Type::FLOAT);
+    speedCalcRR->setLoad(DefaultStaticModeLoad);
+    speedCalcRR->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
+    addCanMethod(speedCalcRR,DefaultStaticModeLoad,3);
+    tasks.emplace_back(speedCalcRR);
+//    //Task speedCalcRL
+//    decorateNormalMessage("speedCalcRL");
+//    SCHEDULER::Task* speedCalcRL = ScheduleManager->addTask("kernels/speed_kernel.cl", "speedCalc");
+//    speedCalcRL->setReturnDataType(SCHEDULER::Type::FLOAT);
+//    speedCalcRL->setLoad(DefaultStaticModeLoad);
+//    speedCalcRL->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
+//    addCanMethod(speedCalcRL,DefaultStaticModeLoad,2);
+//    tasks.emplace_back(speedCalcRL);
+    //Task median
+    SCHEDULER::Task* median = ScheduleManager->addTask("kernels/speed_kernel.cl", "median");
+    median->setReturnDataType(SCHEDULER::Type::FLOAT);
+    median->setLoad(DefaultStaticModeLoad);
+    median->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
+    median->addDependandTask(speedCalcRR);
+    median->addDependandTask(speedCalcFR);
+    tasks.emplace_back(median);
+    //Task range
+    decorateNormalMessage("range");
+    SCHEDULER::Task* range = ScheduleManager->addTask("kernels/range_kernel.cl", "dist");
+    range->setReturnDataType(SCHEDULER::Type::FLOAT);
+    range->setLoad(DefaultStaticModeLoad);
+    range->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
+    range->addDependandTask(batteryCalc);
+    range->addDependandTask(median);
+    tasks.emplace_back(range);
 
 
     cout << "Kernel count: " << ScheduleManager->getKernelCount() << endl;
