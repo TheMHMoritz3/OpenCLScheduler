@@ -105,7 +105,10 @@ Type Task::getReturnDataType()
 std::vector<std::pair<Type, std::vector<void*>>> Task::getAllData() {
 	if((DepType==OutsideDependancy)&&(!IsDataSet))
 	{
-		GetExternalData();
+	    for(std::function<void(void)> getExternalData : GetExternalDataMethods) {
+            getExternalData();
+        }
+
 		IsDataSet=true;
 	}
 	if((DepType==OtherTask)&&(!IsDataSet))
@@ -156,7 +159,7 @@ void Task::addDependandTask(SCHEDULER::Task* task)
 	DependandTasks.push_back(task);
 }
 
-void Task::setExternalDataMethod(std::function<void()> externalFunctionData)
+void Task::addExternalDataMethod(std::function<void()> externalFunctionData)
 {
-	GetExternalData = externalFunctionData;
+    GetExternalDataMethods.push_back(externalFunctionData);
 }

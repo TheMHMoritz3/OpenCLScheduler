@@ -60,6 +60,7 @@ namespace UI {
 
 		void decorateOtherTask(SCHEDULER::Task* task);
 		void decorateCan(SCHEDULER::Task* task, int load);
+		void addCanMethod(SCHEDULER::Task*, int load, int value);
 		void askUserReturnData(SCHEDULER::Task* task);
 		void decorateUnitTestingMode(SCHEDULER::Task* task);
 		SCHEDULER::Type getTypeFromUserForArg();
@@ -77,6 +78,8 @@ namespace UI {
 		bool IsInUnitTestingMode;
 
 		std::vector<SCHEDULER::Task*> tasks;
+
+		int DefaultStaticModeLoad;
     };
 }
 

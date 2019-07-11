@@ -31,6 +31,7 @@ TUI::TUI()
 	IsInUnitTestingMode = false;
     activateCanBus();
 	ScheduleManager = nullptr;
+    DefaultStaticModeLoad=10;
 }
 
 void TUI::start() {
@@ -45,9 +46,9 @@ void TUI::start() {
 	        applyStaticMode();
 	    }else{
             addKernelMenu();
-            setSchedule();
-            printData();
 	    }
+        setSchedule();
+        printData();
 	}
 	else {
 		decorateError("No devices Found! Abording.");
@@ -254,147 +255,7 @@ void TUI::decorateCan(SCHEDULER::Task* task, int load)
 		}
 	} while (!((value >= 0) && (value <= 7)));
 
-	switch (value)
-	{
-	case 0:
-		CanManager->create(CAN::WheelFrontRight, load);
-		task->setExternalDataMethod([=]()
-			{
-				std::vector<uint32_t*> dataSet  = CanManager->getData(CAN::WheelFrontRight);
-				uint32_t* DataSet = new uint32_t[dataSet.size()];
-				std::vector<void*> taskData;
-				int i = 0;
-				for(uint32_t* data : dataSet)
-				{
-				    DataSet[i]=*data;
-					taskData.push_back(&DataSet[i]);
-				    i++;
-				}
-				task->addData(taskData, SCHEDULER::UINT);
-			});
-		break;
-	case 1:
-		CanManager->create(CAN::WheelFrontLeft, load);
-		task->setExternalDataMethod([=]()
-			{
-				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::WheelFrontLeft);
-                uint32_t* DataSet = new uint32_t[dataSet.size()];
-                std::vector<void*> taskData;
-                int i = 0;
-                for(uint32_t* data : dataSet)
-                {
-                    DataSet[i]=*data;
-                    taskData.push_back(&DataSet[i]);
-                    i++;
-                }
-				task->addData(taskData, SCHEDULER::UINT);
-			});
-		break;
-	case 2:
-		CanManager->create(CAN::WheelRearLeft, load);
-		task->setExternalDataMethod([=]()
-			{
-				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::WheelRearLeft);
-                uint32_t* DataSet = new uint32_t[dataSet.size()];
-                std::vector<void*> taskData;
-                int i = 0;
-                for(uint32_t* data : dataSet)
-                {
-                    DataSet[i]=*data;
-                    taskData.push_back(&DataSet[i]);
-                    i++;
-                }
-				task->addData(taskData, SCHEDULER::UINT);
-			});
-		break;
-	case 3:
-		CanManager->create(CAN::WheelRearRight, load);
-		task->setExternalDataMethod([=]()
-			{
-				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::WheelRearRight);
-                uint32_t* DataSet = new uint32_t[dataSet.size()];
-                std::vector<void*> taskData;
-                int i = 0;
-                for(uint32_t* data : dataSet)
-                {
-                    DataSet[i]=*data;
-                    taskData.push_back(&DataSet[i]);
-                    i++;
-                }
-				task->addData(taskData, SCHEDULER::UINT);
-			});
-		break;
-	case 4:
-		CanManager->create(CAN::BatteryVoltage, load);
-		task->setExternalDataMethod([=]()
-			{
-				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::BatteryVoltage);
-                uint32_t* DataSet = new uint32_t[dataSet.size()];
-                std::vector<void*> taskData;
-                int i = 0;
-                for(uint32_t* data : dataSet)
-                {
-                    DataSet[i]=*data;
-                    taskData.push_back(&DataSet[i]);
-                    i++;
-                }
-				task->addData(taskData, SCHEDULER::UINT);
-			});
-		break;
-	case 5:
-		CanManager->create(CAN::AccelerationLongitudinal, load);
-		task->setExternalDataMethod([=]()
-			{
-				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::AccelerationLongitudinal);
-                uint32_t* DataSet = new uint32_t[dataSet.size()];
-                std::vector<void*> taskData;
-                int i = 0;
-                for(uint32_t* data : dataSet)
-                {
-                    DataSet[i]=*data;
-                    taskData.push_back(&DataSet[i]);
-                    i++;
-                }
-				task->addData(taskData, SCHEDULER::UINT);
-			});
-		break;
-	case 6:
-		CanManager->create(CAN::AccelerationLateral, load);
-		task->setExternalDataMethod([=]()
-			{
-				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::AccelerationLateral);
-                uint32_t* DataSet = new uint32_t[dataSet.size()];
-                std::vector<void*> taskData;
-                int i = 0;
-                for(uint32_t* data : dataSet)
-                {
-                    DataSet[i]=*data;
-                    taskData.push_back(&DataSet[i]);
-                    i++;
-                }
-				task->addData(taskData, SCHEDULER::UINT);
-			});
-		break;
-	case 7:
-		CanManager->create(CAN::Temperature, load);
-		task->setExternalDataMethod([=]()
-			{
-				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::Temperature);
-                uint32_t* DataSet = new uint32_t[dataSet.size()];
-                std::vector<void*> taskData;
-                int i = 0;
-                for(uint32_t* data : dataSet)
-                {
-                    DataSet[i]=*data;
-                    taskData.push_back(&DataSet[i]);
-                    i++;
-                }
-				task->addData(taskData, SCHEDULER::UINT);
-			});
-		break;
-	default:
-		break;
-	}
+	addCanMethod(task,load,value);
 }
 
 
@@ -621,5 +482,181 @@ void TUI::activateCanBus() {
 }
 
 void TUI::applyStaticMode() {
+    activateCanBus();
+    clear();
+    cout << "Found Devices: " << ScheduleManager->getDeviceCount() << endl;
+    //Task xAxis
+    SCHEDULER::Task* task = ScheduleManager->addTask("kernels/accel_sensor.cl", "xAxis");
+    task->setReturnDataType(SCHEDULER::Type::FLOAT);
+    task->setLoad(DefaultStaticModeLoad);
+    task->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
+    addCanMethod(task,DefaultStaticModeLoad,5);
+    tasks.emplace_back(task);
+    //Task yAxis
+    task = ScheduleManager->addTask("kernels/accel_sensor.cl", "yAxis");
+    task->setReturnDataType(SCHEDULER::Type::FLOAT);
+    task->setLoad(DefaultStaticModeLoad);
+    task->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
+    addCanMethod(task,DefaultStaticModeLoad,6);
+    tasks.emplace_back(task);
+    //Task dualAxis
+    task = ScheduleManager->addTask("kernels/accel_sensor.cl", "dualAxis");
+    task->setReturnDataType(SCHEDULER::Type::FLOAT);
+    task->setLoad(DefaultStaticModeLoad);
+    task->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
+    addCanMethod(task,DefaultStaticModeLoad,5);
+    addCanMethod(task,DefaultStaticModeLoad,6);
+    tasks.emplace_back(task);
 
+
+
+
+
+
+
+    cout << "Kernel count: " << ScheduleManager->getKernelCount() << endl;
+}
+
+void TUI::addCanMethod(SCHEDULER::Task *task, int load, int value) {
+    switch (value)
+    {
+        case 0:
+            CanManager->create(CAN::WheelFrontRight, load);
+            task->addExternalDataMethod([=]()
+                                        {
+                                            std::vector<uint32_t*> dataSet  = CanManager->getData(CAN::WheelFrontRight);
+                                            uint32_t* DataSet = new uint32_t[dataSet.size()];
+                                            std::vector<void*> taskData;
+                                            int i = 0;
+                                            for(uint32_t* data : dataSet)
+                                            {
+                                                DataSet[i]=*data;
+                                                taskData.push_back(&DataSet[i]);
+                                                i++;
+                                            }
+                                            task->addData(taskData, SCHEDULER::UINT);
+                                        });
+            break;
+        case 1:
+            CanManager->create(CAN::WheelFrontLeft, load);
+            task->addExternalDataMethod([=]()
+                                        {
+                                            std::vector<uint32_t*> dataSet = CanManager->getData(CAN::WheelFrontLeft);
+                                            uint32_t* DataSet = new uint32_t[dataSet.size()];
+                                            std::vector<void*> taskData;
+                                            int i = 0;
+                                            for(uint32_t* data : dataSet)
+                                            {
+                                                DataSet[i]=*data;
+                                                taskData.push_back(&DataSet[i]);
+                                                i++;
+                                            }
+                                            task->addData(taskData, SCHEDULER::UINT);
+                                        });
+            break;
+        case 2:
+            CanManager->create(CAN::WheelRearLeft, load);
+            task->addExternalDataMethod([=]()
+                                        {
+                                            std::vector<uint32_t*> dataSet = CanManager->getData(CAN::WheelRearLeft);
+                                            uint32_t* DataSet = new uint32_t[dataSet.size()];
+                                            std::vector<void*> taskData;
+                                            int i = 0;
+                                            for(uint32_t* data : dataSet)
+                                            {
+                                                DataSet[i]=*data;
+                                                taskData.push_back(&DataSet[i]);
+                                                i++;
+                                            }
+                                            task->addData(taskData, SCHEDULER::UINT);
+                                        });
+            break;
+        case 3:
+            CanManager->create(CAN::WheelRearRight, load);
+            task->addExternalDataMethod([=]()
+                                        {
+                                            std::vector<uint32_t*> dataSet = CanManager->getData(CAN::WheelRearRight);
+                                            uint32_t* DataSet = new uint32_t[dataSet.size()];
+                                            std::vector<void*> taskData;
+                                            int i = 0;
+                                            for(uint32_t* data : dataSet)
+                                            {
+                                                DataSet[i]=*data;
+                                                taskData.push_back(&DataSet[i]);
+                                                i++;
+                                            }
+                                            task->addData(taskData, SCHEDULER::UINT);
+                                        });
+            break;
+        case 4:
+            CanManager->create(CAN::BatteryVoltage, load);
+            task->addExternalDataMethod([=]()
+                                        {
+                                            std::vector<uint32_t*> dataSet = CanManager->getData(CAN::BatteryVoltage);
+                                            uint32_t* DataSet = new uint32_t[dataSet.size()];
+                                            std::vector<void*> taskData;
+                                            int i = 0;
+                                            for(uint32_t* data : dataSet)
+                                            {
+                                                DataSet[i]=*data;
+                                                taskData.push_back(&DataSet[i]);
+                                                i++;
+                                            }
+                                            task->addData(taskData, SCHEDULER::UINT);
+                                        });
+            break;
+        case 5:
+            CanManager->create(CAN::AccelerationLongitudinal, load);
+            task->addExternalDataMethod([=]()
+                                        {
+                                            std::vector<uint32_t*> dataSet = CanManager->getData(CAN::AccelerationLongitudinal);
+                                            uint32_t* DataSet = new uint32_t[dataSet.size()];
+                                            std::vector<void*> taskData;
+                                            int i = 0;
+                                            for(uint32_t* data : dataSet)
+                                            {
+                                                DataSet[i]=*data;
+                                                taskData.push_back(&DataSet[i]);
+                                                i++;
+                                            }
+                                            task->addData(taskData, SCHEDULER::UINT);
+                                        });
+            break;
+        case 6:
+            CanManager->create(CAN::AccelerationLateral, load);
+            task->addExternalDataMethod([=]()
+                                        {
+                                            std::vector<uint32_t*> dataSet = CanManager->getData(CAN::AccelerationLateral);
+                                            uint32_t* DataSet = new uint32_t[dataSet.size()];
+                                            std::vector<void*> taskData;
+                                            int i = 0;
+                                            for(uint32_t* data : dataSet)
+                                            {
+                                                DataSet[i]=*data;
+                                                taskData.push_back(&DataSet[i]);
+                                                i++;
+                                            }
+                                            task->addData(taskData, SCHEDULER::UINT);
+                                        });
+            break;
+        case 7:
+            CanManager->create(CAN::Temperature, load);
+            task->addExternalDataMethod([=]()
+                                        {
+                                            std::vector<uint32_t*> dataSet = CanManager->getData(CAN::Temperature);
+                                            uint32_t* DataSet = new uint32_t[dataSet.size()];
+                                            std::vector<void*> taskData;
+                                            int i = 0;
+                                            for(uint32_t* data : dataSet)
+                                            {
+                                                DataSet[i]=*data;
+                                                taskData.push_back(&DataSet[i]);
+                                                i++;
+                                            }
+                                            task->addData(taskData, SCHEDULER::UINT);
+                                        });
+            break;
+        default:
+            break;
+    }
 }

@@ -43,7 +43,7 @@ namespace SCHEDULER {
 		void setReturnData(std::vector<void*> data);
 		void setDataDependancy(SCHEDULER::DependancyType type);
 		void addDependandTask(SCHEDULER::Task* task);
-		void setExternalDataMethod(std::function<void(void)> externalFunctionData);
+		void addExternalDataMethod(std::function<void(void)> externalFunctionData);
 
         int getId();
         std::pair<Type,std::vector<void*>> getReturnData();
@@ -76,7 +76,7 @@ namespace SCHEDULER {
 		DependancyType DepType;
 		bool IsCalculationDone;
 		bool IsDataSet;
-		std::function<void(void)> GetExternalData;
+		std::vector<std::function<void(void)>> GetExternalDataMethods;
 
     };
 }
