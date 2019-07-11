@@ -486,32 +486,41 @@ void TUI::applyStaticMode() {
     clear();
     cout << "Found Devices: " << ScheduleManager->getDeviceCount() << endl;
     //Task xAxis
-    SCHEDULER::Task* task = ScheduleManager->addTask("kernels/accel_sensor.cl", "xAxis");
-    task->setReturnDataType(SCHEDULER::Type::FLOAT);
-    task->setLoad(DefaultStaticModeLoad);
-    task->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
-    addCanMethod(task,DefaultStaticModeLoad,5);
-    tasks.emplace_back(task);
+    SCHEDULER::Task* xAxis = ScheduleManager->addTask("kernels/accel_sensor.cl", "xAxis");
+    xAxis->setReturnDataType(SCHEDULER::Type::FLOAT);
+    xAxis->setLoad(DefaultStaticModeLoad);
+    xAxis->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
+    addCanMethod(xAxis,DefaultStaticModeLoad,5);
+    tasks.emplace_back(xAxis);
     //Task yAxis
-    task = ScheduleManager->addTask("kernels/accel_sensor.cl", "yAxis");
-    task->setReturnDataType(SCHEDULER::Type::FLOAT);
-    task->setLoad(DefaultStaticModeLoad);
-    task->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
-    addCanMethod(task,DefaultStaticModeLoad,6);
-    tasks.emplace_back(task);
+    SCHEDULER::Task* yAxis = ScheduleManager->addTask("kernels/accel_sensor.cl", "yAxis");
+    yAxis->setReturnDataType(SCHEDULER::Type::FLOAT);
+    yAxis->setLoad(DefaultStaticModeLoad);
+    yAxis->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
+    addCanMethod(yAxis,DefaultStaticModeLoad,6);
+    tasks.emplace_back(yAxis);
     //Task dualAxis
-    task = ScheduleManager->addTask("kernels/accel_sensor.cl", "dualAxis");
-    task->setReturnDataType(SCHEDULER::Type::FLOAT);
-    task->setLoad(DefaultStaticModeLoad);
-    task->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
-    addCanMethod(task,DefaultStaticModeLoad,5);
-    addCanMethod(task,DefaultStaticModeLoad,6);
-    tasks.emplace_back(task);
-
-
-
-
-
+    SCHEDULER::Task* dualAxis = ScheduleManager->addTask("kernels/accel_sensor.cl", "dualAxis");
+    dualAxis->setReturnDataType(SCHEDULER::Type::FLOAT);
+    dualAxis->setLoad(DefaultStaticModeLoad);
+    dualAxis->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
+    addCanMethod(dualAxis,DefaultStaticModeLoad,5);
+    addCanMethod(dualAxis,DefaultStaticModeLoad,6);
+    tasks.emplace_back(dualAxis);
+    //Task batteryCalc
+    SCHEDULER::Task* batteryCalc = ScheduleManager->addTask("kernels/battery_kernel.cl", "batteryCalc");
+    batteryCalc->setReturnDataType(SCHEDULER::Type::FLOAT);
+    batteryCalc->setLoad(DefaultStaticModeLoad);
+    batteryCalc->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
+    addCanMethod(batteryCalc,DefaultStaticModeLoad,4);
+    tasks.emplace_back(batteryCalc);
+    //Task temp
+    SCHEDULER::Task* temp = ScheduleManager->addTask("kernels/temp_kernel.cl", "temp");
+    temp->setReturnDataType(SCHEDULER::Type::FLOAT);
+    temp->setLoad(DefaultStaticModeLoad);
+    temp->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
+    addCanMethod(temp,DefaultStaticModeLoad,7);
+    tasks.emplace_back(temp);
 
 
     cout << "Kernel count: " << ScheduleManager->getKernelCount() << endl;
