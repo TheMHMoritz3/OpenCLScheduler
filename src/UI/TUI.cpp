@@ -38,11 +38,16 @@ void TUI::start() {
 	ScheduleManager->searchForDevices();
 
 	if (ScheduleManager->isAddingTasksPossible()) {
-	    decorateNormalMessage("Do you want to use the preset?");
-	    //TODO Preset einfügen
-		addKernelMenu();
-		setSchedule();
-		printData();
+	    decorateNormalMessage("Do you want to use the Kernelpreset?\n(y/N)");
+	    std::string presetMode;
+	    cin>>presetMode;
+	    if((presetMode.compare("y")==0)||(presetMode.compare("Y")==0)||(presetMode.compare("Yes")==0)||(presetMode.compare("yes")==0)){
+	        applyStaticMode();
+	    }else{
+            addKernelMenu();
+            setSchedule();
+            printData();
+	    }
 	}
 	else {
 		decorateError("No devices Found! Abording.");
@@ -613,4 +618,8 @@ void TUI::decorateNormalMode(SCHEDULER::Task* task) {
 
 void TUI::activateCanBus() {
 	CanManager = new CAN::CanManager();
+}
+
+void TUI::applyStaticMode() {
+
 }

@@ -36,14 +36,16 @@ namespace UI {
     private:
         void decorateError(std::string errorText);
 		void decorateNormalMessage(std::string message);
-        void addKernelMenu();
+
+		void addKernelMenu();
+        void applyStaticMode();
+
 
 		void setSchedule();
 
 		void decorateNormalMode(SCHEDULER::Task* task);
 
 		void activateCanBus();
-
 
 		void printData();
 		void clear();
