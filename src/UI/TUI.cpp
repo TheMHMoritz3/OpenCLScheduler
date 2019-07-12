@@ -594,18 +594,6 @@ void TUI::applyStaticMode() {
     SCHEDULER::Task* distanceTracker = ScheduleManager->addTask("kernels/distanceTracker.cl", "distanceTracker");
     distanceTracker->setReturnDataType(SCHEDULER::Type::FLOAT);
     distanceTracker->setLoad(DefaultStaticModeLoad);
-    float distanceTracerDistanceFloat=10.0f;
-    std::vector<void*> distanceTracerDistance;
-    for(int i = 0; i<DefaultStaticModeLoad; i++){
-        distanceTracerDistance.push_back(&distanceTracerDistanceFloat);
-    }
-    distanceTracker->addData(distanceTracerDistance,SCHEDULER::FLOAT);
-    float distanceTracerTimeFloat=10.0f;
-    std::vector<void*> distanceTracerTime;
-    for(int i = 0; i<DefaultStaticModeLoad; i++){
-        distanceTracerDistance.push_back(&distanceTracerTimeFloat);
-    }
-    distanceTracker->addData(distanceTracerDistance,SCHEDULER::FLOAT);
     distanceTracker->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
     distanceTracker->addDependandTask(median);
     tasks.emplace_back(distanceTracker);
@@ -613,12 +601,6 @@ void TUI::applyStaticMode() {
     SCHEDULER::Task* cruiseControl = ScheduleManager->addTask("kernels/cruiseControl.cl", "cruiseControl");
     cruiseControl->setReturnDataType(SCHEDULER::Type::FLOAT);
     cruiseControl->setLoad(DefaultStaticModeLoad);
-    int cruiseControlvaluesInt=10;
-    std::vector<void*> cruiseControlvalues;
-    for(int i = 0; i<DefaultStaticModeLoad; i++){
-        cruiseControlvalues.push_back(&cruiseControlvaluesInt);
-    }
-    cruiseControl->addData(cruiseControlvalues,SCHEDULER::INT);
     cruiseControl->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
     cruiseControl->addDependandTask(xAxis);
     cruiseControl->addDependandTask(median);

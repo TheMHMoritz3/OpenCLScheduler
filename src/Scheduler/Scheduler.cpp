@@ -56,6 +56,8 @@ void Scheduler::setRAMForCurrentTask(Task* task, Device device, cl::Kernel kerne
 				break;
         }
         ErrorCode = kernel.setArg(count, *buffer);
+//        std::cout << "Set Ram for Current Task: "<<ErrorCode<<std::endl;
+//        std::cout << "Count "<<count<<std::endl;
 		count++;
     }
 }
@@ -87,20 +89,24 @@ void Scheduler::setRAMBufferForOutput(Task* task, Device device, cl::Kernel kern
 		break;
 	}
 	task->setReadBuffer(buffer);
-	kernel.setArg(task->getAllData().size(), *buffer);
+	ErrorCode = kernel.setArg(task->getAllData().size(), *buffer);
+//    std::cout << "Set Ram Output for Current Task: "<<ErrorCode<<std::endl;
+//    std::cout << "Count "<<task->getAllData().size()<<std::endl;
 }
 
 void Scheduler::setKernelLoad(Task* task, Device device, cl::Kernel kernel)
 {
-	int ErrorCode=0;
 	cl::Buffer* buffer_WORKLOAD = new cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(int), &ErrorCode);
-	kernel.setArg(task->getAllData().size()+1,task->getLoad());
+	ErrorCode = kernel.setArg(task->getAllData().size()+1,task->getLoad());
+//    std::cout << "Set Kernel Load Task: "<<ErrorCode<<std::endl;
+//    std::cout << "Count "<<task->getAllData().size() + 1<<std::endl;
 }
 
 void Scheduler::enqueueTak(Task* task, Device device, cl::CommandQueue commandQueue, cl::Kernel kernel)
 {
-    commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(1),cl::NDRange(1));
+    ErrorCode = commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(1),cl::NDRange(1));
     commandQueue.finish();
+//    std::cout << "Enqueue Task: "<<ErrorCode<<std::endl;
 }
 
 void Scheduler::readDataFromTask(Task* task, cl::CommandQueue commandQueue)

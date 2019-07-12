@@ -1,5 +1,10 @@
-__kernel void distanceTracker(global float* distance, global float* time, global const unsigned int* wSpeedMedian, global float* output, const int WLOAD) {
+//Currently No Constant Values are supported
+
+__kernel void distanceTracker(global const unsigned int* wSpeedMedian, global float* output, const int WLOAD) {
 	int gid = get_global_id(0) * WLOAD;
+	float distance = 10;
+	float time = 10;
+
 	for(int i=0; i<WLOAD; i++)
-		output[gid+i] = distance[gid+i] + wSpeedMedian[gid+i] * time[gid+i] / 10000;
+		output[gid+i] = distance + wSpeedMedian[gid+i] * time/ 10000;
 }
