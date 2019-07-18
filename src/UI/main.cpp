@@ -5,13 +5,14 @@
 #include <iostream>
 #include <string>
 #include "TUI.h"
+#include "MainWindow.h"
 
 using namespace std;
 using namespace UI;
 
 
 int main(int count, char** values){
-    TUI tui;
+   /* TUI tui;
 
     if(count <= 1){
         cout<<"No Arguments given Starting normal."<<endl;
@@ -20,7 +21,11 @@ int main(int count, char** values){
         tui.toggleUnitTestMode();
     }
 
-    tui.start();
+    tui.start();*/
+	QApplication appl(count, values);
 
-    return 0;
+	MainWindow* mainWindow = new MainWindow();
+	mainWindow->show();
+
+	return appl.exec();
 }

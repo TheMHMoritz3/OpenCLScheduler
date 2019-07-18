@@ -18,7 +18,7 @@ endif(UNIX)
 if(WIN32)
 #target_link_libraries(CAN )
 endif(WIN32)
-target_compile_options(CAN PUBLIC -Wall)
+target_compile_options(CAN PUBLIC)
 
 
 project(Scheduler DESCRIPTION "Scheduler Interface Libary")
@@ -42,7 +42,7 @@ target_link_libraries(Scheduler $ENV{OCL_ROOT}/lib/x86_64/opencl.lib)
 target_include_directories (Scheduler PUBLIC $ENV{OCL_ROOT}/include ${CMAKE_CURRENT_SOURCE_DIR})
 endif(WIN32)
 
-target_compile_options(Scheduler PUBLIC -Wall)
+target_compile_options(Scheduler PUBLIC)
 
 #target_link_options(deviceinfo PUBLIC -lOpenCL PUBLIC -lsupc++)
 
@@ -51,14 +51,24 @@ project(UI DESCRIPTION "Scheduler Interface Libary")
 set(CMAKE_CXX_STANDARD 11)
 set (UI_VERSION_MAJOR 1)
 set (UI_VERSION_MINOR 0)
+set (CMAKE_PREFIX_PATH  $ENV{OCL_ROOT})
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
+
+find_package(Qt5 COMPONENTS REQUIRED Core Gui Widgets)
+get_target_property(QtCore_location Qt5::Core LOCATION)
 
 include_directories("${PROJECT_BINARY_DIR}")
 
-# add the executable
-add_executable(UI src/UI/main.cpp src/UI/TUI.cpp src/UI/TUI.h)
-add_dependencies(UI Scheduler CAN)
-target_link_libraries(UI LINK_PUBLIC Scheduler CAN)
+qt5_wrap_ui(UI_UICHEADERS src/UI/MainWindow.ui)
 
-target_compile_options(UI PUBLIC -Wall)
+# add the executable
+add_executable(UI ${UI_UICHEADERS} src/UI/main.cpp src/UI/TUI.cpp src/UI/TUI.h src/UI/MainWindow.h src/UI/MainWindow.cpp)
+
+add_dependencies(UI Scheduler CAN)
+target_link_libraries(UI LINK_PUBLIC Scheduler CAN Qt5::Widgets)
+
+target_compile_options(UI PUBLIC)
 
 #target_link_options(deviceinfo PUBLIC -lOpenCL PUBLIC -lsupc++)

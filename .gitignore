@@ -2,6 +2,7 @@
 **/bin
 **/C3CAN
 **/cmake-build-debug
+**/UI_autogen
 .idea/.name
 .idea/workspace.xml
 **.aux
@@ -18,7 +19,6 @@
 CMakeCache.txt
 **.so
 Makefile
-UI
 **.cbp
 **.dir**
 **.vcxproj**
@@ -27,3 +27,4 @@ UI
 **/.vs
 **/Debug
 **.sln
+ui_**
