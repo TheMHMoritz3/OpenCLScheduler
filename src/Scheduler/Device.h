@@ -8,9 +8,10 @@
 #include <string>
 #include <CL/cl.hpp>
 #include "Task.h"
+#include "scheduler_global.h"
 
 namespace SCHEDULER {
-	class Device {
+	class SCHEDULER_EXPORT Device {
 
     public:
         Device(int id, cl::Device oclDevice);

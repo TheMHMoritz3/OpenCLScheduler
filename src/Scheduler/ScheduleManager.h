@@ -28,6 +28,7 @@ namespace SCHEDULER {
         bool isAddingTasksPossible();
         int getKernelCount();
         int getDeviceCount();
+		std::string getDeviceName(int i);
 
     private:
 		cl::Program::Sources* convertSources(std::string file);

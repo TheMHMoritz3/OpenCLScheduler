@@ -80,3 +80,8 @@ cl::Program::Sources* ScheduleManager::convertSources(std::string file) {
 int ScheduleManager::getDeviceCount() {
     return Devices.size();
 }
+
+std::string ScheduleManager::getDeviceName(int i)
+{
+	return Devices.at(i).getName();
+}

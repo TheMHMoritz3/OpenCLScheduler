@@ -2,6 +2,11 @@
 
 #include "ui_MainWindow.h"
 #include <QMainWindow>
+#include "src/Scheduler/ScheduleManager.h"
+
+namespace SCHEDULER {
+	class Device;
+}
 
 class MainWindow : public QMainWindow 
 {
@@ -11,5 +16,9 @@ public:
 
 private:
 	Ui::MainWindow ui;
+
+	void fillStartUI();
+
+	SCHEDULER::ScheduleManager* ScheduleManager;
 };
 

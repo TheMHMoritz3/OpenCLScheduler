@@ -7,7 +7,7 @@
 
 
 
-#ifdef _WINDOWS
+#ifdef _WIN32
 #ifdef CAN_EXPORTS
 #define CAN_EXPORT __declspec(dllexport)
 #else

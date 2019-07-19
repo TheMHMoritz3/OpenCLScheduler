@@ -35,7 +35,7 @@ void TUI::start() {
 
 void TUI::decorateError(std::string errorText) {
 	clear();
-#ifdef _WINDOWS
+#ifdef _WIN32
 	cout << errorText << endl;
 #else
 	cout << "\e[31m" + errorText << endl;
@@ -44,7 +44,7 @@ void TUI::decorateError(std::string errorText) {
 
 void TUI::decorateNormalMessage(std::string message)
 {
-#ifdef _WINDOWS
+#ifdef _WIN32
 	cout << message << endl;
 #else
 	cout << "\e[0m" << message << endl;
@@ -105,7 +105,7 @@ void TUI::printData()
 
 void TUI::clear()
 {
-#ifdef _WINDOWS
+#ifdef _WIN32
 	system("cls");
 #else
 	system("clear");

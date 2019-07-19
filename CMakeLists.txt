@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.10)
 
-set (CMAKE_CXX_COMPILER /usr/bin/g++)
+#set (CMAKE_CXX_COMPILER /usr/bin/g++)
 
 project(CAN DESCRIPTION "C3CAN Interface Libary")
 # The version number.
@@ -51,7 +51,7 @@ project(UI DESCRIPTION "Scheduler Interface Libary")
 set(CMAKE_CXX_STANDARD 11)
 set (UI_VERSION_MAJOR 1)
 set (UI_VERSION_MINOR 0)
-set (CMAKE_PREFIX_PATH  $ENV{OCL_ROOT})
+set (CMAKE_PREFIX_PATH  $ENV{QTDIR})
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
@@ -64,7 +64,7 @@ include_directories("${PROJECT_BINARY_DIR}")
 qt5_wrap_ui(UI_UICHEADERS src/UI/MainWindow.ui)
 
 # add the executable
-add_executable(UI ${UI_UICHEADERS} src/UI/main.cpp src/UI/TUI.cpp src/UI/TUI.h src/UI/MainWindow.h src/UI/MainWindow.cpp)
+add_executable(UI ${UI_UICHEADERS} src/UI/main.cpp src/UI/TUI.cpp src/UI/TUI.h src/UI/MainWindow.h src/UI/MainWindow.cpp src/UI/RandomNumberGenerator.h src/UI/RandomNumberGenerator.cpp)
 
 add_dependencies(UI Scheduler CAN)
 target_link_libraries(UI LINK_PUBLIC Scheduler CAN Qt5::Widgets)
