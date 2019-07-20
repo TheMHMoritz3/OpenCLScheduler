@@ -13,13 +13,14 @@ OclDevice(oclDevice)
 {
     OclContext =  cl::Context({OclDevice});
     Id=id;
+	Properties = new DeviceProperties(getName());
 }
 
 Device::~Device() {
-
+	delete Properties;
 }
 
-string Device::getName() {
+string Device::getName() const {
     return OclDevice.getInfo<CL_DEVICE_NAME>();
 }
 
@@ -63,10 +64,4 @@ cl::Context Device::getDeviceContext() {
 cl::Device Device::getOclDevice()
 {
 	return OclDevice;
-}
-
-Device Device::operator=(Device other) {
-	OclDevice = other.OclDevice;
-	OclContext = other.OclContext;
-    return *this;
 }

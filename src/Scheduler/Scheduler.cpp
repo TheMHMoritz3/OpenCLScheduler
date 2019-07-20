@@ -115,7 +115,7 @@ void Scheduler::readDataFromTask(Task* task, cl::CommandQueue commandQueue)
 	default:
 		break;
 	}
-	task->setReturnData(data);
+	task->addReturnData(data);
 }
 
 cl::Buffer* Scheduler::generateBufferForUINT(std::vector<void*> data, cl::Context context, cl::CommandQueue queue, int count) {

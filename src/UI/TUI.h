@@ -36,11 +36,11 @@ namespace UI {
 
 		void decorateValueData(SCHEDULER::Task* task);
 
-		void decorateFloatValue(SCHEDULER::Task* task,std::vector<void*> data);
-		void decorateIntValue(SCHEDULER::Task* task, std::vector<void*> data);
-		void decorateUIntValue(SCHEDULER::Task* task, std::vector<void*> data);
-		void decorateCharValue(SCHEDULER::Task* task, std::vector<void*> data);
-		void decorateDoubleValue(SCHEDULER::Task* task, std::vector<void*> data);
+		void decorateFloatValue(SCHEDULER::Task* task, std::vector<std::vector<void*>> data);
+		void decorateIntValue(SCHEDULER::Task* task, std::vector<std::vector<void*>> data);
+		void decorateUIntValue(SCHEDULER::Task* task, std::vector<std::vector<void*>> data);
+		void decorateCharValue(SCHEDULER::Task* task, std::vector<std::vector<void*>> data);
+		void decorateDoubleValue(SCHEDULER::Task* task, std::vector<std::vector<void*>> data);
 
 		void decorateOtherTask(SCHEDULER::Task* task);
 		void decorateCan(SCHEDULER::Task* task, int load);

@@ -26,13 +26,13 @@ namespace SCHEDULER {
 		void addData(std::vector<void*> value, Type type);
 		void addDescription(std::string desc);
 		void setReturnDataType(Type type);
-		void setReturnData(std::vector<void*> data);
+		void addReturnData(std::vector<void*> data);
 		void setDataDependancy(SCHEDULER::DependancyType type);
 		void addDependandTask(SCHEDULER::Task* task);
 		void setExternalDataMethod(std::function<void(void)> externalFunctionData);
 
         int getId();
-        std::pair<Type,std::vector<void*>> getReturnData();
+        std::pair<Type, std::vector<std::vector<void*>>> getReturnData();
         std::vector<std::pair<Type, std::vector<void*>>> getAllData();
         cl::Program::Sources *getSources();
 		cl::Buffer *readBuffer();
@@ -56,7 +56,7 @@ namespace SCHEDULER {
         int ID;
 		int Load;
         std::vector<std::pair<Type, std::vector<void*>>> Data;
-        std::vector<void*> ReturnData;
+        std::vector<std::vector<void*>> ReturnData;
         Type ReturnDataType;
         std::vector<Task*> DependandTasks;
 		DependancyType DepType;

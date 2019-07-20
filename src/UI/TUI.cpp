@@ -142,44 +142,49 @@ void TUI::decorateValueData(SCHEDULER::Task* task)
 	}
 }
 
-void TUI::decorateFloatValue(SCHEDULER::Task* task, std::vector<void*> data)
+void TUI::decorateFloatValue(SCHEDULER::Task* task, std::vector<std::vector<void*>> data)
 {
-	for (long unsigned int i = 0; i < data.size(); i++) {
-		float value = *((float*)data.at(i));
-		cout << i << ". Return Value: \t" << value << endl;
-	}
+	for (std::vector<void*> value : data)
+		for (long unsigned int i = 0; i < value.size(); i++) {
+			float fvalue = *((float*)value.at(i));
+			cout << i << ". Return Value: \t" << fvalue << endl;
+		}
 }
 
-void TUI::decorateIntValue(SCHEDULER::Task* task, std::vector<void*> data)
+void TUI::decorateIntValue(SCHEDULER::Task* task, std::vector<std::vector<void*>> data)
 {
-	for (long unsigned int i = 0; i < data.size(); i++) {
-		int32_t value = *((int32_t*)data.at(i));
-		cout << i << ". Return Value: \t" << value << endl;
-	}
+	for (std::vector<void*> value : data)
+		for (long unsigned int i = 0; i < value.size(); i++) {
+			int32_t ivalue = *((int32_t*)value.at(i));
+			cout << i << ". Return Value: \t" << ivalue << endl;
+		}
 }
 
-void TUI::decorateUIntValue(SCHEDULER::Task* task, std::vector<void*> data)
+void TUI::decorateUIntValue(SCHEDULER::Task* task, std::vector<std::vector<void*>> data)
 {
-	for (long unsigned int i = 0; i < data.size(); i++) {
-		uint32_t value = *((uint32_t*)data.at(i));
-		cout << i << ". Return Value: \t" << value << endl;
-	}
+	for (std::vector<void*> value : data)
+		for (long unsigned int i = 0; i < value.size(); i++) {
+			uint32_t uivalue = *((uint32_t*)value.at(i));
+			cout << i << ". Return Value: \t" << uivalue << endl;
+		}
 }
 
-void TUI::decorateCharValue(SCHEDULER::Task* task, std::vector<void*> data)
+void TUI::decorateCharValue(SCHEDULER::Task* task, std::vector<std::vector<void*>> data)
 {
-	for (long unsigned int i = 0; i < data.size(); i++) {
-		char value = *((char*)data.at(i));
-		cout << i << ". Return Value: \t" << value << endl;
-	}
+	for (std::vector<void*> value : data)
+		for (long unsigned int i = 0; i < value.size(); i++) {
+			char cvalue = *((char*)value.at(i));
+			cout << i << ". Return Value: \t" << cvalue << endl;
+		}
 }
 
-void TUI::decorateDoubleValue(SCHEDULER::Task* task, std::vector<void*> data)
+void TUI::decorateDoubleValue(SCHEDULER::Task* task, std::vector<std::vector<void*>> data)
 {
-	for (long unsigned int i = 0; i < data.size(); i++) {
-		double value = *((double*)data.at(i));
-		cout << i << ". Return Value: \t" << value << endl;
-	}
+	for (std::vector<void*> value : data)
+		for (long unsigned int i = 0; i < value.size(); i++) {
+			double dvalue = *((double*)value.at(i));
+			cout << i << ". Return Value: \t" << dvalue << endl;
+		}
 }
 
 void TUI::decorateOtherTask(SCHEDULER::Task* task)
@@ -190,7 +195,7 @@ void TUI::decorateOtherTask(SCHEDULER::Task* task)
 		decorateNormalMessage("Which task do you want to add?");
 		for (SCHEDULER::Task* task : tasks)
 		{
-			cout << i << "\t" << task->getKernelName()<<endl;
+			cout << i << "\t" << task->getKernelName() << endl;
 			i++;
 		}
 		cin >> value;
@@ -201,9 +206,9 @@ void TUI::decorateOtherTask(SCHEDULER::Task* task)
 		}
 	} while (!((value >= 0) && (value < tasks.size())));
 
-	for(int i =0 ;i<tasks.size(); i++)
+	for (int i = 0; i < tasks.size(); i++)
 	{
-		if(i=value)
+		if (i = value)
 		{
 			task->addDependandTask(tasks.at(i));
 		}
@@ -238,15 +243,15 @@ void TUI::decorateCan(SCHEDULER::Task* task, int load)
 		CanManager->create(CAN::WheelFrontRight, load);
 		task->setExternalDataMethod([=]()
 			{
-				std::vector<uint32_t*> dataSet  = CanManager->getData(CAN::WheelFrontRight);
+				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::WheelFrontRight);
 				uint32_t* DataSet = new uint32_t[dataSet.size()];
 				std::vector<void*> taskData;
 				int i = 0;
-				for(uint32_t* data : dataSet)
+				for (uint32_t* data : dataSet)
 				{
-				    DataSet[i]=*data;
+					DataSet[i] = *data;
 					taskData.push_back(&DataSet[i]);
-				    i++;
+					i++;
 				}
 				task->addData(taskData, SCHEDULER::UINT);
 			});
@@ -256,15 +261,15 @@ void TUI::decorateCan(SCHEDULER::Task* task, int load)
 		task->setExternalDataMethod([=]()
 			{
 				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::WheelFrontLeft);
-                uint32_t* DataSet = new uint32_t[dataSet.size()];
-                std::vector<void*> taskData;
-                int i = 0;
-                for(uint32_t* data : dataSet)
-                {
-                    DataSet[i]=*data;
-                    taskData.push_back(&DataSet[i]);
-                    i++;
-                }
+				uint32_t* DataSet = new uint32_t[dataSet.size()];
+				std::vector<void*> taskData;
+				int i = 0;
+				for (uint32_t* data : dataSet)
+				{
+					DataSet[i] = *data;
+					taskData.push_back(&DataSet[i]);
+					i++;
+				}
 				task->addData(taskData, SCHEDULER::UINT);
 			});
 		break;
@@ -273,15 +278,15 @@ void TUI::decorateCan(SCHEDULER::Task* task, int load)
 		task->setExternalDataMethod([=]()
 			{
 				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::WheelRearLeft);
-                uint32_t* DataSet = new uint32_t[dataSet.size()];
-                std::vector<void*> taskData;
-                int i = 0;
-                for(uint32_t* data : dataSet)
-                {
-                    DataSet[i]=*data;
-                    taskData.push_back(&DataSet[i]);
-                    i++;
-                }
+				uint32_t* DataSet = new uint32_t[dataSet.size()];
+				std::vector<void*> taskData;
+				int i = 0;
+				for (uint32_t* data : dataSet)
+				{
+					DataSet[i] = *data;
+					taskData.push_back(&DataSet[i]);
+					i++;
+				}
 				task->addData(taskData, SCHEDULER::UINT);
 			});
 		break;
@@ -290,15 +295,15 @@ void TUI::decorateCan(SCHEDULER::Task* task, int load)
 		task->setExternalDataMethod([=]()
 			{
 				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::WheelRearRight);
-                uint32_t* DataSet = new uint32_t[dataSet.size()];
-                std::vector<void*> taskData;
-                int i = 0;
-                for(uint32_t* data : dataSet)
-                {
-                    DataSet[i]=*data;
-                    taskData.push_back(&DataSet[i]);
-                    i++;
-                }
+				uint32_t* DataSet = new uint32_t[dataSet.size()];
+				std::vector<void*> taskData;
+				int i = 0;
+				for (uint32_t* data : dataSet)
+				{
+					DataSet[i] = *data;
+					taskData.push_back(&DataSet[i]);
+					i++;
+				}
 				task->addData(taskData, SCHEDULER::UINT);
 			});
 		break;
@@ -307,15 +312,15 @@ void TUI::decorateCan(SCHEDULER::Task* task, int load)
 		task->setExternalDataMethod([=]()
 			{
 				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::BatteryVoltage);
-                uint32_t* DataSet = new uint32_t[dataSet.size()];
-                std::vector<void*> taskData;
-                int i = 0;
-                for(uint32_t* data : dataSet)
-                {
-                    DataSet[i]=*data;
-                    taskData.push_back(&DataSet[i]);
-                    i++;
-                }
+				uint32_t* DataSet = new uint32_t[dataSet.size()];
+				std::vector<void*> taskData;
+				int i = 0;
+				for (uint32_t* data : dataSet)
+				{
+					DataSet[i] = *data;
+					taskData.push_back(&DataSet[i]);
+					i++;
+				}
 				task->addData(taskData, SCHEDULER::UINT);
 			});
 		break;
@@ -324,15 +329,15 @@ void TUI::decorateCan(SCHEDULER::Task* task, int load)
 		task->setExternalDataMethod([=]()
 			{
 				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::AccelerationLongitudinal);
-                uint32_t* DataSet = new uint32_t[dataSet.size()];
-                std::vector<void*> taskData;
-                int i = 0;
-                for(uint32_t* data : dataSet)
-                {
-                    DataSet[i]=*data;
-                    taskData.push_back(&DataSet[i]);
-                    i++;
-                }
+				uint32_t* DataSet = new uint32_t[dataSet.size()];
+				std::vector<void*> taskData;
+				int i = 0;
+				for (uint32_t* data : dataSet)
+				{
+					DataSet[i] = *data;
+					taskData.push_back(&DataSet[i]);
+					i++;
+				}
 				task->addData(taskData, SCHEDULER::UINT);
 			});
 		break;
@@ -341,15 +346,15 @@ void TUI::decorateCan(SCHEDULER::Task* task, int load)
 		task->setExternalDataMethod([=]()
 			{
 				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::AccelerationLateral);
-                uint32_t* DataSet = new uint32_t[dataSet.size()];
-                std::vector<void*> taskData;
-                int i = 0;
-                for(uint32_t* data : dataSet)
-                {
-                    DataSet[i]=*data;
-                    taskData.push_back(&DataSet[i]);
-                    i++;
-                }
+				uint32_t* DataSet = new uint32_t[dataSet.size()];
+				std::vector<void*> taskData;
+				int i = 0;
+				for (uint32_t* data : dataSet)
+				{
+					DataSet[i] = *data;
+					taskData.push_back(&DataSet[i]);
+					i++;
+				}
 				task->addData(taskData, SCHEDULER::UINT);
 			});
 		break;
@@ -358,15 +363,15 @@ void TUI::decorateCan(SCHEDULER::Task* task, int load)
 		task->setExternalDataMethod([=]()
 			{
 				std::vector<uint32_t*> dataSet = CanManager->getData(CAN::Temperature);
-                uint32_t* DataSet = new uint32_t[dataSet.size()];
-                std::vector<void*> taskData;
-                int i = 0;
-                for(uint32_t* data : dataSet)
-                {
-                    DataSet[i]=*data;
-                    taskData.push_back(&DataSet[i]);
-                    i++;
-                }
+				uint32_t* DataSet = new uint32_t[dataSet.size()];
+				std::vector<void*> taskData;
+				int i = 0;
+				for (uint32_t* data : dataSet)
+				{
+					DataSet[i] = *data;
+					taskData.push_back(&DataSet[i]);
+					i++;
+				}
 				task->addData(taskData, SCHEDULER::UINT);
 			});
 		break;
@@ -554,11 +559,11 @@ void TUI::decorateNormalMode(SCHEDULER::Task* task) {
 	decorateNormalMessage("How many Arguments do you want to set for Task?");
 	int argCount;
 	cin >> argCount;
-	for(int i = 0; i<argCount; i++)
+	for (int i = 0; i < argCount; i++)
 	{
 		int value;
 		do {
-			cout << "ARG: " << i <<endl;
+			cout << "ARG: " << i << endl;
 			decorateNormalMessage("Where does the Data from this Task come from?");
 			decorateNormalMessage("0\tUser Input");
 			decorateNormalMessage("1\tOther Task");
@@ -580,18 +585,20 @@ void TUI::decorateNormalMode(SCHEDULER::Task* task) {
 			SCHEDULER::Type type = getTypeFromUserForArg();
 			askUserForArrayData(task, type, load);
 			task->setLoad(load);
-		}else if(task->dependancyType() == SCHEDULER::OutsideDependancy)
+		}
+		else if (task->dependancyType() == SCHEDULER::OutsideDependancy)
 		{
 			decorateCan(task, load);
 			task->setLoad(load);
-		}else
+		}
+		else
 		{
 			decorateOtherTask(task);
 		}
-		
+
 	}
 	tasks.emplace_back(task);
-	
+
 }
 
 void TUI::activateCanBus() {

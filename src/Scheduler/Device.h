@@ -8,15 +8,15 @@
 #include <string>
 #include <CL/cl.hpp>
 #include "Task.h"
-#include "scheduler_global.h"
+#include "DevicePropertys.h"
 
 namespace SCHEDULER {
-	class SCHEDULER_EXPORT Device {
+	class Device {
 
     public:
         Device(int id, cl::Device oclDevice);
         ~Device();
-        std::string getName();
+        std::string getName() const;
         int scheduledTasks();
         int getWorkgroupSize();
         int getID();
@@ -26,8 +26,9 @@ namespace SCHEDULER {
         void generateProgramm(Task* task);
         cl::Context getDeviceContext();
 		cl::Device getOclDevice();
-        Device operator=(Device other);
+
     private:
+		DeviceProperties* Properties;
         cl::Device OclDevice;
         cl::Context OclContext;
         int Id;

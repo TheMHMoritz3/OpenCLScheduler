@@ -27,6 +27,7 @@ void ScheduleManager::searchForDevices() {
         for(cl::Device device : devices){
             Device newDevice(device_id, device);
             Devices.push_back(newDevice);
+			device_id++;
         }
     }
 }
