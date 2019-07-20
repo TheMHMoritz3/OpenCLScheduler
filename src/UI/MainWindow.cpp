@@ -9,6 +9,18 @@ QMainWindow(parent)
 	ui.setupUi(this);
 	ui.retranslateUi(this);
 	fillStartUI();
+	makeConnections();
+}
+
+void MainWindow::multiThreaddingCheckstateChanged()
+{
+	ui.spinBox->setEnabled(ui.MultiThreaddedRadioButton->isChecked());
+}
+
+void MainWindow::loadPreset()
+{
+
+	updateTasksModel();
 }
 
 void MainWindow::fillStartUI()
@@ -17,6 +29,19 @@ void MainWindow::fillStartUI()
 	ScheduleManager->searchForDevices();
 	for (int i = 0; i<ScheduleManager->getDeviceCount(); i++)
 	{
-		ui.DeviceCombobox->addItem(ScheduleManager->getDeviceName(i).c_str());
+		DeviceProperties* props = ScheduleManager->getDeviceProperties(i);
+		Devices.push_back(props);
+		ui.DeviceCombobox->addItem(props->getName().c_str());
 	}
+}
+
+void MainWindow::makeConnections()
+{
+	connect(ui.MultiThreaddedRadioButton, SIGNAL(clicked()), this, SLOT(multiThreaddingCheckstateChanged()));
+	connect(ui.SingleThreaddedRadioButton, SIGNAL(clicked()), this, SLOT(multiThreaddingCheckstateChanged()));
+}
+
+void MainWindow::updateTasksModel()
+{
+
 }

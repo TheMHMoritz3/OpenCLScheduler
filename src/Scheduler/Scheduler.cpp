@@ -10,33 +10,33 @@
 
 using namespace SCHEDULER;
 
-Scheduler::Scheduler(std::vector<Task*> tasks, std::vector<Device> devices) {
+Scheduler::Scheduler(std::vector<Task*> tasks, std::vector<Device*> devices) {
     Tasks=tasks;
     Devices=devices;
 }
 
-void Scheduler::setRAMForCurrentTask(Task* task, Device device, cl::Kernel kernel, cl::CommandQueue queue) {
+void Scheduler::setRAMForCurrentTask(Task* task, Device* device, cl::Kernel kernel, cl::CommandQueue queue) {
     int count = 0;
     for(std::pair<Type, std::vector<void*>> value : task->getAllData()){
         cl::Buffer *buffer;
         switch (value.first){
             case Type::UINT:
-                buffer = generateBufferForUINT(value.second,device.getDeviceContext(),queue,0);
+                buffer = generateBufferForUINT(value.second,device->getDeviceContext(),queue,0);
                 break;
             case Type::INT:
-                buffer = generateBufferForINT(value.second,device.getDeviceContext(),queue,0);
+                buffer = generateBufferForINT(value.second,device->getDeviceContext(),queue,0);
                 break;
             case Type::CHAR:
-                buffer = generateBufferForCHAR(value.second,device.getDeviceContext(),queue,0);
+                buffer = generateBufferForCHAR(value.second,device->getDeviceContext(),queue,0);
                 break;
             case Type::DOUBLE:
-                buffer = generateBufferForDOUBLE(value.second,device.getDeviceContext(),queue,0);
+                buffer = generateBufferForDOUBLE(value.second,device->getDeviceContext(),queue,0);
                 break;
             case Type::FLOAT:
-                buffer = generateBufferForFLOAT(value.second,device.getDeviceContext(),queue,0);
+                buffer = generateBufferForFLOAT(value.second,device->getDeviceContext(),queue,0);
                 break;
             case Type::STRING:
-                buffer = generateBufferForCHAR(value.second,device.getDeviceContext(),queue,0);
+                buffer = generateBufferForCHAR(value.second,device->getDeviceContext(),queue,0);
                 break;
             default:
 				break;
@@ -46,28 +46,28 @@ void Scheduler::setRAMForCurrentTask(Task* task, Device device, cl::Kernel kerne
     }
 }
 
-void Scheduler::setRAMBufferForOutput(Task* task, Device device, cl::Kernel kernel)
+void Scheduler::setRAMBufferForOutput(Task* task, Device* device, cl::Kernel kernel)
 {
 	cl::Buffer *buffer;
 	switch (task->getReturnDataType())
 	{
 	case Type::UINT:
-		buffer = new cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(uint32_t) * task->getLoad());
+		buffer = new cl::Buffer(device->getDeviceContext(), CL_MEM_READ_WRITE, sizeof(uint32_t) * task->getLoad());
 		break;
 	case Type::INT:
-		buffer = new cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(int32_t) * task->getLoad());
+		buffer = new cl::Buffer(device->getDeviceContext(), CL_MEM_READ_WRITE, sizeof(int32_t) * task->getLoad());
 		break;
 	case Type::CHAR:
-		buffer = new cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(char) * task->getLoad());
+		buffer = new cl::Buffer(device->getDeviceContext(), CL_MEM_READ_WRITE, sizeof(char) * task->getLoad());
 		break;
 	case Type::DOUBLE:
-		buffer = new cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(double) * task->getLoad());
+		buffer = new cl::Buffer(device->getDeviceContext(), CL_MEM_READ_WRITE, sizeof(double) * task->getLoad());
 		break;
 	case Type::FLOAT:
-		buffer = new cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(float) * task->getLoad());
+		buffer = new cl::Buffer(device->getDeviceContext(), CL_MEM_READ_WRITE, sizeof(float) * task->getLoad());
 		break;
 	case Type::STRING:
-		buffer = new cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(char) * task->getLoad());
+		buffer = new cl::Buffer(device->getDeviceContext(), CL_MEM_READ_WRITE, sizeof(char) * task->getLoad());
 		break;
 	default:
 		break;
@@ -76,14 +76,14 @@ void Scheduler::setRAMBufferForOutput(Task* task, Device device, cl::Kernel kern
 	kernel.setArg(task->getAllData().size(), *buffer);
 }
 
-void Scheduler::setKernelLoad(Task* task, Device device, cl::Kernel kernel)
+void Scheduler::setKernelLoad(Task* task, Device* device, cl::Kernel kernel)
 {
 	int ErrorCode=0;
-	cl::Buffer* buffer_WORKLOAD = new cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(int), &ErrorCode);
+	cl::Buffer* buffer_WORKLOAD = new cl::Buffer(device->getDeviceContext(), CL_MEM_READ_WRITE, sizeof(int), &ErrorCode);
 	kernel.setArg(task->getAllData().size()+1,task->getLoad());
 }
 
-void Scheduler::enqueueTak(Task* task, Device device, cl::CommandQueue commandQueue, cl::Kernel kernel)
+void Scheduler::enqueueTak(Task* task, Device* device, cl::CommandQueue commandQueue, cl::Kernel kernel)
 {
     commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(1),cl::NDRange(1));
     commandQueue.finish();

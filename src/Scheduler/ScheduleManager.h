@@ -28,14 +28,14 @@ namespace SCHEDULER {
         bool isAddingTasksPossible();
         int getKernelCount();
         int getDeviceCount();
-		std::string getDeviceName(int i);
+		DeviceProperties* getDeviceProperties(int i) const;
 
     private:
 		cl::Program::Sources* convertSources(std::string file);
 
         ScheduleType Type;
         std::vector<Task*> Tasks;
-        std::vector<Device> Devices;
+        std::vector<Device*> Devices;
         Scheduler* ActiveScheduler;
     };
 }

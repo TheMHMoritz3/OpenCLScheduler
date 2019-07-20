@@ -48,6 +48,7 @@
      <string>File</string>
     </property>
     <addaction name="actionOpen_Kernel"/>
+    <addaction name="actionLoad_Preset"/>
    </widget>
    <widget class="QMenu" name="menuExecution">
     <property name="title">
@@ -85,7 +86,35 @@
          </widget>
         </item>
         <item>
-         <widget class="QRadioButton" name="radioButton_2">
+         <widget class="QGroupBox" name="MultithreddingGroupBox">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="title">
+           <string>Core Count</string>
+          </property>
+          <property name="flat">
+           <bool>true</bool>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QSpinBox" name="spinBox">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="readOnly">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="SingleThreaddedRadioButton">
           <property name="text">
            <string>Single Threadded Scheduling</string>
           </property>
@@ -102,7 +131,23 @@
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="comboBox_2"/>
+         <widget class="QComboBox" name="comboBox_2">
+          <item>
+           <property name="text">
+            <string>Static</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>List</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>ASAP</string>
+           </property>
+          </item>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -140,6 +185,11 @@
   <action name="actionSchow_Execution_Graphic">
    <property name="text">
     <string>Schow Execution Graphic</string>
+   </property>
+  </action>
+  <action name="actionLoad_Preset">
+   <property name="text">
+    <string>Load Preset</string>
    </property>
   </action>
  </widget>

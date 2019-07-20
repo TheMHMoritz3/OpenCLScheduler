@@ -7,12 +7,13 @@
 
 #include "Task.h"
 #include "SchedulerNamespace.h"
+#include "scheduler_global.h"
 #include <string>
 
 
 
 namespace SCHEDULER {
-	class DeviceProperties {
+	class SCHEDULER_EXPORT DeviceProperties {
 	public:
 		DeviceProperties(std::string deviceName);
 		DeviceProperties() = delete;

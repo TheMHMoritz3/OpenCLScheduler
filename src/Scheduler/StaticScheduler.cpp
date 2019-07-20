@@ -12,18 +12,18 @@
 using namespace SCHEDULER;
 using namespace std;
 
-StaticScheduler::StaticScheduler(std::vector<Task*> tasks, std::vector<Device> device) : Scheduler(tasks, device) {
+StaticScheduler::StaticScheduler(std::vector<Task*> tasks, std::vector<Device*> device) : Scheduler(tasks, device) {
 	ErrorCode = 1;
 }
 
 
 void StaticScheduler::schedule() {
-	for (Device device : Devices) {
-		cout << "Device Name: " << device.getName()<<endl;
-		cl::CommandQueue commandQueue(device.getDeviceContext(), device.getOclDevice());
+	for (Device* device : Devices) {
+		cout << "Device Name: " << device->getName()<<endl;
+		cl::CommandQueue commandQueue(device->getDeviceContext(), device->getOclDevice());
 		CommandQueues.push_back(commandQueue);
 		for (Task* task : Tasks) {
-			device.generateProgramm(task);
+			device->generateProgramm(task);
 
 			cl::Kernel kernel = cl::Kernel(task->getProgramm(), task->getKernelName().c_str(),  &ErrorCode);
             if (ErrorCode == CL_SUCCESS) {

@@ -25,7 +25,7 @@ void ScheduleManager::searchForDevices() {
         vector<cl::Device> devices;
         platform.getDevices(CL_DEVICE_TYPE_ALL, &devices);
         for(cl::Device device : devices){
-            Device newDevice(device_id, device);
+            Device* newDevice = new Device(device_id, device);
             Devices.push_back(newDevice);
 			device_id++;
         }
@@ -82,7 +82,7 @@ int ScheduleManager::getDeviceCount() {
     return Devices.size();
 }
 
-std::string ScheduleManager::getDeviceName(int i)
+DeviceProperties* ScheduleManager::getDeviceProperties(int i) const
 {
-	return Devices.at(i).getName();
+	return Devices.at(i)->getProperties();
 }

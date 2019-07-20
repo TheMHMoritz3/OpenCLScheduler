@@ -9,9 +9,10 @@
 #include <CL/cl.hpp>
 #include "Task.h"
 #include "DevicePropertys.h"
+#include "scheduler_global.h"
 
 namespace SCHEDULER {
-	class Device {
+	class SCHEDULER_EXPORT Device {
 
     public:
         Device(int id, cl::Device oclDevice);
@@ -26,6 +27,7 @@ namespace SCHEDULER {
         void generateProgramm(Task* task);
         cl::Context getDeviceContext();
 		cl::Device getOclDevice();
+		DeviceProperties* getProperties() const;
 
     private:
 		DeviceProperties* Properties;

@@ -65,3 +65,8 @@ cl::Device Device::getOclDevice()
 {
 	return OclDevice;
 }
+
+DeviceProperties* Device::getProperties() const
+{
+	return Properties;
+}

@@ -8,7 +8,10 @@ using namespace SCHEDULER;
 
 DeviceProperties::DeviceProperties (std::string deviceName) :
 	DeviceName(deviceName)
-{ }
+{
+	DeviceName = deviceName;
+	Type = STATIC;
+}
 
 
 std::string DeviceProperties::getName()
