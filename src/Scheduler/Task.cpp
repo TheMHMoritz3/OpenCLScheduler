@@ -1,6 +1,20 @@
-//
-// Created by moritz on 17.06.19.
-//
+/*
+Embedded Systems Project 2019
+Copyright (C) 2019  Moritz Herzog, Philip Lersch
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include "Task.h"
 #include <iostream>
@@ -91,7 +105,10 @@ Type Task::getReturnDataType()
 std::vector<std::pair<Type, std::vector<void*>>> Task::getAllData() {
 	if((DepType==OutsideDependancy)&&(!IsDataSet))
 	{
-		GetExternalData();
+	    for(std::function<void(void)> getExternalData : GetExternalDataMethods) {
+            getExternalData();
+        }
+
 		IsDataSet=true;
 	}
 	if((DepType==OtherTask)&&(!IsDataSet))
@@ -120,6 +137,7 @@ void Task::readDataFromOtherThread()
 {
 	for(Task* task : DependandTasks)
 	{
+	    Load = task->getLoad();
 		std::vector<void*> data = task->getReturnData().second;
 		Data.push_back(std::pair<Type,std::vector<void*>>(task->getReturnData().first, data));
 	}
@@ -141,7 +159,7 @@ void Task::addDependandTask(SCHEDULER::Task* task)
 	DependandTasks.push_back(task);
 }
 
-void Task::setExternalDataMethod(std::function<void()> externalFunctionData)
+void Task::addExternalDataMethod(std::function<void()> externalFunctionData)
 {
-	GetExternalData = externalFunctionData;
+    GetExternalDataMethods.push_back(externalFunctionData);
 }
