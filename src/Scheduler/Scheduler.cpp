@@ -1,6 +1,20 @@
-//
-// Created by moritz on 17.06.19.
-//
+/*
+Embedded Systems Project 2019
+Copyright (C) 2019  Moritz Herzog, Philip Lersch
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include <stdint.h>
 
@@ -42,6 +56,8 @@ void Scheduler::setRAMForCurrentTask(Task* task, Device* device, cl::Kernel kern
 				break;
         }
         ErrorCode = kernel.setArg(count, *buffer);
+//        std::cout << "Set Ram for Current Task: "<<ErrorCode<<std::endl;
+//        std::cout << "Count "<<count<<std::endl;
 		count++;
     }
 }
@@ -73,7 +89,9 @@ void Scheduler::setRAMBufferForOutput(Task* task, Device* device, cl::Kernel ker
 		break;
 	}
 	task->setReadBuffer(buffer);
-	kernel.setArg(task->getAllData().size(), *buffer);
+	ErrorCode = kernel.setArg(task->getAllData().size(), *buffer);
+//    std::cout << "Set Ram Output for Current Task: "<<ErrorCode<<std::endl;
+//    std::cout << "Count "<<task->getAllData().size()<<std::endl;
 }
 
 void Scheduler::setKernelLoad(Task* task, Device* device, cl::Kernel kernel)
@@ -85,8 +103,9 @@ void Scheduler::setKernelLoad(Task* task, Device* device, cl::Kernel kernel)
 
 void Scheduler::enqueueTak(Task* task, Device* device, cl::CommandQueue commandQueue, cl::Kernel kernel)
 {
-    commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(1),cl::NDRange(1));
+    ErrorCode = commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(1),cl::NDRange(1));
     commandQueue.finish();
+//    std::cout << "Enqueue Task: "<<ErrorCode<<std::endl;
 }
 
 void Scheduler::readDataFromTask(Task* task, cl::CommandQueue commandQueue)
