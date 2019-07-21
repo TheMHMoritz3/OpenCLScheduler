@@ -141,22 +141,22 @@ void TUI::decorateValueData(SCHEDULER::Task* task)
 	switch (task->getReturnDataType())
 	{
 	case SCHEDULER::INT:
-		decorateIntValue(task, task->getReturnData().second, task->getLoad());
+		decorateIntValue(task, task->getReturnData().second);
 		break;
 	case SCHEDULER::UINT:
-		decorateUIntValue(task, task->getReturnData().second, task->getLoad());
+		decorateUIntValue(task, task->getReturnData().second);
 		break;
 	case SCHEDULER::CHAR:
-		decorateCharValue(task, task->getReturnData().second, task->getLoad());
+		decorateCharValue(task, task->getReturnData().second);
 		break;
 	case SCHEDULER::FLOAT:
-		decorateFloatValue(task, task->getReturnData().second, task->getLoad());
+		decorateFloatValue(task, task->getReturnData().second);
 		break;
 	case SCHEDULER::DOUBLE:
-		decorateDoubleValue(task, task->getReturnData().second, task->getLoad());
+		decorateDoubleValue(task, task->getReturnData().second);
 		break;
 	case SCHEDULER::STRING:
-		decorateCharValue(task, task->getReturnData().second, task->getLoad());
+		decorateCharValue(task, task->getReturnData().second);
 		break;
 	default:
 		decorateError("Error: No Type provided in Return Value");
@@ -164,7 +164,6 @@ void TUI::decorateValueData(SCHEDULER::Task* task)
 	}
 }
 
-void TUI::decorateFloatValue(SCHEDULER::Task* task, std::vector<void*> data, int load)
 void TUI::decorateFloatValue(SCHEDULER::Task* task, std::vector<std::vector<void*>> data)
 {
 	for (std::vector<void*> value : data)
