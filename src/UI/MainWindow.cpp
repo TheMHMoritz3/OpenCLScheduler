@@ -175,7 +175,8 @@ void MainWindow::updateTasksModel()
 		QStandardItem* item = new QStandardItem(task->getKernelName().c_str());
 		item->setCheckable(true);
 		itemModel->invisibleRootItem()->appendRow(item);
-		ui.TasksWidget->addTab(new TaskTabWidget(this), task->getKernelName().c_str());
+		TaskTabWidget *widget = new TaskTabWidget(task, this);
+		ui.TasksWidget->addTab(widget, task->getKernelName().c_str());
 	}
 
 	ui.TasksListView->setModel(itemModel);

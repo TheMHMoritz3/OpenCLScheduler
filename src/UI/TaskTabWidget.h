@@ -9,10 +9,12 @@ class TaskTabWidget : public QWidget
 {
 	Q_OBJECT
 public:
-	TaskTabWidget(QWidget* parent = NULL);
+	TaskTabWidget(SCHEDULER::Task* task, QWidget* parent = NULL);
 
 private:
 	void makeConnections();
+	void decorateForTask();
 	Ui::TaskTabWidget ui;
+	SCHEDULER::Task* Task;
 };
 

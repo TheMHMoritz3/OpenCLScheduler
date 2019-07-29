@@ -4,16 +4,23 @@
 using namespace SCHEDULER;
 
 
-TaskTabWidget::TaskTabWidget(QWidget* parent):
-QWidget(parent)
+TaskTabWidget::TaskTabWidget(SCHEDULER::Task* task, QWidget* parent) :
+	QWidget(parent)
 {
+	Task = task;
 	ui.setupUi(this);
 	ui.retranslateUi(this);
 	makeConnections();
+	decorateForTask();
 }
 
 void TaskTabWidget::makeConnections()
 {
 	
+}
+
+void TaskTabWidget::decorateForTask()
+{
+
 }
 
