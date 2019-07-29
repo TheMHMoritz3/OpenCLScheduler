@@ -1,6 +1,20 @@
-//
-// Created by moritz on 19.06.19.
-//
+/*
+Embedded Systems Project 2019
+Copyright (C) 2019  Moritz Herzog, Philip Lersch
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #ifndef UI_TUI_H
 #define UI_TUI_H
@@ -22,7 +36,10 @@ namespace UI {
     private:
         void decorateError(std::string errorText);
 		void decorateNormalMessage(std::string message);
-        void addKernelMenu();
+
+		void addKernelMenu();
+        void applyStaticMode();
+
 
 		void setSchedule();
 
@@ -30,20 +47,20 @@ namespace UI {
 
 		void activateCanBus();
 
-
 		void printData();
 		void clear();
 
 		void decorateValueData(SCHEDULER::Task* task);
 
-		void decorateFloatValue(SCHEDULER::Task* task,std::vector<void*> data);
-		void decorateIntValue(SCHEDULER::Task* task, std::vector<void*> data);
-		void decorateUIntValue(SCHEDULER::Task* task, std::vector<void*> data);
-		void decorateCharValue(SCHEDULER::Task* task, std::vector<void*> data);
-		void decorateDoubleValue(SCHEDULER::Task* task, std::vector<void*> data);
+		void decorateFloatValue(SCHEDULER::Task* task,std::vector<void*> data, int load);
+		void decorateIntValue(SCHEDULER::Task* task, std::vector<void*> data, int load);
+		void decorateUIntValue(SCHEDULER::Task* task, std::vector<void*> data, int load);
+		void decorateCharValue(SCHEDULER::Task* task, std::vector<void*> data, int load);
+		void decorateDoubleValue(SCHEDULER::Task* task, std::vector<void*> data, int load);
 
 		void decorateOtherTask(SCHEDULER::Task* task);
 		void decorateCan(SCHEDULER::Task* task, int load);
+		void addCanMethod(SCHEDULER::Task*, int load, int value);
 		void askUserReturnData(SCHEDULER::Task* task);
 		void decorateUnitTestingMode(SCHEDULER::Task* task);
 		SCHEDULER::Type getTypeFromUserForArg();
@@ -61,6 +78,8 @@ namespace UI {
 		bool IsInUnitTestingMode;
 
 		std::vector<SCHEDULER::Task*> tasks;
+
+		int DefaultStaticModeLoad;
     };
 }
 
