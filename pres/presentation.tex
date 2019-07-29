@@ -309,20 +309,20 @@
      \item Calculate on engine load, engine properties and current speed the currently consumed wattage
      \item Calculate the remaining Range with these Formulars.
      \begin{itemize}
-        \item $remainingTime=\frac{Charge}{Current Wattage}\cdot3600$
-        \item $remainingRange=speed\cdot remainingTime$
+        \item $remainingTime\left[ s \right]=\frac{Charge\left[ Wh \right]}{Current Wattage\left[ W \right]}\cdot3600$
+        \item $remainingRange\left[ m \right]=speed\left[ \frac{m}{s} \right]\cdot remainingTime\left[ s \right]$
      \end{itemize}
     \end{enumerate}
 \end{frame}
 
-\subsection{Turningradius}
+\subsection{Wende Radius}
 \begin{frame}
-    \frametitle{Turningradius}
+    \frametitle{Wende Radius}
     Function:\\
     Displays the Turning Radius if the Car drives around a Corner. So a Position calculation is Possible with the timesteps.
 \end{frame}
 \begin{frame}
-    \frametitle{Turningradius}
+    \frametitle{Wende Radius}
     Requirements:
     \begin{itemize}
      \item Wheel Velocity of every wheel separated ($\Sigma_{RR}$, $\Sigma_{RL}$, $\Sigma_{FR}$, $\Sigma_{FL}$)
@@ -332,7 +332,7 @@
     \begin{enumerate}
      \item Calculate the following Formular
      \begin{itemize}
-        \item $r=\frac{D}{2}*\frac{\Sigma_{RR}+\Sigma_{RL}}{\Sigma_{RR}-\Sigma_{RL}}$
+        \item $r\left[ m \right]=\frac{D\left[ m \right]}{2}*\frac{\Sigma_{RR}\left[ \frac{m}{s} \right]+\Sigma_{RL}\left[ \frac{m}{s} \right]}{\Sigma_{RR}\left[ \frac{m}{s} \right]-\Sigma_{RL}\left[ \frac{m}{s} \right]}$
         \item Same can be done for the front axle to calculate slippage
      \end{itemize}
      \item if $r<0$ then $r=-r$
