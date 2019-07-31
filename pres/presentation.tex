@@ -25,7 +25,7 @@
     \tableofcontents[currentsection]
   \end{frame}
 }
-
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
 \begin{document}
 \maketitle
 
@@ -279,7 +279,7 @@
         \item Get current wheel speeds
         \item Calculate: 
         \begin{itemize}
-            \item $averageFrontWheelSpeed = \frac{leftWheelSpeed + rightWheelSpeed}{2}$
+            \item $averageFrontWheelSpeed\left[ \frac{m}{s} \right] = \frac{leftWheelSpeed\left[ \frac{m}{s} \right] + rightWheelSpeed\left[ \frac{m}{s} \right]}{2}$
             \item $slipping = (aFWS-T) > bWS \parallel bWS > (aFWS+T)$
         \end{itemize}
     \end{enumerate}
@@ -307,7 +307,7 @@
      \item Get current battery voltage
      \item Calculate current charge in Wh
      \item Calculate on engine load, engine properties and current speed the currently consumed wattage
-     \item Calculate the remaining Range with these Formulars.
+     \item Calculate the remaining Range with these Formulars.\footnote{Source: Grundlagen der Elektrotechnik - Chapter 8.2}
      \begin{itemize}
         \item $remainingTime\left[ s \right]=\frac{Charge\left[ Wh \right]}{Current Wattage\left[ W \right]}\cdot3600$
         \item $remainingRange\left[ m \right]=speed\left[ \frac{m}{s} \right]\cdot remainingTime\left[ s \right]$
@@ -315,14 +315,14 @@
     \end{enumerate}
 \end{frame}
 
-\subsection{Wende Radius}
+\subsection{Wenderadius}
 \begin{frame}
-    \frametitle{Wende Radius}
+    \frametitle{Wenderadius}
     Function:\\
     Displays the Turningradius if the Car drives around a Corner. So a position calculation is possible with the timesteps.
 \end{frame}
 \begin{frame}
-    \frametitle{Wende Radius}
+    \frametitle{Wenderadius}
     Requirements:
     \begin{itemize}
      \item Wheel Velocity of every wheel separated ($\Sigma_{RR}$, $\Sigma_{RL}$, $\Sigma_{FR}$, $\Sigma_{FL}$)
@@ -330,13 +330,27 @@
     \end{itemize}
     Algorithm:
     \begin{enumerate}
-     \item Calculate the following Formular
+     \item Calculate the following Formular\footnote{Source: Bachelor Project - Robotics Group}
      \begin{itemize}
         \item $r\left[ m \right]=\frac{D\left[ m \right]}{2}*\frac{\Sigma_{RR}\left[ \frac{m}{s} \right]+\Sigma_{RL}\left[ \frac{m}{s} \right]}{\Sigma_{RR}\left[ \frac{m}{s} \right]-\Sigma_{RL}\left[ \frac{m}{s} \right]}$
         \item Same can be done for the front axle to calculate slippage
      \end{itemize}
      \item if $r<0$ then $r=-r$
     \end{enumerate}
+\end{frame}
+
+\section{Dataflowgraph}
+\begin{frame}
+    \frametitle{Dataflowgraph}
+    \includegraphics[width=.8\textwidth]{res/Dataflowgraph.PNG}
+    \begin{tabular}{r|l r|l}
+	t1 & Battery & t7 & Traction Control\\
+	t2 & Speed  & t8 & Abnormal Acceleration Detection\\
+	t3 & X-Axis & t9 & Range\\
+	t4 & Y-Axis & t10 & Turning Radius\\
+	t5 & Tangential & t11 & Cruise Control\\
+	t6 & Tempreture & t12& Distance Tracker\\
+     \end{tabular}
 \end{frame}
 
 \end{document}
