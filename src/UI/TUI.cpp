@@ -57,7 +57,7 @@ void TUI::start() {
 
 void TUI::decorateError(std::string errorText) {
 	clear();
-#ifdef _WIN32
+#ifdef _WINDOWS
 	cout << errorText << endl;
 #else
 	cout << "\e[31m" + errorText << endl;
@@ -66,7 +66,7 @@ void TUI::decorateError(std::string errorText) {
 
 void TUI::decorateNormalMessage(std::string message)
 {
-#ifdef _WIN32
+#ifdef _WINDOWS
 	cout << message << endl;
 #else
 	cout << "\e[0m" << message << endl;
@@ -127,7 +127,7 @@ void TUI::printData()
 
 void TUI::clear()
 {
-#ifdef _WIN32
+#ifdef _WINDOWS
 	system("cls");
 #else
 	system("clear");
@@ -166,47 +166,53 @@ void TUI::decorateValueData(SCHEDULER::Task* task)
 
 void TUI::decorateFloatValue(SCHEDULER::Task* task, std::vector<std::vector<void*>> data)
 {
-	for (std::vector<void*> value : data)
-		for (long unsigned int i = 0; i < value.size(); i++) {
-			float fvalue = *((float*)value.at(i));
-			cout << i << ". Return Value: \t" << fvalue << endl;
+    cout<<"Data Size: "<<data.size()<<endl;
+	for (std::vector<void*> singleDataSet : data) {
+		for (long unsigned int i = 0; i < task->getLoad(); i++) {
+			float value = *((float*)singleDataSet.at(i));
+			cout << i << ". Return Value: \t" << value << endl;
 		}
+	}
 }
 
 void TUI::decorateIntValue(SCHEDULER::Task* task, std::vector<std::vector<void*>> data)
 {
-	for (std::vector<void*> value : data)
-		for (long unsigned int i = 0; i < value.size(); i++) {
-			int32_t ivalue = *((int32_t*)value.at(i));
-			cout << i << ". Return Value: \t" << ivalue << endl;
+	for (std::vector<void*> singleDataSet : data) {
+		for (long unsigned int i = 0; i < task->getLoad(); i++) {
+			int32_t value = *((int32_t*)singleDataSet.at(i));
+			cout << i << ". Return Value: \t" << value << endl;
 		}
+	}
 }
 
 void TUI::decorateUIntValue(SCHEDULER::Task* task, std::vector<std::vector<void*>> data)
 {
-	for (std::vector<void*> value : data)
-		for (long unsigned int i = 0; i < value.size(); i++) {
-			uint32_t uivalue = *((uint32_t*)value.at(i));
-			cout << i << ". Return Value: \t" << uivalue << endl;
+	for (std::vector<void*> singleDataSet : data) {
+		for (long unsigned int i = 0; i < task->getLoad(); i++) {
+			uint32_t value = *((uint32_t*)singleDataSet.at(i));
+			cout << i << ". Return Value: \t" << value << endl;
 		}
+	}
 }
 
 void TUI::decorateCharValue(SCHEDULER::Task* task, std::vector<std::vector<void*>> data)
 {
-	for (std::vector<void*> value : data)
-		for (long unsigned int i = 0; i < value.size(); i++) {
-			char cvalue = *((char*)value.at(i));
-			cout << i << ". Return Value: \t" << cvalue << endl;
+	for (std::vector<void*> singleDataSet : data) {
+		for (long unsigned int i = 0; i < task->getLoad(); i++) {
+			char value = *((char*)singleDataSet.at(i));
+			cout << i << ". Return Value: \t" << value << endl;
 		}
+	}
 }
 
 void TUI::decorateDoubleValue(SCHEDULER::Task* task, std::vector<std::vector<void*>> data)
 {
-	for (std::vector<void*> value : data)
-		for (long unsigned int i = 0; i < value.size(); i++) {
-			double dvalue = *((double*)value.at(i));
-			cout << i << ". Return Value: \t" << dvalue << endl;
+	for (std::vector<void*> singleDataSet : data) {
+		for (long unsigned int i = 0; i < task->getLoad(); i++) {
+			double value = *((double*)singleDataSet.at(i));
+			cout << i << ". Return Value: \t" << value << endl;
 		}
+	}
 }
 
 void TUI::decorateOtherTask(SCHEDULER::Task* task)
@@ -217,7 +223,7 @@ void TUI::decorateOtherTask(SCHEDULER::Task* task)
 		decorateNormalMessage("Which task do you want to add?");
 		for (SCHEDULER::Task* task : tasks)
 		{
-			cout << i << "\t" << task->getKernelName() << endl;
+			cout << i << "\t" << task->getKernelName()<<endl;
 			i++;
 		}
 		cin >> value;
@@ -228,7 +234,7 @@ void TUI::decorateOtherTask(SCHEDULER::Task* task)
 		}
 	} while (!((value >= 0) && (value < tasks.size())));
 
-	for (int i = 0; i < tasks.size(); i++)
+	for(int i =0 ;i<tasks.size(); i++)
 	{
 		if(i==value)
 		{
@@ -440,11 +446,11 @@ void TUI::decorateNormalMode(SCHEDULER::Task* task) {
 	decorateNormalMessage("How many Arguments do you want to set for Task?");
 	int argCount;
 	cin >> argCount;
-	for (int i = 0; i < argCount; i++)
+	for(int i = 0; i<argCount; i++)
 	{
 		int value;
 		do {
-			cout << "ARG: " << i << endl;
+			cout << "ARG: " << i <<endl;
 			decorateNormalMessage("Where does the Data from this Task come from?");
 			decorateNormalMessage("0\tUser Input");
 			decorateNormalMessage("1\tOther Task");
@@ -466,20 +472,18 @@ void TUI::decorateNormalMode(SCHEDULER::Task* task) {
 			SCHEDULER::Type type = getTypeFromUserForArg();
 			askUserForArrayData(task, type, load);
 			task->setLoad(load);
-		}
-		else if (task->dependancyType() == SCHEDULER::OutsideDependancy)
+		}else if(task->dependancyType() == SCHEDULER::OutsideDependancy)
 		{
 			decorateCan(task, load);
 			task->setLoad(load);
-		}
-		else
+		}else
 		{
 			decorateOtherTask(task);
 		}
-
+		
 	}
 	tasks.emplace_back(task);
-
+	
 }
 
 void TUI::activateCanBus() {
