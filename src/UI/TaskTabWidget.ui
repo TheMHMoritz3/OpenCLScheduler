@@ -79,7 +79,7 @@
            </widget>
           </item>
           <item row="5" column="1">
-           <widget class="QSpinBox" name="spinBox">
+           <widget class="QSpinBox" name="LoadSpinBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>2</horstretch>
@@ -211,7 +211,7 @@
         <x>0</x>
         <y>0</y>
         <width>793</width>
-        <height>430</height>
+        <height>656</height>
        </rect>
       </property>
       <attribute name="label">
@@ -249,13 +249,13 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
-           <widget class="QTableView" name="tableView_3"/>
+           <widget class="QTableView" name="ExecutionTimeTableView"/>
           </item>
          </layout>
         </widget>
        </item>
        <item row="0" column="0" rowspan="2">
-        <widget class="QTableView" name="tableView">
+        <widget class="QTableView" name="DataOfTaskTableView">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>2</horstretch>
@@ -272,7 +272,7 @@
         <x>0</x>
         <y>0</y>
         <width>793</width>
-        <height>430</height>
+        <height>656</height>
        </rect>
       </property>
       <attribute name="label">
