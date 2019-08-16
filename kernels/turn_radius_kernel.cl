@@ -1,6 +1,6 @@
 /*   Berechnet den WendeRadius abhängig vom WheelSpeed
- *      speedL:     Der Speed-Wert des Rads hinten links
- *      speedR:     Der Speed-Wert des Rads hinten Rechts
+ *      speedL:     Der Speed-Wert des Rads vorne links
+ *      speedR:     Der Speed-Wert des Rads vorne Rechts
  *
  *      resuult:    Das Ergebnis
  *
