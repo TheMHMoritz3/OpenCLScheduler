@@ -338,19 +338,16 @@
      \item if $r<0$ then $r=-r$
     \end{enumerate}
 \end{frame}
-
-\section{Dataflowgraph}
+\section{Program Graphs}
+\subsection{Dependancygraph}
+\begin{frame}
+    \frametitle{Dependancygraph}
+    \includegraphics[width=\textwidth]{res/Dependencie_Graph.png}
+\end{frame}
+\subsection{Dataflowgraph}
 \begin{frame}
     \frametitle{Dataflowgraph}
-    \includegraphics[width=.8\textwidth]{res/Dataflowgraph.PNG}
-    \begin{tabular}{r|l r|l}
-	t1 & Battery & t7 & Traction Control\\
-	t2 & Speed  & t8 & Abnormal Acceleration Detection\\
-	t3 & X-Axis & t9 & Range\\
-	t4 & Y-Axis & t10 & Turning Radius\\
-	t5 & Tangential & t11 & Cruise Control\\
-	t6 & Tempreture & t12& Distance Tracker\\
-     \end{tabular}
+    \includegraphics[width=\textwidth]{res/Data_Flow_Kernel.png}
 \end{frame}
 
 \end{document}
