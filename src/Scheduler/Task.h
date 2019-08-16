@@ -44,6 +44,7 @@ namespace SCHEDULER {
 		void setDataDependancy(SCHEDULER::DependancyType type);
 		void addDependandTask(SCHEDULER::Task* task);
 		void addExternalDataMethod(std::function<void(void)> externalFunctionData);
+		void setKernelArguments(std::vector<std::string> arguments);
 
         int getId();
         std::pair<Type, std::vector<std::vector<void*>>> getReturnData();
@@ -58,6 +59,7 @@ namespace SCHEDULER {
 		Task operator=(Task other);
 		DependancyType dependancyType();
 		bool isCalculationDone();
+		std::vector<std::string> kernelArguments();
 
     private:
 		void readDataFromOtherThread();
@@ -77,6 +79,7 @@ namespace SCHEDULER {
 		bool IsCalculationDone;
 		bool IsDataSet;
 		std::vector<std::function<void(void)>> GetExternalDataMethods;
+		std::vector<std::string> KernelArguments;
 
     };
 }

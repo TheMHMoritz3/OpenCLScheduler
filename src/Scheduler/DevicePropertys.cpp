@@ -11,12 +11,18 @@ DeviceProperties::DeviceProperties (std::string deviceName) :
 {
 	DeviceName = deviceName;
 	Type = STATIC;
+	CoreCount = 0;
 }
 
 
 std::string DeviceProperties::getName()
 {
 	return DeviceName;
+}
+
+int DeviceProperties::getCoureCount()
+{
+	return CoreCount;
 }
 
 void DeviceProperties::setSchedule(ScheduleType type)

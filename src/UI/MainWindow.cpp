@@ -1,9 +1,11 @@
 #include "MainWindow.h"
 #include "src/Scheduler/Device.h"
 #include <QStandardItemModel>
-#include "TaskTabWidget.h"
+#include <QFileDialog>
+#include "OpenKernelFileWizard.h"
 
 using namespace SCHEDULER;
+using namespace UI;
 
 MainWindow::MainWindow(QWidget* parent):
 QMainWindow(parent)
@@ -147,6 +149,23 @@ void MainWindow::loadPreset()
 	updateTasksModel();
 }
 
+void MainWindow::addKernel()
+{
+	OpenKernelFileWizard* wizard = new OpenKernelFileWizard(this);
+	wizard->exec();
+}
+
+void MainWindow::schedulePressed()
+{
+
+}
+
+void MainWindow::deviceComboboxChanged()
+{
+	QString deviceName = ui.DeviceCombobox->currentText();
+	readDeviceData(deviceName.toStdString());
+}
+
 void MainWindow::fillStartUI()
 {
 	ScheduleManager = new SCHEDULER::ScheduleManager();
@@ -164,6 +183,8 @@ void MainWindow::makeConnections()
 	connect(ui.MultiThreaddedRadioButton, SIGNAL(clicked()), this, SLOT(multiThreaddingCheckstateChanged()));
 	connect(ui.SingleThreaddedRadioButton, SIGNAL(clicked()), this, SLOT(multiThreaddingCheckstateChanged()));
 	connect(ui.actionLoad_Preset, SIGNAL(triggered(bool)), this, SLOT(loadPreset()));
+	connect(ui.actionOpen_Kernel, SIGNAL(triggered(bool)), this, SLOT(addKernel()));
+	connect(ui.DeviceCombobox, SIGNAL(currentIndexChanged(int)), this, SLOT(deviceComboboxChanged()));
 }
 
 void MainWindow::updateTasksModel()
@@ -177,7 +198,20 @@ void MainWindow::updateTasksModel()
 		itemModel->invisibleRootItem()->appendRow(item);
 		TaskTabWidget *widget = new TaskTabWidget(task, this);
 		ui.TasksWidget->addTab(widget, task->getKernelName().c_str());
+
+		TaskWidgets.push_back(widget);
 	}
 
 	ui.TasksListView->setModel(itemModel);
+}
+
+void MainWindow::readDeviceData(std::string deviceName)
+{
+	for(DeviceProperties* devProp : Devices)
+	{
+		if(deviceName==devProp->getName())
+		{
+			
+		}
+	}
 }

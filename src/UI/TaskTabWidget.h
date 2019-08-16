@@ -12,6 +12,8 @@ class TaskTabWidget : public QWidget
 public:
 	TaskTabWidget(SCHEDULER::Task* task, QWidget* parent = NULL);
 
+	void readValuesFromTask();
+
 private:
 	void makeConnections();
 	void decorateForTask();

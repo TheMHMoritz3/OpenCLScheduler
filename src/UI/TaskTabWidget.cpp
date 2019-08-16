@@ -17,6 +17,22 @@ TaskTabWidget::TaskTabWidget(SCHEDULER::Task* task, QWidget* parent) :
 	ui.DataOfTaskTableView->setModel(model);
 }
 
+void TaskTabWidget::readValuesFromTask()
+{
+	std::pair<Type, std::vector<std::vector<void*>>> data = Task->getReturnData();
+	
+	for(std::vector<void*> internalData : data.second)
+	{
+		QList<QStandardItem*> column;
+		for (void* dataPoint : internalData) {
+			float dataPointf = *((float*)dataPoint);
+			QStandardItem* item = new QStandardItem(tr("%1").arg(dataPointf));
+			column.append(item);
+		}
+		model->appendColumn(column);
+	}
+}
+
 void TaskTabWidget::makeConnections()
 {
 	connect(ui.GenerateDataButton, SIGNAL(clicked()), this, SLOT(generateDataTriggered()));
@@ -29,6 +45,7 @@ void TaskTabWidget::decorateForTask()
 
 void TaskTabWidget::generateDataTriggered()
 {
+	Task->setLoad(ui.LoadSpinBox->value());
 	std::vector<void*> data = RandomNumberGenerator::generateRandomNumbers(ui.LoadSpinBox->value(),Type::UINT);
 	Task->addData(data, Type::INT);
 	QList<QStandardItem*> items;
@@ -40,4 +57,5 @@ void TaskTabWidget::generateDataTriggered()
 	}
 	model->appendColumn(items);
 }
+
 

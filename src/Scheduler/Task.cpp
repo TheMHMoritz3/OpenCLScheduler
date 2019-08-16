@@ -133,6 +133,11 @@ bool Task::isCalculationDone()
 	return IsCalculationDone;
 }
 
+std::vector<std::string> Task::kernelArguments()
+{
+	return KernelArguments;
+}
+
 void Task::readDataFromOtherThread()
 {
 	for(Task* task : DependandTasks)
@@ -162,4 +167,9 @@ void Task::addDependandTask(SCHEDULER::Task* task)
 void Task::addExternalDataMethod(std::function<void()> externalFunctionData)
 {
     GetExternalDataMethods.push_back(externalFunctionData);
+}
+
+void Task::setKernelArguments(std::vector<std::string> arguments)
+{
+	KernelArguments = arguments;
 }

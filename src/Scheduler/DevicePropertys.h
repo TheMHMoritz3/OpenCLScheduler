@@ -19,14 +19,17 @@ namespace SCHEDULER {
 		DeviceProperties() = delete;
 
 		std::string getName();
+		int getCoureCount();
 
 		void setSchedule(ScheduleType type);
 		void addTaskToSchedule(Task* task);
+
 
 	private:
 		std::string DeviceName;
 		ScheduleType Type;
 		std::vector<Task*> TasksToSchedule;
+		int CoreCount;
 	};
 }
 
