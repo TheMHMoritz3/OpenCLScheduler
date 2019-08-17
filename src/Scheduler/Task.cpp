@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 #include "Task.h"
 #include <iostream>
+#include "KernelFileParser.h"
 
 using namespace SCHEDULER;
 
@@ -34,6 +35,11 @@ int Task::getId() {
 
 void Task::setKernel(std::string kernelName) {
     KernelName = kernelName;
+}
+
+void Task::setPath(std::string path)
+{
+	Path = path;
 }
 
 void Task::setLoad(int load)
@@ -135,7 +141,7 @@ bool Task::isCalculationDone()
 
 std::vector<std::string> Task::kernelArguments()
 {
-	return KernelArguments;
+	return KernelFileParser::getKernelArgsForKernel(Path,KernelName);
 }
 
 void Task::readDataFromOtherThread()
@@ -167,9 +173,4 @@ void Task::addDependandTask(SCHEDULER::Task* task)
 void Task::addExternalDataMethod(std::function<void()> externalFunctionData)
 {
     GetExternalDataMethods.push_back(externalFunctionData);
-}
-
-void Task::setKernelArguments(std::vector<std::string> arguments)
-{
-	KernelArguments = arguments;
 }

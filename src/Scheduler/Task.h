@@ -34,6 +34,7 @@ namespace SCHEDULER {
 
 		void setProgam(cl::Program program);
 		void setKernel(std::string kernelName);
+		void setPath(std::string path);
 		void setLoad(int load);
 		void setReadBuffer(cl::Buffer* readBuffer);
 		void setProgramSources(cl::Program::Sources *sources);
@@ -44,7 +45,6 @@ namespace SCHEDULER {
 		void setDataDependancy(SCHEDULER::DependancyType type);
 		void addDependandTask(SCHEDULER::Task* task);
 		void addExternalDataMethod(std::function<void(void)> externalFunctionData);
-		void setKernelArguments(std::vector<std::string> arguments);
 
         int getId();
         std::pair<Type, std::vector<std::vector<void*>>> getReturnData();
@@ -65,6 +65,7 @@ namespace SCHEDULER {
 		void readDataFromOtherThread();
 
         std::string KernelName;
+		std::string Path;
         std::string Description;
         cl::Program::Sources *Sources;
         cl::Program Program;
@@ -79,8 +80,6 @@ namespace SCHEDULER {
 		bool IsCalculationDone;
 		bool IsDataSet;
 		std::vector<std::function<void(void)>> GetExternalDataMethods;
-		std::vector<std::string> KernelArguments;
-
     };
 }
 

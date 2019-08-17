@@ -1,19 +1,16 @@
 #pragma once
 
-#include "scheduler_global.h"
 #include <string>
 #include <vector>
 #include "Task.h"
 
 
 namespace SCHEDULER {
-	class SCHEDULER_EXPORT KernelFileParser
+	class KernelFileParser
 	{
 	public:
-		KernelFileParser();
-
-		void parseCLFile(std::string path);
-	private:
-		std::vector<Task*> Tasks;
+		static std::vector<std::string> getKernelNames(std::string path);
+		static std::vector<std::vector<std::string>> getKernelArgs(std::string path);
+		static std::vector<std::string> getKernelArgsForKernel(std::string path, std::string kernelName);
 	};
 }

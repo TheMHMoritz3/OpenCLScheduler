@@ -1,6 +1,6 @@
 #include "TaskTabWidget.h"
 #include "RandomNumberGenerator.h"
-
+#include "../Scheduler/KernelFileParser.h"
 
 using namespace SCHEDULER;
 using namespace UI;
@@ -20,8 +20,8 @@ TaskTabWidget::TaskTabWidget(SCHEDULER::Task* task, QWidget* parent) :
 void TaskTabWidget::readValuesFromTask()
 {
 	std::pair<Type, std::vector<std::vector<void*>>> data = Task->getReturnData();
-	
-	for(std::vector<void*> internalData : data.second)
+
+	for (std::vector<void*> internalData : data.second)
 	{
 		QList<QStandardItem*> column;
 		for (void* dataPoint : internalData) {
@@ -40,16 +40,20 @@ void TaskTabWidget::makeConnections()
 
 void TaskTabWidget::decorateForTask()
 {
+	QStringList HeaderList;
+	for (std::string value : Task->kernelArguments())
+		HeaderList.append(QString::fromStdString(value).split(" ").last());
 
+	model->setHorizontalHeaderLabels(HeaderList);
 }
 
 void TaskTabWidget::generateDataTriggered()
 {
 	Task->setLoad(ui.LoadSpinBox->value());
-	std::vector<void*> data = RandomNumberGenerator::generateRandomNumbers(ui.LoadSpinBox->value(),Type::UINT);
+	std::vector<void*> data = RandomNumberGenerator::generateRandomNumbers(ui.LoadSpinBox->value(), Type::UINT);
 	Task->addData(data, Type::INT);
 	QList<QStandardItem*> items;
-	for(void* dataPoint : data)
+	for (void* dataPoint : data)
 	{
 		int iDataPoint = *((int*)dataPoint);
 		QStandardItem* item = new QStandardItem(tr("%1").arg(iDataPoint));
