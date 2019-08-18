@@ -201,7 +201,7 @@ void TaskTabWidget::readDoubleDataFromTask(std::vector<void*> data)
 
 void TaskTabWidget::generateExecutionTimeDiagramm()
 {
-	if(Task->elapsedTime()>0.0)
+	if (Task->elapsedTime() > 0.0)
 	{
 		QStandardItem* item = new QStandardItem();
 		item->setText(tr("%1").arg(Task->elapsedTime()));
@@ -259,59 +259,59 @@ void TaskTabWidget::canBusActivated()
 }
 
 void TaskTabWidget::readDataFromBusClicked() {
-    qDebug()<<"Read Can Data";
-    Task->setDataDependancy(SCHEDULER::DependancyType::UserInput);
-    switch(Ui.CanAdressComboBox->currentIndex()){
-        case 0:
-            loadCanData(CAN::CanID::WheelFrontRight, Ui.LoadSpinBox->value());
-            break;
-        case 1:
-            loadCanData(CAN::CanID::WheelFrontLeft, Ui.LoadSpinBox->value());
-            break;
-        case 2:
-            loadCanData(CAN::CanID::WheelRearRight, Ui.LoadSpinBox->value());
-            break;
-        case 3:
-            loadCanData(CAN::CanID::WheelRearLeft, Ui.LoadSpinBox->value());
-            break;
-        case 4:
-            loadCanData(CAN::CanID::BatteryVoltage, Ui.LoadSpinBox->value());
-            break;
-        case 5:
-            loadCanData(CAN::CanID::AccelerationLongitudinal, Ui.LoadSpinBox->value());
-            break;
-        case 6:
-            loadCanData(CAN::CanID::AccelerationLateral, Ui.LoadSpinBox->value());
-            break;
-        case 7:
-            loadCanData(CAN::CanID::AccelerationLongitudinal, Ui.LoadSpinBox->value());
-            break;
-        case 8:
-            loadCanData(CAN::CanID::Temperature, Ui.LoadSpinBox->value());
-            break;
-        default:
-            break;
-    }
-    decorateForTask();
+	qDebug() << "Read Can Data";
+	Task->setDataDependancy(SCHEDULER::DependancyType::UserInput);
+	switch (Ui.CanAdressComboBox->currentIndex()) {
+	case 0:
+		loadCanData(CAN::CanID::WheelFrontRight, Ui.LoadSpinBox->value());
+		break;
+	case 1:
+		loadCanData(CAN::CanID::WheelFrontLeft, Ui.LoadSpinBox->value());
+		break;
+	case 2:
+		loadCanData(CAN::CanID::WheelRearRight, Ui.LoadSpinBox->value());
+		break;
+	case 3:
+		loadCanData(CAN::CanID::WheelRearLeft, Ui.LoadSpinBox->value());
+		break;
+	case 4:
+		loadCanData(CAN::CanID::BatteryVoltage, Ui.LoadSpinBox->value());
+		break;
+	case 5:
+		loadCanData(CAN::CanID::AccelerationLongitudinal, Ui.LoadSpinBox->value());
+		break;
+	case 6:
+		loadCanData(CAN::CanID::AccelerationLateral, Ui.LoadSpinBox->value());
+		break;
+	case 7:
+		loadCanData(CAN::CanID::AccelerationLongitudinal, Ui.LoadSpinBox->value());
+		break;
+	case 8:
+		loadCanData(CAN::CanID::Temperature, Ui.LoadSpinBox->value());
+		break;
+	default:
+		break;
+	}
+	decorateForTask();
 }
 
 
 void TaskTabWidget::loadCanData(CAN::CanID canId, int load) {
-CanManager->create(canId, load);
-std::vector<uint32_t*> dataSet  = CanManager->getData(canId);
-uint32_t* DataSet = new uint32_t[dataSet.size()];
-std::vector<void*> taskData;
-int i = 0;
-for(uint32_t* data : dataSet)
-{
-DataSet[i]=*data;
-taskData.push_back(&DataSet[i]);
-i++;
-}
-Task->addData(taskData, SCHEDULER::UINT);
+	CanManager->create(canId, load);
+	std::vector<uint32_t*> dataSet = CanManager->getData(canId);
+	uint32_t* DataSet = new uint32_t[dataSet.size()];
+	std::vector<void*> taskData;
+	int i = 0;
+	for (uint32_t* data : dataSet)
+	{
+		DataSet[i] = *data;
+		taskData.push_back(&DataSet[i]);
+		i++;
+	}
+	Task->addData(taskData, SCHEDULER::UINT);
 }
 
-void TaskTabWidget::setCanManager(CAN::CanManager *canManager) {
-    CanManager=canManager;
+void TaskTabWidget::setCanManager(CAN::CanManager* canManager) {
+	CanManager = canManager;
 }
 
