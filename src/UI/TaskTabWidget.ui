@@ -133,12 +133,53 @@
             <widget class="QWidget" name="page_6">
              <layout class="QVBoxLayout" name="verticalLayout">
               <item>
-               <widget class="QComboBox" name="CanAdressComboBox"/>
+               <widget class="QComboBox" name="CanAdressComboBox">
+                <item>
+                 <property name="text">
+                  <string>Wheel Front Right</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Wheel Front Left</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Wheel Rear Right</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Wheel Rear Left</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Battery Voltage</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Acceleration Longitudal</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Acceleration Lateral</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Tempreture</string>
+                 </property>
+                </item>
+               </widget>
               </item>
               <item>
                <widget class="QPushButton" name="ReadCanBusButton">
                 <property name="text">
-                 <string>PushButton</string>
+                 <string>Read Data from Bus</string>
                 </property>
                </widget>
               </item>

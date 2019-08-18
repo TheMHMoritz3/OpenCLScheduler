@@ -1,7 +1,7 @@
 #include "TaskTabWidget.h"
 #include "RandomNumberGenerator.h"
 #include "../Scheduler/KernelFileParser.h"
-#include <QBarSet>
+#include <QDebug>
 
 
 //using namespace SCHEDULER;
@@ -28,6 +28,19 @@ TaskTabWidget::~TaskTabWidget()
 
 void TaskTabWidget::refresh()
 {
+	switch (Task->dependancyType()) {
+	case SCHEDULER::OtherTask:
+		Ui.DiffrentTaksRadioButton->setChecked(true);
+		diffrentTasksChecked();
+		break;
+	case SCHEDULER::OutsideDependancy:
+		Ui.CanRadioButton->setChecked(true);
+		canBusActivated();
+		break;
+	case SCHEDULER::UserInput:
+	default:;
+	}
+
 	decorateForTask();
 }
 
@@ -77,10 +90,12 @@ void TaskTabWidget::decorateForTask()
 	HeaderList.clear();
 	Model->clear();
 
+	qDebug() << Task->getKernelName().c_str() << ": " << Task->hasDependencies() << " - " << Task->dependenciesAreCalculated();
+
 	if (!Task->hasDependencies())
 		readDataFromTask();
 	else if (Task->dependenciesAreCalculated())
-		readValuesFromTask();
+		readDataFromTask();
 
 
 	for (std::string value : Task->kernelArguments())
@@ -91,19 +106,6 @@ void TaskTabWidget::decorateForTask()
 	Model->setHorizontalHeaderLabels(HeaderList);
 
 	generateExecutionTimeDiagramm();
-
-	switch (Task->dependancyType()) {
-		case SCHEDULER::OtherTask: 
-			Ui.DiffrentTaksRadioButton->setChecked(true);
-			diffrentTasksChecked();
-			break;
-		case SCHEDULER::OutsideDependancy:
-			Ui.CanRadioButton->setChecked(true);
-			canBusActivated();
-		break;
-		case SCHEDULER::UserInput:
-		default:;
-	}
 }
 
 void TaskTabWidget::readDataFromTask()

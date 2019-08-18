@@ -4,6 +4,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include "OpenKernelFileWizard.h"
+#include <sstream>
 
 using namespace SCHEDULER;
 using namespace UI;
@@ -216,12 +217,13 @@ void MainWindow::updateTasksModel()
 	
 	for(Task* task : Tasks)
 	{
-		QStandardItem* item = new QStandardItem(task->getKernelName().c_str());
+		QStandardItem* item = new QStandardItem(tr((task->getKernelName() + "- %1").c_str()).arg(task->getId()));
 		item->setCheckable(true);
 		TasksToScheduleModel->invisibleRootItem()->appendRow(item);
 		TaskTabWidget *widget = new TaskTabWidget(task, this);
-		ui.TasksWidget->addTab(widget, task->getKernelName().c_str());
+		ui.TasksWidget->addTab(widget, tr((task->getKernelName() + "- %1").c_str()).arg(task->getId()));
 		TaskWidgets.push_back(widget);
+		widget->refresh();
 	}
 }
 
@@ -262,7 +264,10 @@ void MainWindow::addTaskToScheduledTasks(std::string taskName)
 {
 	for(Task* task:Tasks)
 	{
-		if (task->getKernelName() == taskName)
+		std::stringstream ss;
+		ss << task->getId();
+
+		if ((task->getKernelName() + "- " + ss.str()) == taskName)
 			ActiveDevicePropertie->addTaskToSchedule(task);
 	}
 }
