@@ -32,6 +32,7 @@ namespace SCHEDULER {
         Scheduler(std::vector<Task*> tasks, std::vector<Device*> devices);
         virtual void schedule()=0;
 
+        void setCoreCount(int cores);
     protected:
         std::vector<Task*> Tasks;
         std::vector<Device*> Devices;
@@ -53,6 +54,8 @@ namespace SCHEDULER {
 		std::vector<void*> readDataFromBufferForCHAR(Task* task, cl::CommandQueue queue, int count);
 		std::vector<void*> readDataFromBufferForDOUBLE(Task* task, cl::CommandQueue queue, int count);
 		std::vector<void*> readDataFromBufferForFLOAT(Task* task, cl::CommandQueue queue, int count);
+
+		int CoreCount;
     };
 }
 

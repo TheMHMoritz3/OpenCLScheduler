@@ -27,6 +27,7 @@ using namespace SCHEDULER;
 Scheduler::Scheduler(std::vector<Task*> tasks, std::vector<Device*> devices) {
     Tasks=tasks;
     Devices=devices;
+    CoreCount=1;
 }
 
 void Scheduler::setRAMForCurrentTask(Task* task, Device* device, cl::Kernel kernel, cl::CommandQueue queue) {
@@ -103,8 +104,7 @@ void Scheduler::setKernelLoad(Task* task, Device* device, cl::Kernel kernel)
 
 void Scheduler::enqueueTak(Task* task, Device* device, cl::CommandQueue commandQueue, cl::Kernel kernel)
 {
-    ErrorCode = commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(1),cl::NDRange(1));
-    commandQueue.finish();
+    ErrorCode = commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(1),cl::NDRange(CoreCount));
 //    std::cout << "Enqueue Task: "<<ErrorCode<<std::endl;
 }
 
@@ -277,4 +277,8 @@ std::vector<void*> Scheduler::readDataFromBufferForFLOAT(Task* task, cl::Command
 		returnData.emplace_back(value);
 	}
 	return returnData;
+}
+
+void Scheduler::setCoreCount(int cores) {
+    CoreCount = cores;
 }

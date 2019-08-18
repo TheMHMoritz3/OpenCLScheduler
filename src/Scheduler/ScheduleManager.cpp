@@ -82,6 +82,9 @@ void ScheduleManager::startSchedule(std::vector<Task*> tasks, Device* device)
 	default:
 		break;
 	}
+	if(device->getProperties()->getCoureCount()>1){
+	    ActiveScheduler->setCoreCount(device->getProperties()->getCoureCount());
+	}
 	ActiveScheduler->schedule();
 }
 
