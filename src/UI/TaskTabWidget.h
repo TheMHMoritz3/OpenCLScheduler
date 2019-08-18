@@ -6,6 +6,7 @@
 #include "ui_TaskTabWidget.h"
 #include <QStandardItemModel>
 
+
 class TaskTabWidget : public QWidget
 {
 	Q_OBJECT
@@ -26,10 +27,13 @@ private:
 	void readCharDataFromTask(std::vector<void*> data);
 	void readDoubleDataFromTask(std::vector<void*> data);
 
+	void generateExecutionTimeDiagramm();
+
 	void clear();
 	Ui::TaskTabWidget Ui;
 	SCHEDULER::Task* Task;
 	QStandardItemModel* Model;
+	QStandardItemModel* ExecutionTimeModel;
 	QStringList HeaderList;
 private slots:
 	void generateDataTriggered();

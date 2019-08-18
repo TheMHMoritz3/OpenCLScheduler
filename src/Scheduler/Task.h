@@ -63,6 +63,9 @@ namespace SCHEDULER {
 		bool hasDependencies();
 		bool dependenciesAreCalculated();
 
+		void setElapsedTime(float time);
+		float elapsedTime();
+
     private:
 		void readDataFromOtherThread();
 
@@ -82,6 +85,7 @@ namespace SCHEDULER {
 		bool IsCalculationDone;
 		bool IsDataSet;
 		std::vector<std::function<void(void)>> GetExternalDataMethods;
+		float ElapsedTime;
     };
 }
 

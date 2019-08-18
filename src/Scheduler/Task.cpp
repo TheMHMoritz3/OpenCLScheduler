@@ -27,6 +27,7 @@ Task::Task(int id) {
     ID=id;
 	IsCalculationDone = false;
     IsDataSet = false;
+	ElapsedTime = 0.0;
 }
 
 int Task::getId() {
@@ -152,6 +153,16 @@ bool Task::hasDependencies()
 bool Task::dependenciesAreCalculated()
 {
 	return IsDataSet;
+}
+
+void Task::setElapsedTime(float time)
+{
+	ElapsedTime = time;
+}
+
+float Task::elapsedTime()
+{
+	return ElapsedTime;
 }
 
 void Task::readDataFromOtherThread()

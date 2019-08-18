@@ -1,8 +1,10 @@
 #include "TaskTabWidget.h"
 #include "RandomNumberGenerator.h"
 #include "../Scheduler/KernelFileParser.h"
+#include <QBarSet>
 
-using namespace SCHEDULER;
+
+//using namespace SCHEDULER;
 using namespace UI;
 
 TaskTabWidget::TaskTabWidget(SCHEDULER::Task* task, QWidget* parent) :
@@ -12,9 +14,11 @@ TaskTabWidget::TaskTabWidget(SCHEDULER::Task* task, QWidget* parent) :
 	Ui.setupUi(this);
 	Ui.retranslateUi(this);
 	Model = new QStandardItemModel();
+	ExecutionTimeModel = new QStandardItemModel();
 	makeConnections();
 	decorateForTask();
 	Ui.DataOfTaskTableView->setModel(Model);
+	Ui.ExecutionTimeTableView->setModel(ExecutionTimeModel);
 }
 
 TaskTabWidget::~TaskTabWidget()
@@ -29,25 +33,25 @@ void TaskTabWidget::refresh()
 
 void TaskTabWidget::readValuesFromTask()
 {
-	std::pair<Type, std::vector<std::vector<void*>>> data = Task->getReturnData();
+	std::pair<SCHEDULER::Type, std::vector<std::vector<void*>>> data = Task->getReturnData();
 	int i = 1;
 	for (std::vector<void*> internalData : data.second)
 	{
 		switch (data.first) {
-		case Type::INT:
+		case SCHEDULER::Type::INT:
 			readIntDataFromTask(internalData);
 			break;
-		case Type::UINT:
+		case SCHEDULER::Type::UINT:
 			readUIntDataFromTask(internalData);
 			break;
-		case Type::STRING:
-		case Type::CHAR:
+		case SCHEDULER::Type::STRING:
+		case SCHEDULER::Type::CHAR:
 			readCharDataFromTask(internalData);
 			break;
-		case Type::FLOAT:
+		case SCHEDULER::Type::FLOAT:
 			readFloatDataFromTask(internalData);
 			break;
-		case Type::DOUBLE:
+		case SCHEDULER::Type::DOUBLE:
 			readDoubleDataFromTask(internalData);
 			break;
 		default:;
@@ -63,6 +67,9 @@ void TaskTabWidget::makeConnections()
 	connect(Ui.RandomNumberRadioButton, SIGNAL(clicked()), this, SLOT(randomNumberChecked()));
 	connect(Ui.CanRadioButton, SIGNAL(clicked()), this, SLOT(canBusActivated()));
 	connect(Ui.GenerateDataButton, SIGNAL(clicked()), this, SLOT(generateDataTriggered()));
+	QStringList headerData;
+	headerData.append(tr("ExecutionTimes"));
+	ExecutionTimeModel->setHorizontalHeaderLabels(headerData);
 }
 
 void TaskTabWidget::decorateForTask()
@@ -83,16 +90,18 @@ void TaskTabWidget::decorateForTask()
 
 	Model->setHorizontalHeaderLabels(HeaderList);
 
+	generateExecutionTimeDiagramm();
+
 	switch (Task->dependancyType()) {
-		case OtherTask: 
+		case SCHEDULER::OtherTask: 
 			Ui.DiffrentTaksRadioButton->setChecked(true);
 			diffrentTasksChecked();
 			break;
-		case OutsideDependancy:
+		case SCHEDULER::OutsideDependancy:
 			Ui.CanRadioButton->setChecked(true);
 			canBusActivated();
 		break;
-		case UserInput:
+		case SCHEDULER::UserInput:
 		default:;
 	}
 }
@@ -103,20 +112,20 @@ void TaskTabWidget::readDataFromTask()
 	for (auto TaskDataSet : TaskAllData)
 	{
 		switch (TaskDataSet.first) {
-		case Type::INT:
+		case SCHEDULER::Type::INT:
 			readIntDataFromTask(TaskDataSet.second);
 			break;
-		case Type::UINT:
+		case SCHEDULER::Type::UINT:
 			readUIntDataFromTask(TaskDataSet.second);
 			break;
-		case Type::STRING:
-		case Type::CHAR:
+		case SCHEDULER::Type::STRING:
+		case SCHEDULER::Type::CHAR:
 			readCharDataFromTask(TaskDataSet.second);
 			break;
-		case Type::FLOAT:
+		case SCHEDULER::Type::FLOAT:
 			readFloatDataFromTask(TaskDataSet.second);
 			break;
-		case Type::DOUBLE:
+		case SCHEDULER::Type::DOUBLE:
 			readDoubleDataFromTask(TaskDataSet.second);
 			break;
 		default:;
@@ -189,6 +198,16 @@ void TaskTabWidget::readDoubleDataFromTask(std::vector<void*> data)
 	Model->appendColumn(items);
 }
 
+void TaskTabWidget::generateExecutionTimeDiagramm()
+{
+	if(Task->elapsedTime()>0.0)
+	{
+		QStandardItem* item = new QStandardItem();
+		item->setText(tr("%1").arg(Task->elapsedTime()));
+		ExecutionTimeModel->appendRow(item);
+	}
+}
+
 void TaskTabWidget::clear()
 {
 	Model->clear();
@@ -199,8 +218,8 @@ void TaskTabWidget::generateDataTriggered()
 	clear();
 	Task->setLoad(Ui.LoadSpinBox->value());
 	for (int j = 0; j < Task->kernelArguments().size(); j++) {
-		std::vector<void*> data = RandomNumberGenerator::generateRandomNumbers(Ui.LoadSpinBox->value(), Type::UINT);
-		Task->addData(data, Type::INT);
+		std::vector<void*> data = RandomNumberGenerator::generateRandomNumbers(Ui.LoadSpinBox->value(), SCHEDULER::Type::UINT);
+		Task->addData(data, SCHEDULER::Type::INT);
 	}
 	decorateForTask();
 }
@@ -237,5 +256,3 @@ void TaskTabWidget::canBusActivated()
 		Task->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
 	}
 }
-
-

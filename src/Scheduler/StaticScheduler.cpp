@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #include "StaticScheduler.h"
 #include <iostream>
 #include <string>
+#include <chrono>
 #include <cstring>
 #include <CL/cl.hpp>
 #include <fstream>
@@ -44,7 +45,10 @@ void StaticScheduler::schedule() {
 				setRAMForCurrentTask(task, device, kernel, commandQueue);
 				setRAMBufferForOutput(task, device, kernel);
 				setKernelLoad(task, device, kernel);
+				auto start = chrono::steady_clock::now();
 				enqueueTak(task, device, commandQueue, kernel);
+				auto end = chrono::steady_clock::now();
+				task->setElapsedTime(chrono::duration_cast<chrono::microseconds>(end - start).count());
 				readDataFromTask(task, commandQueue);
 			}
 			else

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>811</width>
-    <height>755</height>
+    <height>761</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,7 +25,7 @@
         <x>0</x>
         <y>0</y>
         <width>793</width>
-        <height>656</height>
+        <height>662</height>
        </rect>
       </property>
       <attribute name="label">
@@ -168,7 +168,7 @@
         <x>0</x>
         <y>0</y>
         <width>793</width>
-        <height>656</height>
+        <height>662</height>
        </rect>
       </property>
       <attribute name="label">
@@ -229,7 +229,7 @@
         <x>0</x>
         <y>0</y>
         <width>793</width>
-        <height>656</height>
+        <height>662</height>
        </rect>
       </property>
       <attribute name="label">
@@ -241,25 +241,17 @@
          <property name="currentIndex">
           <number>1</number>
          </property>
-         <widget class="QWidget" name="tab">
+         <widget class="QWidget" name="DataDiagramm">
           <attribute name="title">
            <string>Data</string>
           </attribute>
-          <layout class="QHBoxLayout" name="horizontalLayout_6">
-           <item>
-            <widget class="QGraphicsView" name="graphicsView_2"/>
-           </item>
-          </layout>
+          <layout class="QHBoxLayout" name="horizontalLayout_6"/>
          </widget>
-         <widget class="QWidget" name="tab_2">
+         <widget class="QWidget" name="ExecutionTimeDiagramm">
           <attribute name="title">
            <string>Execution Times</string>
           </attribute>
-          <layout class="QHBoxLayout" name="horizontalLayout_5">
-           <item>
-            <widget class="QGraphicsView" name="graphicsView"/>
-           </item>
-          </layout>
+          <layout class="QHBoxLayout" name="horizontalLayout_5"/>
          </widget>
         </widget>
        </item>
