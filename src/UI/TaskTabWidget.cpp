@@ -308,6 +308,7 @@ void TaskTabWidget::loadCanData(CAN::CanID canId, int load) {
 		taskData.push_back(&DataSet[i]);
 		i++;
 	}
+	Task->setLoad(load);
 	Task->addData(taskData, SCHEDULER::UINT);
 }
 
