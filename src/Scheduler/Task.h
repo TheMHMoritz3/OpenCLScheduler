@@ -60,6 +60,8 @@ namespace SCHEDULER {
 		DependancyType dependancyType();
 		bool isCalculationDone();
 		std::vector<std::string> kernelArguments();
+		bool hasDependencies();
+		bool dependenciesAreCalculated();
 
     private:
 		void readDataFromOtherThread();

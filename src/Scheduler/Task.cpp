@@ -144,6 +144,16 @@ std::vector<std::string> Task::kernelArguments()
 	return KernelFileParser::getKernelArgsForKernel(Path,KernelName);
 }
 
+bool Task::hasDependencies()
+{
+	return DependandTasks.size() > 0;
+}
+
+bool Task::dependenciesAreCalculated()
+{
+	return IsDataSet;
+}
+
 void Task::readDataFromOtherThread()
 {
 	for(Task* task : DependandTasks)

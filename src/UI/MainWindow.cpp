@@ -176,6 +176,7 @@ void MainWindow::fillStartUI()
 		Devices.push_back(props);
 		ui.DeviceCombobox->addItem(props->getName().c_str());
 	}
+	ui.DeviceCombobox->addItem(tr("All Devices"));
 }
 
 void MainWindow::makeConnections()
