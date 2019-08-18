@@ -12,7 +12,8 @@ using namespace UI;
 MainWindow::MainWindow(QWidget* parent):
 QMainWindow(parent),
 TasksToScheduleModel(new QStandardItemModel()),
-ActiveDevicePropertie(nullptr)
+ActiveDevicePropertie(nullptr),
+CanManager(new CAN::CanManager())
 {
 	ui.setupUi(this);
 	ui.retranslateUi(this);
@@ -224,6 +225,7 @@ void MainWindow::updateTasksModel()
 		ui.TasksWidget->addTab(widget, tr((task->getKernelName() + "- %1").c_str()).arg(task->getId()));
 		TaskWidgets.push_back(widget);
 		widget->refresh();
+		widget->setCanManager(CanManager);
 	}
 }
 

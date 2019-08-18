@@ -3,6 +3,8 @@
 
 #include <QWidget>
 #include "src/Scheduler/Task.h"
+#include "src/CAN/CanManager.h"
+#include "src/CAN/CanNamespace.h"
 #include "ui_TaskTabWidget.h"
 #include <QStandardItemModel>
 
@@ -15,11 +17,14 @@ public:
 	~TaskTabWidget();
 	void refresh();
 
+	void setCanManager(CAN::CanManager* canManager);
 private:
 	void makeConnections();
 	void decorateForTask();
 	void readDataFromTask();
 	void readValuesFromTask();
+
+	void loadCanData(CAN::CanID canId, int load);
 
 	void readUIntDataFromTask(std::vector<void*> data);
 	void readIntDataFromTask(std::vector<void*> data);
@@ -35,10 +40,12 @@ private:
 	QStandardItemModel* Model;
 	QStandardItemModel* ExecutionTimeModel;
 	QStringList HeaderList;
+	CAN::CanManager* CanManager;
 private slots:
 	void generateDataTriggered();
 	void diffrentTasksChecked();
 	void randomNumberChecked();
 	void canBusActivated();
+	void readDataFromBusClicked();
 };
 

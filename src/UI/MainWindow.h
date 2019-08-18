@@ -7,6 +7,7 @@
 #include "src/Scheduler/DevicePropertys.h"
 #include "src/Scheduler/Task.h"
 #include "TaskTabWidget.h"
+#include "src/CAN/CanManager.h"
 
 namespace SCHEDULER {
 	class Device;
@@ -47,5 +48,6 @@ namespace UI {
 		SCHEDULER::DeviceProperties* ActiveDevicePropertie;
 		std::vector<SCHEDULER::Task*> Tasks;
 		std::vector<TaskTabWidget*> TaskWidgets;
+		CAN::CanManager* CanManager;
 	};
 }
