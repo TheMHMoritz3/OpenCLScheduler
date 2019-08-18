@@ -59,6 +59,32 @@ void ScheduleManager::startSchedule() {
     ActiveScheduler->schedule();
 }
 
+void ScheduleManager::startMultiDeviceScheduling()
+{
+	for(Device* device : Devices)
+	{
+		DeviceProperties* props = device->getProperties();
+		Type = props->getSchedule();
+		startSchedule(props->getTasksToSchedule(), device);
+	}
+}
+
+void ScheduleManager::startSchedule(std::vector<Task*> tasks, Device* device)
+{
+	std::vector<Device*> devices;
+	devices.push_back(device);
+	switch (Type) {
+	case ScheduleType::STATIC:
+		ActiveScheduler = new StaticScheduler(tasks, devices);
+		break;
+	case ScheduleType::ASAPHC:
+	case ScheduleType::LIST:
+	default:
+		break;
+	}
+	ActiveScheduler->schedule();
+}
+
 void ScheduleManager::setScheduleType(ScheduleType type) {
     Type=type;
 }

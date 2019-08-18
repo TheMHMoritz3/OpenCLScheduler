@@ -25,9 +25,24 @@ int DeviceProperties::getCoureCount()
 	return CoreCount;
 }
 
+void DeviceProperties::setCoreCount(int coreCount)
+{
+	CoreCount = coreCount;
+}
+
 void DeviceProperties::setSchedule(ScheduleType type)
 {
 	Type = type;
+}
+
+ScheduleType DeviceProperties::getSchedule()
+{
+	return Type;
+}
+
+std::vector<Task*> DeviceProperties::getTasksToSchedule()
+{
+	return TasksToSchedule;
 }
 
 void DeviceProperties::addTaskToSchedule(Task* task)

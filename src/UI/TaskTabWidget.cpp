@@ -22,6 +22,11 @@ TaskTabWidget::~TaskTabWidget()
 	delete Model;
 }
 
+void TaskTabWidget::refresh()
+{
+	decorateForTask();
+}
+
 void TaskTabWidget::readValuesFromTask()
 {
 	std::pair<Type, std::vector<std::vector<void*>>> data = Task->getReturnData();
@@ -63,6 +68,7 @@ void TaskTabWidget::makeConnections()
 void TaskTabWidget::decorateForTask()
 {
 	HeaderList.clear();
+	Model->clear();
 
 	if (!Task->hasDependencies())
 		readDataFromTask();
@@ -206,6 +212,7 @@ void TaskTabWidget::diffrentTasksChecked()
 		Ui.LoadSpinBox->setEnabled(false);
 		Ui.stackedWidget->setCurrentIndex(0);
 		clear();
+		Task->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
 	}
 }
 
@@ -216,6 +223,7 @@ void TaskTabWidget::randomNumberChecked()
 		Ui.LoadSpinBox->setEnabled(true);
 		Ui.stackedWidget->setCurrentIndex(2);
 		clear();
+		Task->setDataDependancy(SCHEDULER::DependancyType::UserInput);
 	}
 }
 
@@ -226,6 +234,7 @@ void TaskTabWidget::canBusActivated()
 		Ui.LoadSpinBox->setEnabled(true);
 		Ui.stackedWidget->setCurrentIndex(1);
 		clear();
+		Task->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
 	}
 }
 

@@ -36,6 +36,7 @@ namespace SCHEDULER {
 		ScheduleManager();
 		void searchForDevices();
         void startSchedule();
+		void startMultiDeviceScheduling();
         void setScheduleType(ScheduleType type);
 
 		Task* addTask(std::string filePath, std::string kernelName);
@@ -45,6 +46,7 @@ namespace SCHEDULER {
 		DeviceProperties* getDeviceProperties(int i) const;
 
     private:
+		void startSchedule(std::vector<Task*>tasks, Device* device);
 		cl::Program::Sources* convertSources(std::string file);
 
         ScheduleType Type;

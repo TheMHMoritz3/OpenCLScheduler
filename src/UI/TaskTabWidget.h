@@ -12,12 +12,13 @@ class TaskTabWidget : public QWidget
 public:
 	TaskTabWidget(SCHEDULER::Task* task, QWidget* parent = NULL);
 	~TaskTabWidget();
-	void readValuesFromTask();
+	void refresh();
 
 private:
 	void makeConnections();
 	void decorateForTask();
 	void readDataFromTask();
+	void readValuesFromTask();
 
 	void readUIntDataFromTask(std::vector<void*> data);
 	void readIntDataFromTask(std::vector<void*> data);

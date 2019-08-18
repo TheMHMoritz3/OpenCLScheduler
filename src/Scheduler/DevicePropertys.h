@@ -20,10 +20,12 @@ namespace SCHEDULER {
 
 		std::string getName();
 		int getCoureCount();
+		void setCoreCount(int coreCount);
 
 		void setSchedule(ScheduleType type);
+		ScheduleType getSchedule();
 		void addTaskToSchedule(Task* task);
-
+		std::vector<Task*> getTasksToSchedule();
 
 	private:
 		std::string DeviceName;

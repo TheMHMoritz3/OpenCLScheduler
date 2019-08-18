@@ -2,145 +2,134 @@
 #include "src/Scheduler/Device.h"
 #include <QStandardItemModel>
 #include <QFileDialog>
+#include <QMessageBox>
 #include "OpenKernelFileWizard.h"
 
 using namespace SCHEDULER;
 using namespace UI;
 
 MainWindow::MainWindow(QWidget* parent):
-QMainWindow(parent)
+QMainWindow(parent),
+TasksToScheduleModel(new QStandardItemModel()),
+ActiveDevicePropertie(nullptr)
 {
 	ui.setupUi(this);
 	ui.retranslateUi(this);
+	ui.TasksListView->setModel(TasksToScheduleModel);
 	fillStartUI();
 	makeConnections();
 }
 
+MainWindow::~MainWindow()
+{
+	delete TasksToScheduleModel;
+}
+
 void MainWindow::multiThreaddingCheckstateChanged()
 {
-	ui.spinBox->setEnabled(ui.MultiThreaddedRadioButton->isChecked());
+	ui.CoreCountSpinBox->setEnabled(ui.MultiThreaddedRadioButton->isChecked());
+	if(!ui.MultiThreaddedRadioButton->isChecked())
+	{
+		ActiveDevicePropertie->setCoreCount(1);
+	}
+	else
+		deviceComboboxChanged();
 }
 
 void MainWindow::loadPreset()
 {
-	int DefaultStaticModeLoad = 10;
-	//Task xAxis
-
 	SCHEDULER::Task* xAxis = ScheduleManager->addTask("kernels/accel_sensor.cl", "xAxis");
 	xAxis->setReturnDataType(SCHEDULER::Type::FLOAT);
-	xAxis->setLoad(DefaultStaticModeLoad);
 	xAxis->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
 	//addCanMethod(xAxis, DefaultStaticModeLoad, 5);
 	Tasks.emplace_back(xAxis);
-	//Task yAxis
 
 	SCHEDULER::Task* yAxis = ScheduleManager->addTask("kernels/accel_sensor.cl", "yAxis");
 	yAxis->setReturnDataType(SCHEDULER::Type::FLOAT);
-	yAxis->setLoad(DefaultStaticModeLoad);
 	yAxis->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
 	//addCanMethod(yAxis, DefaultStaticModeLoad, 6);
 	Tasks.emplace_back(yAxis);
-	//Task dualAxis
-	//decorateNormalMessage("dualAxis");
+
 	SCHEDULER::Task* dualAxis = ScheduleManager->addTask("kernels/accel_sensor.cl", "dualAxis");
 	dualAxis->setReturnDataType(SCHEDULER::Type::FLOAT);
-	dualAxis->setLoad(DefaultStaticModeLoad);
 	dualAxis->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
 	//addCanMethod(dualAxis, DefaultStaticModeLoad, 5);
 	//addCanMethod(dualAxis, DefaultStaticModeLoad, 6);
 	Tasks.emplace_back(dualAxis);
-	//Task batteryCalc
-	//decorateNormalMessage("batteryCalc");
+
 	SCHEDULER::Task* batteryCalc = ScheduleManager->addTask("kernels/battery_kernel.cl", "batteryCalc");
 	batteryCalc->setReturnDataType(SCHEDULER::Type::FLOAT);
-	batteryCalc->setLoad(DefaultStaticModeLoad);
 	batteryCalc->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
 	//addCanMethod(batteryCalc, DefaultStaticModeLoad, 4);
 	Tasks.emplace_back(batteryCalc);
-	//Task temp
-	//decorateNormalMessage("temp");
+
 	SCHEDULER::Task* temp = ScheduleManager->addTask("kernels/temp_kernel.cl", "temp");
 	temp->setReturnDataType(SCHEDULER::Type::FLOAT);
-	temp->setLoad(DefaultStaticModeLoad);
 	temp->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
 	//addCanMethod(temp, DefaultStaticModeLoad, 7);
 	Tasks.emplace_back(temp);
-	//Task speedCalcFR
-	//decorateNormalMessage("speedCalcFR");
+
 	SCHEDULER::Task* speedCalcFR = ScheduleManager->addTask("kernels/speed_kernel.cl", "speedCalc");
 	speedCalcFR->setReturnDataType(SCHEDULER::Type::FLOAT);
-	speedCalcFR->setLoad(DefaultStaticModeLoad);
 	speedCalcFR->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
 	//addCanMethod(speedCalcFR, DefaultStaticModeLoad, 0);
 	Tasks.emplace_back(speedCalcFR);
-	//Task speedCalcFL
-	//decorateNormalMessage("speedCalcFL");
+
 	SCHEDULER::Task* speedCalcFL = ScheduleManager->addTask("kernels/speed_kernel.cl", "speedCalc");
 	speedCalcFL->setReturnDataType(SCHEDULER::Type::FLOAT);
-	speedCalcFL->setLoad(DefaultStaticModeLoad);
 	speedCalcFL->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
 	//addCanMethod(speedCalcFL, DefaultStaticModeLoad, 1);
 	Tasks.emplace_back(speedCalcFL);
-	//Task speedCalcRR
-	//decorateNormalMessage("speedCalcRR");
+
 	SCHEDULER::Task* speedCalcRR = ScheduleManager->addTask("kernels/speed_kernel.cl", "speedCalc");
 	speedCalcRR->setReturnDataType(SCHEDULER::Type::FLOAT);
-	speedCalcRR->setLoad(DefaultStaticModeLoad);
 	speedCalcRR->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
 	//addCanMethod(speedCalcRR, DefaultStaticModeLoad, 3);
 	Tasks.emplace_back(speedCalcRR);
-	//Task speedCalcRL
-	//decorateNormalMessage("speedCalcRL");
+
 	SCHEDULER::Task* speedCalcRL = ScheduleManager->addTask("kernels/speed_kernel.cl", "speedCalc");
 	speedCalcRL->setReturnDataType(SCHEDULER::Type::FLOAT);
-	speedCalcRL->setLoad(DefaultStaticModeLoad);
 	speedCalcRL->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
 	//addCanMethod(speedCalcRL, DefaultStaticModeLoad, 2);
 	Tasks.emplace_back(speedCalcRL);
-	//Task median
+	
 	SCHEDULER::Task* median = ScheduleManager->addTask("kernels/speed_kernel.cl", "median");
 	median->setReturnDataType(SCHEDULER::Type::FLOAT);
-	median->setLoad(DefaultStaticModeLoad);
 	median->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
 	median->addDependandTask(speedCalcFL);
 	median->addDependandTask(speedCalcFR);
 	Tasks.emplace_back(median);
-	//Task range
+	
 	SCHEDULER::Task* range = ScheduleManager->addTask("kernels/range_kernel.cl", "dist");
 	range->setReturnDataType(SCHEDULER::Type::FLOAT);
-	range->setLoad(DefaultStaticModeLoad);
 	range->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
 	range->addDependandTask(batteryCalc);
 	range->addDependandTask(median);
 	Tasks.emplace_back(range);
-	//Task tractionControl
+	
 	SCHEDULER::Task* tractionControl = ScheduleManager->addTask("kernels/traction_kernel.cl", "tractionControl");
 	tractionControl->setReturnDataType(SCHEDULER::Type::INT);
-	tractionControl->setLoad(DefaultStaticModeLoad);
 	tractionControl->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
 	tractionControl->addDependandTask(median);
 	tractionControl->addDependandTask(speedCalcRL);
 	tractionControl->addDependandTask(speedCalcRR);
 	Tasks.emplace_back(tractionControl);
-	//Task turningRadius
+	
 	SCHEDULER::Task* turningRadius = ScheduleManager->addTask("kernels/turn_radius_kernel.cl", "radius");
 	turningRadius->setReturnDataType(SCHEDULER::Type::FLOAT);
-	turningRadius->setLoad(DefaultStaticModeLoad);
 	turningRadius->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
 	turningRadius->addDependandTask(speedCalcFR);
 	turningRadius->addDependandTask(speedCalcFL);
 	Tasks.emplace_back(turningRadius);
-	//Task distanceTracker
+	
 	SCHEDULER::Task* distanceTracker = ScheduleManager->addTask("kernels/distanceTracker.cl", "distanceTracker");
 	distanceTracker->setReturnDataType(SCHEDULER::Type::FLOAT);
-	distanceTracker->setLoad(DefaultStaticModeLoad);
 	distanceTracker->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
 	distanceTracker->addDependandTask(median);
 	Tasks.emplace_back(distanceTracker);
-	//Task cruiseControl
+	
 	SCHEDULER::Task* cruiseControl = ScheduleManager->addTask("kernels/cruiseControl.cl", "cruiseControl");
 	cruiseControl->setReturnDataType(SCHEDULER::Type::FLOAT);
-	cruiseControl->setLoad(DefaultStaticModeLoad);
 	cruiseControl->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
 	cruiseControl->addDependandTask(xAxis);
 	cruiseControl->addDependandTask(median);
@@ -155,15 +144,43 @@ void MainWindow::addKernel()
 	wizard->exec();
 }
 
-void MainWindow::schedulePressed()
-{
-
-}
-
 void MainWindow::deviceComboboxChanged()
 {
-	QString deviceName = ui.DeviceCombobox->currentText();
-	readDeviceData(deviceName.toStdString());
+	if (ui.DeviceCombobox->currentIndex() >= Devices.size())
+		decorateAllDevices();
+	else {
+		if ((ActiveDevicePropertie==nullptr)||(ActiveDevicePropertie->getName() != ui.DeviceCombobox->currentText().toStdString())) {
+			QString deviceName = ui.DeviceCombobox->currentText();
+			readDeviceData(deviceName.toStdString());
+		}
+	}
+}
+
+void MainWindow::onCoreCountChanged()
+{
+	ActiveDevicePropertie->setCoreCount(ui.CoreCountSpinBox->value());
+}
+
+void MainWindow::onSchedulingTypeChanged()
+{
+	ActiveDevicePropertie->setSchedule((ScheduleType)ui.SchedulingTypeSpinBox->currentIndex());
+}
+
+void MainWindow::onTasksToScheduleItemClicked(QStandardItem* item)
+{
+	if(item->checkState()==Qt::Checked)
+	{
+		addTaskToScheduledTasks(item->text().toStdString());
+	}
+}
+
+void MainWindow::startSchedule()
+{
+	ScheduleManager->startMultiDeviceScheduling();
+	for(TaskTabWidget* TaskWidget : TaskWidgets)
+	{
+		TaskWidget->refresh();
+	}
 }
 
 void MainWindow::fillStartUI()
@@ -176,6 +193,8 @@ void MainWindow::fillStartUI()
 		Devices.push_back(props);
 		ui.DeviceCombobox->addItem(props->getName().c_str());
 	}
+	deviceComboboxChanged();
+
 	ui.DeviceCombobox->addItem(tr("All Devices"));
 }
 
@@ -186,24 +205,24 @@ void MainWindow::makeConnections()
 	connect(ui.actionLoad_Preset, SIGNAL(triggered(bool)), this, SLOT(loadPreset()));
 	connect(ui.actionOpen_Kernel, SIGNAL(triggered(bool)), this, SLOT(addKernel()));
 	connect(ui.DeviceCombobox, SIGNAL(currentIndexChanged(int)), this, SLOT(deviceComboboxChanged()));
+	connect(TasksToScheduleModel, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(onTasksToScheduleItemClicked(QStandardItem*)));
+	connect(ui.ScheduleButton, SIGNAL(clicked()), this, SLOT(startSchedule()));
+	connect(ui.CoreCountSpinBox, SIGNAL(valueChanged(int)), this, SLOT(onCoreCountChanged()));
 }
 
 void MainWindow::updateTasksModel()
 {
-	QStandardItemModel* itemModel = new QStandardItemModel();
+	TasksToScheduleModel->clear();
 	
 	for(Task* task : Tasks)
 	{
 		QStandardItem* item = new QStandardItem(task->getKernelName().c_str());
 		item->setCheckable(true);
-		itemModel->invisibleRootItem()->appendRow(item);
+		TasksToScheduleModel->invisibleRootItem()->appendRow(item);
 		TaskTabWidget *widget = new TaskTabWidget(task, this);
 		ui.TasksWidget->addTab(widget, task->getKernelName().c_str());
-
 		TaskWidgets.push_back(widget);
 	}
-
-	ui.TasksListView->setModel(itemModel);
 }
 
 void MainWindow::readDeviceData(std::string deviceName)
@@ -212,7 +231,48 @@ void MainWindow::readDeviceData(std::string deviceName)
 	{
 		if(deviceName==devProp->getName())
 		{
-			
+			ActiveDevicePropertie = devProp;
+			if(devProp->getCoureCount()>1)
+			{
+				ui.MultiThreaddedRadioButton->setChecked(true);
+				ui.CoreCountSpinBox->setValue(devProp->getCoureCount());
+			}else
+			{
+				ui.SingleThreaddedRadioButton->setChecked(true);
+			}
+
+			ui.SchedulingTypeSpinBox->setCurrentIndex(devProp->getSchedule());
+
+			for(Task* task : devProp->getTasksToSchedule())
+			{
+				for(int i = 0; i<TasksToScheduleModel->invisibleRootItem()->rowCount(); i++)
+				{
+					QStandardItem* item = TasksToScheduleModel->invisibleRootItem()->child(i);
+					if(item->text().toStdString()==task->getKernelName())
+					{
+						TasksToScheduleModel->invisibleRootItem()->child(i)->setCheckState(Qt::Checked);
+					}
+				}
+			}
 		}
 	}
+}
+
+void MainWindow::addTaskToScheduledTasks(std::string taskName)
+{
+	for(Task* task:Tasks)
+	{
+		if (task->getKernelName() == taskName)
+			ActiveDevicePropertie->addTaskToSchedule(task);
+	}
+}
+
+void MainWindow::decorateAllDevices()
+{
+	QMessageBox msg;
+	msg.setIcon(QMessageBox::Critical);
+	msg.setText(tr("This feature is currently not Supported"));
+	msg.exec();
+
+	ui.DeviceCombobox->setCurrentIndex(0);
 }
