@@ -129,7 +129,7 @@ void TaskTabWidget::readUIntDataFromTask(std::vector<void*> data)
 	QList<QStandardItem*> items;
 	for (int i = 0; i < data.size(); i++)
 	{
-		int iDataPoint = *((unsigned int*)data.at(i));
+		unsigned int iDataPoint = *((unsigned int*)data.at(i));
 		QStandardItem* item = new QStandardItem(tr("%1").arg(iDataPoint));
 		items.append(item);
 
@@ -155,7 +155,7 @@ void TaskTabWidget::readFloatDataFromTask(std::vector<void*> data)
 	QList<QStandardItem*> items;
 	for (int i = 0; i < data.size(); i++)
 	{
-		int iDataPoint = *((float*)data.at(i));
+		float iDataPoint = *((float*)data.at(i));
 		QStandardItem* item = new QStandardItem(tr("%1").arg(iDataPoint));
 		items.append(item);
 
@@ -168,7 +168,7 @@ void TaskTabWidget::readCharDataFromTask(std::vector<void*> data)
 	QList<QStandardItem*> items;
 	for (int i = 0; i < data.size(); i++)
 	{
-		int iDataPoint = *((char*)data.at(i));
+		char iDataPoint = *((char*)data.at(i));
 		QStandardItem* item = new QStandardItem(tr("%1").arg(iDataPoint));
 		items.append(item);
 
@@ -181,7 +181,7 @@ void TaskTabWidget::readDoubleDataFromTask(std::vector<void*> data)
 	QList<QStandardItem*> items;
 	for (int i = 0; i < data.size(); i++)
 	{
-		int iDataPoint = *((double*)data.at(i));
+		double iDataPoint = *((double*)data.at(i));
 		QStandardItem* item = new QStandardItem(tr("%1").arg(iDataPoint));
 		items.append(item);
 
