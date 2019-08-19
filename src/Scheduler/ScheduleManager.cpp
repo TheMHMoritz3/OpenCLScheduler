@@ -39,8 +39,9 @@ void ScheduleManager::searchForDevices() {
         vector<cl::Device> devices;
         platform.getDevices(CL_DEVICE_TYPE_ALL, &devices);
         for(cl::Device device : devices){
-            Device newDevice(device_id, device);
+            Device* newDevice = new Device(device_id, device);
             Devices.push_back(newDevice);
+			device_id++;
         }
     }
 }
@@ -58,6 +59,35 @@ void ScheduleManager::startSchedule() {
     ActiveScheduler->schedule();
 }
 
+void ScheduleManager::startMultiDeviceScheduling()
+{
+	for(Device* device : Devices)
+	{
+		DeviceProperties* props = device->getProperties();
+		Type = props->getSchedule();
+		startSchedule(props->getTasksToSchedule(), device);
+	}
+}
+
+void ScheduleManager::startSchedule(std::vector<Task*> tasks, Device* device)
+{
+	std::vector<Device*> devices;
+	devices.push_back(device);
+	switch (Type) {
+	case ScheduleType::STATIC:
+		ActiveScheduler = new StaticScheduler(tasks, devices);
+		break;
+	case ScheduleType::ASAPHC:
+	case ScheduleType::LIST:
+	default:
+		break;
+	}
+	if(device->getProperties()->getCoureCount()>1){
+	    ActiveScheduler->setCoreCount(device->getProperties()->getCoureCount());
+	}
+	ActiveScheduler->schedule();
+}
+
 void ScheduleManager::setScheduleType(ScheduleType type) {
     Type=type;
 }
@@ -66,6 +96,7 @@ Task* ScheduleManager::addTask(std::string filePath, std::string kernelName) {
     Task* task=new Task(getKernelCount());
     task->setProgramSources(convertSources(filePath));
     task->setKernel(kernelName);
+	task->setPath(filePath);
     Tasks.push_back(task);
     return task;
 }
@@ -93,4 +124,9 @@ cl::Program::Sources* ScheduleManager::convertSources(std::string file) {
 
 int ScheduleManager::getDeviceCount() {
     return Devices.size();
+}
+
+DeviceProperties* ScheduleManager::getDeviceProperties(int i) const
+{
+	return Devices.at(i)->getProperties();
 }

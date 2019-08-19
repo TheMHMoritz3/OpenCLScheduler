@@ -34,19 +34,20 @@ namespace SCHEDULER {
 
 		void setProgam(cl::Program program);
 		void setKernel(std::string kernelName);
+		void setPath(std::string path);
 		void setLoad(int load);
 		void setReadBuffer(cl::Buffer* readBuffer);
 		void setProgramSources(cl::Program::Sources *sources);
 		void addData(std::vector<void*> value, Type type);
 		void addDescription(std::string desc);
 		void setReturnDataType(Type type);
-		void setReturnData(std::vector<void*> data);
+		void addReturnData(std::vector<void*> data);
 		void setDataDependancy(SCHEDULER::DependancyType type);
 		void addDependandTask(SCHEDULER::Task* task);
 		void addExternalDataMethod(std::function<void(void)> externalFunctionData);
 
         int getId();
-        std::pair<Type,std::vector<void*>> getReturnData();
+        std::pair<Type, std::vector<std::vector<void*>>> getReturnData();
         std::vector<std::pair<Type, std::vector<void*>>> getAllData();
         cl::Program::Sources *getSources();
 		cl::Buffer *readBuffer();
@@ -58,11 +59,18 @@ namespace SCHEDULER {
 		Task operator=(Task other);
 		DependancyType dependancyType();
 		bool isCalculationDone();
+		std::vector<std::string> kernelArguments();
+		bool hasDependencies();
+		bool dependenciesAreCalculated();
+
+		void setElapsedTime(float time);
+		float elapsedTime();
 
     private:
 		void readDataFromOtherThread();
 
         std::string KernelName;
+		std::string Path;
         std::string Description;
         cl::Program::Sources *Sources;
         cl::Program Program;
@@ -70,14 +78,14 @@ namespace SCHEDULER {
         int ID;
 		int Load;
         std::vector<std::pair<Type, std::vector<void*>>> Data;
-        std::vector<void*> ReturnData;
+        std::vector<std::vector<void*>> ReturnData;
         Type ReturnDataType;
         std::vector<Task*> DependandTasks;
 		DependancyType DepType;
 		bool IsCalculationDone;
 		bool IsDataSet;
 		std::vector<std::function<void(void)>> GetExternalDataMethods;
-
+		float ElapsedTime;
     };
 }
 

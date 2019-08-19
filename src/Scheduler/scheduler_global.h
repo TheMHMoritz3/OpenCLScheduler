@@ -17,7 +17,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 
-#ifdef _WINDOWS
+#ifdef _WIN32
 #ifdef Scheduler_EXPORTS
 #define SCHEDULER_EXPORT __declspec(dllexport)
 #else

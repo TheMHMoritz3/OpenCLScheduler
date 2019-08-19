@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 #include "Task.h"
 #include <iostream>
+#include "KernelFileParser.h"
 
 using namespace SCHEDULER;
 
@@ -26,6 +27,7 @@ Task::Task(int id) {
     ID=id;
 	IsCalculationDone = false;
     IsDataSet = false;
+	ElapsedTime = 0.0;
 }
 
 int Task::getId() {
@@ -34,6 +36,11 @@ int Task::getId() {
 
 void Task::setKernel(std::string kernelName) {
     KernelName = kernelName;
+}
+
+void Task::setPath(std::string path)
+{
+	Path = path;
 }
 
 void Task::setLoad(int load)
@@ -89,8 +96,8 @@ void Task::addData(std::vector<void*> value, Type type) {
     IsDataSet = true;
 }
 
-std::pair<Type, std::vector<void *>> Task::getReturnData() {
-    return std::pair<Type, std::vector<void*>>(ReturnDataType,ReturnData);
+std::pair<Type, std::vector<std::vector<void*>>> Task::getReturnData() {
+    return std::pair<Type, std::vector<std::vector<void*>>>(ReturnDataType,ReturnData);
 }
 
 void Task::setReturnDataType(Type type) {
@@ -133,19 +140,44 @@ bool Task::isCalculationDone()
 	return IsCalculationDone;
 }
 
+std::vector<std::string> Task::kernelArguments()
+{
+	return KernelFileParser::getKernelArgsForKernel(Path,KernelName);
+}
+
+bool Task::hasDependencies()
+{
+	return DependandTasks.size() > 0;
+}
+
+bool Task::dependenciesAreCalculated()
+{
+	return IsDataSet;
+}
+
+void Task::setElapsedTime(float time)
+{
+	ElapsedTime = time;
+}
+
+float Task::elapsedTime()
+{
+	return ElapsedTime;
+}
+
 void Task::readDataFromOtherThread()
 {
 	for(Task* task : DependandTasks)
 	{
 	    Load = task->getLoad();
-		std::vector<void*> data = task->getReturnData().second;
+		std::vector<void*> data = task->getReturnData().second.at(0);
 		Data.push_back(std::pair<Type,std::vector<void*>>(task->getReturnData().first, data));
 	}
 }
 
-void Task::setReturnData(std::vector<void*> data)
+void Task::addReturnData(std::vector<void*> data)
 {
-	ReturnData = data;
+	ReturnData.push_back(data);
 	IsCalculationDone = true;
 }
 

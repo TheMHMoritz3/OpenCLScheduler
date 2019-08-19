@@ -141,22 +141,22 @@ void TUI::decorateValueData(SCHEDULER::Task* task)
 	switch (task->getReturnDataType())
 	{
 	case SCHEDULER::INT:
-		decorateIntValue(task, task->getReturnData().second, task->getLoad());
+		decorateIntValue(task, task->getReturnData().second);
 		break;
 	case SCHEDULER::UINT:
-		decorateUIntValue(task, task->getReturnData().second, task->getLoad());
+		decorateUIntValue(task, task->getReturnData().second);
 		break;
 	case SCHEDULER::CHAR:
-		decorateCharValue(task, task->getReturnData().second, task->getLoad());
+		decorateCharValue(task, task->getReturnData().second);
 		break;
 	case SCHEDULER::FLOAT:
-		decorateFloatValue(task, task->getReturnData().second, task->getLoad());
+		decorateFloatValue(task, task->getReturnData().second);
 		break;
 	case SCHEDULER::DOUBLE:
-		decorateDoubleValue(task, task->getReturnData().second, task->getLoad());
+		decorateDoubleValue(task, task->getReturnData().second);
 		break;
 	case SCHEDULER::STRING:
-		decorateCharValue(task, task->getReturnData().second, task->getLoad());
+		decorateCharValue(task, task->getReturnData().second);
 		break;
 	default:
 		decorateError("Error: No Type provided in Return Value");
@@ -164,44 +164,54 @@ void TUI::decorateValueData(SCHEDULER::Task* task)
 	}
 }
 
-void TUI::decorateFloatValue(SCHEDULER::Task* task, std::vector<void*> data, int load)
+void TUI::decorateFloatValue(SCHEDULER::Task* task, std::vector<std::vector<void*>> data)
 {
     cout<<"Data Size: "<<data.size()<<endl;
-	for (long unsigned int i = 0; i < load; i++) {
-		float value = *((float*)data.at(i));
-		cout << i << ". Return Value: \t" << value << endl;
+	for (std::vector<void*> singleDataSet : data) {
+		for (long unsigned int i = 0; i < task->getLoad(); i++) {
+			float value = *((float*)singleDataSet.at(i));
+			cout << i << ". Return Value: \t" << value << endl;
+		}
 	}
 }
 
-void TUI::decorateIntValue(SCHEDULER::Task* task, std::vector<void*> data, int load)
+void TUI::decorateIntValue(SCHEDULER::Task* task, std::vector<std::vector<void*>> data)
 {
-	for (long unsigned int i = 0; i < load; i++) {
-		int32_t value = *((int32_t*)data.at(i));
-		cout << i << ". Return Value: \t" << value << endl;
+	for (std::vector<void*> singleDataSet : data) {
+		for (long unsigned int i = 0; i < task->getLoad(); i++) {
+			int32_t value = *((int32_t*)singleDataSet.at(i));
+			cout << i << ". Return Value: \t" << value << endl;
+		}
 	}
 }
 
-void TUI::decorateUIntValue(SCHEDULER::Task* task, std::vector<void*> data, int load)
+void TUI::decorateUIntValue(SCHEDULER::Task* task, std::vector<std::vector<void*>> data)
 {
-	for (long unsigned int i = 0; i < load; i++) {
-		uint32_t value = *((uint32_t*)data.at(i));
-		cout << i << ". Return Value: \t" << value << endl;
+	for (std::vector<void*> singleDataSet : data) {
+		for (long unsigned int i = 0; i < task->getLoad(); i++) {
+			uint32_t value = *((uint32_t*)singleDataSet.at(i));
+			cout << i << ". Return Value: \t" << value << endl;
+		}
 	}
 }
 
-void TUI::decorateCharValue(SCHEDULER::Task* task, std::vector<void*> data, int load)
+void TUI::decorateCharValue(SCHEDULER::Task* task, std::vector<std::vector<void*>> data)
 {
-	for (long unsigned int i = 0; i < load; i++) {
-		char value = *((char*)data.at(i));
-		cout << i << ". Return Value: \t" << value << endl;
+	for (std::vector<void*> singleDataSet : data) {
+		for (long unsigned int i = 0; i < task->getLoad(); i++) {
+			char value = *((char*)singleDataSet.at(i));
+			cout << i << ". Return Value: \t" << value << endl;
+		}
 	}
 }
 
-void TUI::decorateDoubleValue(SCHEDULER::Task* task, std::vector<void*> data, int load)
+void TUI::decorateDoubleValue(SCHEDULER::Task* task, std::vector<std::vector<void*>> data)
 {
-	for (long unsigned int i = 0; i < load; i++) {
-		double value = *((double*)data.at(i));
-		cout << i << ". Return Value: \t" << value << endl;
+	for (std::vector<void*> singleDataSet : data) {
+		for (long unsigned int i = 0; i < task->getLoad(); i++) {
+			double value = *((double*)singleDataSet.at(i));
+			cout << i << ". Return Value: \t" << value << endl;
+		}
 	}
 }
 

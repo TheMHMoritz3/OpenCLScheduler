@@ -29,18 +29,19 @@ namespace SCHEDULER {
 	class Scheduler {
     public:
         Scheduler() = delete;
-        Scheduler(std::vector<Task*> tasks, std::vector<Device> devices);
+        Scheduler(std::vector<Task*> tasks, std::vector<Device*> devices);
         virtual void schedule()=0;
 
+        void setCoreCount(int cores);
     protected:
         std::vector<Task*> Tasks;
-        std::vector<Device> Devices;
+        std::vector<Device*> Devices;
 		std::vector<cl::CommandQueue> CommandQueues;
 		cl_int ErrorCode;
-        void setRAMForCurrentTask(Task* task, Device device, cl::Kernel kernel, cl::CommandQueue queue);
-		void setRAMBufferForOutput(Task* task, Device device, cl::Kernel kernel);
-		void setKernelLoad(Task* task, Device device, cl::Kernel kernel);
-		void enqueueTak(Task* task, Device device, cl::CommandQueue commandQueue, cl::Kernel kernel);
+        void setRAMForCurrentTask(Task* task, Device *device, cl::Kernel kernel, cl::CommandQueue queue);
+		void setRAMBufferForOutput(Task* task, Device *device, cl::Kernel kernel);
+		void setKernelLoad(Task* task, Device *device, cl::Kernel kernel);
+		void enqueueTak(Task* task, Device *device, cl::CommandQueue commandQueue, cl::Kernel kernel);
 		void readDataFromTask(Task* task, cl::CommandQueue commandQueue);
     private:
         cl::Buffer *generateBufferForUINT(std::vector<void*>,cl::Context context ,cl::CommandQueue queue, int count);
@@ -53,6 +54,8 @@ namespace SCHEDULER {
 		std::vector<void*> readDataFromBufferForCHAR(Task* task, cl::CommandQueue queue, int count);
 		std::vector<void*> readDataFromBufferForDOUBLE(Task* task, cl::CommandQueue queue, int count);
 		std::vector<void*> readDataFromBufferForFLOAT(Task* task, cl::CommandQueue queue, int count);
+
+		int CoreCount;
     };
 }
 

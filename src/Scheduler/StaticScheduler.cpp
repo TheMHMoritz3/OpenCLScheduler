@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #include "StaticScheduler.h"
 #include <iostream>
 #include <string>
+#include <chrono>
 #include <cstring>
 #include <CL/cl.hpp>
 #include <fstream>
@@ -26,25 +27,29 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 using namespace SCHEDULER;
 using namespace std;
 
-StaticScheduler::StaticScheduler(std::vector<Task*> tasks, std::vector<Device> device) : Scheduler(tasks, device) {
+StaticScheduler::StaticScheduler(std::vector<Task*> tasks, std::vector<Device*> device) : Scheduler(tasks, device) {
 	ErrorCode = 1;
 }
 
 
 void StaticScheduler::schedule() {
-	for (Device device : Devices) {
-		cout << "Device Name: " << device.getName()<<endl;
-		cl::CommandQueue commandQueue(device.getDeviceContext(), device.getOclDevice());
+	for (Device* device : Devices) {
+		cout << "Device Name: " << device->getName()<<endl;
+		cl::CommandQueue commandQueue(device->getDeviceContext(), device->getOclDevice());
 		CommandQueues.push_back(commandQueue);
 		for (Task* task : Tasks) {
-			device.generateProgramm(task);
+			device->generateProgramm(task);
 
 			cl::Kernel kernel = cl::Kernel(task->getProgramm(), task->getKernelName().c_str(),  &ErrorCode);
             if (ErrorCode == CL_SUCCESS) {
 				setRAMForCurrentTask(task, device, kernel, commandQueue);
 				setRAMBufferForOutput(task, device, kernel);
 				setKernelLoad(task, device, kernel);
+				auto start = chrono::steady_clock::now();
 				enqueueTak(task, device, commandQueue, kernel);
+                commandQueue.finish();
+				auto end = chrono::steady_clock::now();
+				task->setElapsedTime(chrono::duration_cast<chrono::microseconds>(end - start).count());
 				readDataFromTask(task, commandQueue);
 			}
 			else

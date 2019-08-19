@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #define DEVICEINFO_CANACCESSOR_H
 
 #include <vector>
-#ifndef _WINDOWS
+#ifndef _WIN32
 #include <sys/param.h>
 #include <c3can/error/extended.h>
 #include <c3can/core.h>
@@ -42,7 +42,7 @@ namespace CAN {
         void init();
         int ElementCount;
         uint32_t* Data;
-#ifndef _WINDOWS
+#ifndef _WIN32
         c3can_single* Single;
         c3can_message Message;
 #endif

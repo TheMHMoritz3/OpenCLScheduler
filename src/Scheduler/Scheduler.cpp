@@ -24,33 +24,34 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using namespace SCHEDULER;
 
-Scheduler::Scheduler(std::vector<Task*> tasks, std::vector<Device> devices) {
+Scheduler::Scheduler(std::vector<Task*> tasks, std::vector<Device*> devices) {
     Tasks=tasks;
     Devices=devices;
+    CoreCount=1;
 }
 
-void Scheduler::setRAMForCurrentTask(Task* task, Device device, cl::Kernel kernel, cl::CommandQueue queue) {
+void Scheduler::setRAMForCurrentTask(Task* task, Device* device, cl::Kernel kernel, cl::CommandQueue queue) {
     int count = 0;
     for(std::pair<Type, std::vector<void*>> value : task->getAllData()){
         cl::Buffer *buffer;
         switch (value.first){
             case Type::UINT:
-                buffer = generateBufferForUINT(value.second,device.getDeviceContext(),queue,0);
+                buffer = generateBufferForUINT(value.second,device->getDeviceContext(),queue,0);
                 break;
             case Type::INT:
-                buffer = generateBufferForINT(value.second,device.getDeviceContext(),queue,0);
+                buffer = generateBufferForINT(value.second,device->getDeviceContext(),queue,0);
                 break;
             case Type::CHAR:
-                buffer = generateBufferForCHAR(value.second,device.getDeviceContext(),queue,0);
+                buffer = generateBufferForCHAR(value.second,device->getDeviceContext(),queue,0);
                 break;
             case Type::DOUBLE:
-                buffer = generateBufferForDOUBLE(value.second,device.getDeviceContext(),queue,0);
+                buffer = generateBufferForDOUBLE(value.second,device->getDeviceContext(),queue,0);
                 break;
             case Type::FLOAT:
-                buffer = generateBufferForFLOAT(value.second,device.getDeviceContext(),queue,0);
+                buffer = generateBufferForFLOAT(value.second,device->getDeviceContext(),queue,0);
                 break;
             case Type::STRING:
-                buffer = generateBufferForCHAR(value.second,device.getDeviceContext(),queue,0);
+                buffer = generateBufferForCHAR(value.second,device->getDeviceContext(),queue,0);
                 break;
             default:
 				break;
@@ -62,28 +63,28 @@ void Scheduler::setRAMForCurrentTask(Task* task, Device device, cl::Kernel kerne
     }
 }
 
-void Scheduler::setRAMBufferForOutput(Task* task, Device device, cl::Kernel kernel)
+void Scheduler::setRAMBufferForOutput(Task* task, Device* device, cl::Kernel kernel)
 {
 	cl::Buffer *buffer;
 	switch (task->getReturnDataType())
 	{
 	case Type::UINT:
-		buffer = new cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(uint32_t) * task->getLoad());
+		buffer = new cl::Buffer(device->getDeviceContext(), CL_MEM_READ_WRITE, sizeof(uint32_t) * task->getLoad());
 		break;
 	case Type::INT:
-		buffer = new cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(int32_t) * task->getLoad());
+		buffer = new cl::Buffer(device->getDeviceContext(), CL_MEM_READ_WRITE, sizeof(int32_t) * task->getLoad());
 		break;
 	case Type::CHAR:
-		buffer = new cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(char) * task->getLoad());
+		buffer = new cl::Buffer(device->getDeviceContext(), CL_MEM_READ_WRITE, sizeof(char) * task->getLoad());
 		break;
 	case Type::DOUBLE:
-		buffer = new cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(double) * task->getLoad());
+		buffer = new cl::Buffer(device->getDeviceContext(), CL_MEM_READ_WRITE, sizeof(double) * task->getLoad());
 		break;
 	case Type::FLOAT:
-		buffer = new cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(float) * task->getLoad());
+		buffer = new cl::Buffer(device->getDeviceContext(), CL_MEM_READ_WRITE, sizeof(float) * task->getLoad());
 		break;
 	case Type::STRING:
-		buffer = new cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(char) * task->getLoad());
+		buffer = new cl::Buffer(device->getDeviceContext(), CL_MEM_READ_WRITE, sizeof(char) * task->getLoad());
 		break;
 	default:
 		break;
@@ -94,18 +95,21 @@ void Scheduler::setRAMBufferForOutput(Task* task, Device device, cl::Kernel kern
 //    std::cout << "Count "<<task->getAllData().size()<<std::endl;
 }
 
-void Scheduler::setKernelLoad(Task* task, Device device, cl::Kernel kernel)
+void Scheduler::setKernelLoad(Task* task, Device* device, cl::Kernel kernel)
 {
-	cl::Buffer* buffer_WORKLOAD = new cl::Buffer(device.getDeviceContext(), CL_MEM_READ_WRITE, sizeof(int), &ErrorCode);
-	ErrorCode = kernel.setArg(task->getAllData().size()+1,task->getLoad());
-//    std::cout << "Set Kernel Load Task: "<<ErrorCode<<std::endl;
-//    std::cout << "Count "<<task->getAllData().size() + 1<<std::endl;
+	int ErrorCode=0;
+	cl::Buffer* buffer_WORKLOAD = new cl::Buffer(device->getDeviceContext(), CL_MEM_READ_WRITE, sizeof(int), &ErrorCode);
+	if (CoreCount <= 1) {
+		kernel.setArg(task->getAllData().size() + 1, task->getLoad());
+	}else
+	{
+		kernel.setArg(task->getAllData().size() + 1, task->getLoad()/CoreCount);
+	}
 }
 
-void Scheduler::enqueueTak(Task* task, Device device, cl::CommandQueue commandQueue, cl::Kernel kernel)
+void Scheduler::enqueueTak(Task* task, Device* device, cl::CommandQueue commandQueue, cl::Kernel kernel)
 {
-    ErrorCode = commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(1),cl::NDRange(1));
-    commandQueue.finish();
+    ErrorCode = commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(CoreCount),cl::NDRange(CoreCount));
 //    std::cout << "Enqueue Task: "<<ErrorCode<<std::endl;
 }
 
@@ -135,7 +139,7 @@ void Scheduler::readDataFromTask(Task* task, cl::CommandQueue commandQueue)
 	default:
 		break;
 	}
-	task->setReturnData(data);
+	task->addReturnData(data);
 }
 
 cl::Buffer* Scheduler::generateBufferForUINT(std::vector<void*> data, cl::Context context, cl::CommandQueue queue, int count) {
@@ -278,4 +282,8 @@ std::vector<void*> Scheduler::readDataFromBufferForFLOAT(Task* task, cl::Command
 		returnData.emplace_back(value);
 	}
 	return returnData;
+}
+
+void Scheduler::setCoreCount(int cores) {
+    CoreCount = cores;
 }

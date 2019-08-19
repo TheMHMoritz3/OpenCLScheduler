@@ -22,14 +22,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #include <string>
 #include <CL/cl.hpp>
 #include "Task.h"
+#include "DevicePropertys.h"
+#include "scheduler_global.h"
 
 namespace SCHEDULER {
-	class Device {
+	class SCHEDULER_EXPORT Device {
 
     public:
         Device(int id, cl::Device oclDevice);
         ~Device();
-        std::string getName();
+        std::string getName() const;
         int scheduledTasks();
         int getWorkgroupSize();
         int getID();
@@ -39,8 +41,10 @@ namespace SCHEDULER {
         void generateProgramm(Task* task);
         cl::Context getDeviceContext();
 		cl::Device getOclDevice();
-        Device operator=(Device other);
+		DeviceProperties* getProperties() const;
+
     private:
+		DeviceProperties* Properties;
         cl::Device OclDevice;
         cl::Context OclContext;
         int Id;

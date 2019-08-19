@@ -38,7 +38,7 @@ int CanAccessor::didErrorOccur() {
 std::vector<uint32_t *> CanAccessor::getData() {
 //    Thread.join();
     std::vector<uint32_t *> *data = new std::vector<uint32_t *>();
-#ifndef _WINDOWS
+#ifndef _WIN32
     for (int i = 0; i < ElementCount; i++) {
         data->push_back(&Data[i]);
     }
@@ -47,7 +47,7 @@ std::vector<uint32_t *> CanAccessor::getData() {
 }
 
 void CanAccessor::init() {
-#ifndef _WINDOWS
+#ifndef _WIN32
     Single = c3can_single_init("can0");
     ErrorCode = c3can_single_get_error(Single)->code;
     c3can_single_filter_add(Single, IdCan, (C3CAN_SINGLE_FILTER_OPTS) 0);
@@ -56,11 +56,11 @@ void CanAccessor::init() {
 }
 
 void CanAccessor::collectData() {
-#ifndef _WINDOWS
+#ifndef _WIN32
     struct timeval timestamp;
 #endif
     for (int i = 0; i < ElementCount; i++) {
-#ifndef _WINDOWS
+#ifndef _WIN32
         c3can_message *canMessage = new c3can_message();
         c3can_single_recv(Single, canMessage, &timestamp);
         ErrorCode = c3can_single_get_error(Single)->code;
