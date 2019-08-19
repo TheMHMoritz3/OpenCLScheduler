@@ -103,7 +103,7 @@ void Scheduler::setKernelLoad(Task* task, Device* device, cl::Kernel kernel)
 		kernel.setArg(task->getAllData().size() + 1, task->getLoad());
 	}else
 	{
-		kernel.setArg(task->getAllData().size() + 1, 1);
+		kernel.setArg(task->getAllData().size() + 1, task->getLoad()/CoreCount);
 	}
 }
 

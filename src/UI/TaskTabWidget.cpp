@@ -74,6 +74,13 @@ void TaskTabWidget::readValuesFromTask()
 	}
 }
 
+void TaskTabWidget::updateCoreCount(int coreCount)
+{
+	int modulo = Ui.LoadSpinBox->value() % coreCount;
+	Ui.WarningLabel->setVisible(modulo != 0);
+	Ui.DataGrupBox->setEnabled(modulo == 0);
+}
+
 void TaskTabWidget::makeConnections()
 {
 	connect(Ui.DiffrentTaksRadioButton, SIGNAL(clicked()), this, SLOT(diffrentTasksChecked()));

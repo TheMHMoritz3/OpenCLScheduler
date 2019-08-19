@@ -18,6 +18,8 @@ public:
 	void refresh();
 
 	void setCanManager(CAN::CanManager* canManager);
+
+	void updateCoreCount(int coreCount);
 private:
 	void makeConnections();
 	void decorateForTask();

@@ -30,12 +30,16 @@ MainWindow::~MainWindow()
 void MainWindow::multiThreaddingCheckstateChanged()
 {
 	ui.CoreCountSpinBox->setEnabled(ui.MultiThreaddedRadioButton->isChecked());
-	if(!ui.MultiThreaddedRadioButton->isChecked())
+	if (!ui.MultiThreaddedRadioButton->isChecked())
 	{
+		for (TaskTabWidget* widget : TaskWidgets)
+		{
+			widget->updateCoreCount(1);
+		}
 		ActiveDevicePropertie->setCoreCount(1);
 	}
 	else
-		deviceComboboxChanged();
+		onCoreCountChanged();
 }
 
 void MainWindow::loadPreset()
@@ -43,56 +47,46 @@ void MainWindow::loadPreset()
 	SCHEDULER::Task* xAxis = ScheduleManager->addTask("kernels/accel_sensor.cl", "xAxis");
 	xAxis->setReturnDataType(SCHEDULER::Type::FLOAT);
 	xAxis->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
-	//addCanMethod(xAxis, DefaultStaticModeLoad, 5);
 	Tasks.emplace_back(xAxis);
 
 	SCHEDULER::Task* yAxis = ScheduleManager->addTask("kernels/accel_sensor.cl", "yAxis");
 	yAxis->setReturnDataType(SCHEDULER::Type::FLOAT);
 	yAxis->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
-	//addCanMethod(yAxis, DefaultStaticModeLoad, 6);
 	Tasks.emplace_back(yAxis);
 
 	SCHEDULER::Task* dualAxis = ScheduleManager->addTask("kernels/accel_sensor.cl", "dualAxis");
 	dualAxis->setReturnDataType(SCHEDULER::Type::FLOAT);
 	dualAxis->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
-	//addCanMethod(dualAxis, DefaultStaticModeLoad, 5);
-	//addCanMethod(dualAxis, DefaultStaticModeLoad, 6);
 	Tasks.emplace_back(dualAxis);
 
 	SCHEDULER::Task* batteryCalc = ScheduleManager->addTask("kernels/battery_kernel.cl", "batteryCalc");
 	batteryCalc->setReturnDataType(SCHEDULER::Type::FLOAT);
 	batteryCalc->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
-	//addCanMethod(batteryCalc, DefaultStaticModeLoad, 4);
 	Tasks.emplace_back(batteryCalc);
 
 	SCHEDULER::Task* temp = ScheduleManager->addTask("kernels/temp_kernel.cl", "temp");
 	temp->setReturnDataType(SCHEDULER::Type::FLOAT);
 	temp->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
-	//addCanMethod(temp, DefaultStaticModeLoad, 7);
 	Tasks.emplace_back(temp);
 
 	SCHEDULER::Task* speedCalcFR = ScheduleManager->addTask("kernels/speed_kernel.cl", "speedCalc");
 	speedCalcFR->setReturnDataType(SCHEDULER::Type::FLOAT);
 	speedCalcFR->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
-	//addCanMethod(speedCalcFR, DefaultStaticModeLoad, 0);
 	Tasks.emplace_back(speedCalcFR);
 
 	SCHEDULER::Task* speedCalcFL = ScheduleManager->addTask("kernels/speed_kernel.cl", "speedCalc");
 	speedCalcFL->setReturnDataType(SCHEDULER::Type::FLOAT);
 	speedCalcFL->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
-	//addCanMethod(speedCalcFL, DefaultStaticModeLoad, 1);
 	Tasks.emplace_back(speedCalcFL);
 
 	SCHEDULER::Task* speedCalcRR = ScheduleManager->addTask("kernels/speed_kernel.cl", "speedCalc");
 	speedCalcRR->setReturnDataType(SCHEDULER::Type::FLOAT);
 	speedCalcRR->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
-	//addCanMethod(speedCalcRR, DefaultStaticModeLoad, 3);
 	Tasks.emplace_back(speedCalcRR);
 
 	SCHEDULER::Task* speedCalcRL = ScheduleManager->addTask("kernels/speed_kernel.cl", "speedCalc");
 	speedCalcRL->setReturnDataType(SCHEDULER::Type::FLOAT);
 	speedCalcRL->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
-	//addCanMethod(speedCalcRL, DefaultStaticModeLoad, 2);
 	Tasks.emplace_back(speedCalcRL);
 	
 	SCHEDULER::Task* median = ScheduleManager->addTask("kernels/speed_kernel.cl", "median");
@@ -161,6 +155,10 @@ void MainWindow::deviceComboboxChanged()
 void MainWindow::onCoreCountChanged()
 {
 	ActiveDevicePropertie->setCoreCount(ui.CoreCountSpinBox->value());
+	for(TaskTabWidget* widget : TaskWidgets)
+	{
+		widget->updateCoreCount(ui.CoreCountSpinBox->value());
+	}
 }
 
 void MainWindow::onSchedulingTypeChanged()
