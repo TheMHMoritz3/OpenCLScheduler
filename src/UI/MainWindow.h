@@ -43,6 +43,7 @@ namespace UI {
 		void decorateAllDevices();
 
 		QStandardItemModel* const TasksToScheduleModel;
+		QStandardItemModel* const ScheduleTimeModel;
 		SCHEDULER::ScheduleManager* ScheduleManager;
 		std::vector<SCHEDULER::DeviceProperties*> Devices;
 		SCHEDULER::DeviceProperties* ActiveDevicePropertie;

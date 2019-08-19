@@ -13,11 +13,13 @@ MainWindow::MainWindow(QWidget* parent):
 QMainWindow(parent),
 TasksToScheduleModel(new QStandardItemModel()),
 ActiveDevicePropertie(nullptr),
-CanManager(new CAN::CanManager())
+CanManager(new CAN::CanManager()),
+ScheduleTimeModel(new QStandardItemModel())
 {
 	ui.setupUi(this);
 	ui.retranslateUi(this);
 	ui.TasksListView->setModel(TasksToScheduleModel);
+	ui.ScheduleTimeTableView->setModel(ScheduleTimeModel);
 	fillStartUI();
 	makeConnections();
 }
@@ -25,6 +27,7 @@ CanManager(new CAN::CanManager())
 MainWindow::~MainWindow()
 {
 	delete TasksToScheduleModel;
+	delete ScheduleTimeModel;
 }
 
 void MainWindow::multiThreaddingCheckstateChanged()
@@ -176,11 +179,16 @@ void MainWindow::onTasksToScheduleItemClicked(QStandardItem* item)
 
 void MainWindow::startSchedule()
 {
+	auto start = std::chrono::steady_clock::now();
 	ScheduleManager->startMultiDeviceScheduling();
+	auto end = std::chrono::steady_clock::now();
 	for(TaskTabWidget* TaskWidget : TaskWidgets)
 	{
 		TaskWidget->refresh();
 	}
+
+	QStandardItem* item = new QStandardItem(tr("%1 ms").arg(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()));
+	ScheduleTimeModel->appendRow(item);
 }
 
 void MainWindow::fillStartUI()
@@ -196,6 +204,11 @@ void MainWindow::fillStartUI()
 	deviceComboboxChanged();
 
 	ui.DeviceCombobox->addItem(tr("All Devices"));
+
+	QStringList headerItems;
+	headerItems.append(tr("Execution Times"));
+
+	ScheduleTimeModel->setHorizontalHeaderLabels(headerItems);
 }
 
 void MainWindow::makeConnections()
