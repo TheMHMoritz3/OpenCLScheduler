@@ -165,6 +165,16 @@ float Task::elapsedTime()
 	return ElapsedTime;
 }
 
+void Task::addConstant(Type type, void* data)
+{
+	ConstantData.push_back(std::pair<Type, void*>(type,data));
+}
+
+std::vector<std::pair<Type, void*>> Task::getAllConstantData()
+{
+	return ConstantData;
+}
+
 void Task::readDataFromOtherThread()
 {
 	for(Task* task : DependandTasks)

@@ -39,6 +39,7 @@ namespace SCHEDULER {
 		std::vector<cl::CommandQueue> CommandQueues;
 		cl_int ErrorCode;
         void setRAMForCurrentTask(Task* task, Device *device, cl::Kernel kernel, cl::CommandQueue queue);
+		void readConstantsFromTask(Task* task, Device* device, cl::Kernel kernel, cl::CommandQueue commandQueue);
 		void setRAMBufferForOutput(Task* task, Device *device, cl::Kernel kernel);
 		void setKernelLoad(Task* task, Device *device, cl::Kernel kernel);
 		void enqueueTak(Task* task, Device *device, cl::CommandQueue commandQueue, cl::Kernel kernel);
@@ -49,6 +50,13 @@ namespace SCHEDULER {
         cl::Buffer *generateBufferForCHAR(std::vector<void*>,cl::Context context ,cl::CommandQueue queue, int count);
         cl::Buffer *generateBufferForDOUBLE(std::vector<void*>,cl::Context context ,cl::CommandQueue queue, int count);
         cl::Buffer *generateBufferForFLOAT(std::vector<void*>,cl::Context context ,cl::CommandQueue queue, int count);
+
+		cl::Buffer* generateBufferForUINTConstant(void* data, cl::Context context, cl::CommandQueue queue, int count);
+		cl::Buffer* generateBufferForINTConstant(void* data, cl::Context context, cl::CommandQueue queue, int count);
+		cl::Buffer* generateBufferForFLOATConstant(void* data, cl::Context context, cl::CommandQueue queue, int count);
+		cl::Buffer* generateBufferForDOUBLEConstant(void* data, cl::Context context, cl::CommandQueue queue, int count);
+		cl::Buffer* generateBufferForCHARConstant(void* data, cl::Context context, cl::CommandQueue queue, int count);
+
 		std::vector<void*> readDataFromBufferForUINT(Task* task, cl::CommandQueue queue, int count);
 		std::vector<void*> readDataFromBufferForINT(Task* task, cl::CommandQueue queue, int count);
 		std::vector<void*> readDataFromBufferForCHAR(Task* task, cl::CommandQueue queue, int count);
