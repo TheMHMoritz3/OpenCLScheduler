@@ -3,6 +3,7 @@
 //
 
 #include "DevicePropertys.h"
+#include <iostream>
 
 using namespace SCHEDULER;
 

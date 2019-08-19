@@ -99,12 +99,17 @@ void Scheduler::setKernelLoad(Task* task, Device* device, cl::Kernel kernel)
 {
 	int ErrorCode=0;
 	cl::Buffer* buffer_WORKLOAD = new cl::Buffer(device->getDeviceContext(), CL_MEM_READ_WRITE, sizeof(int), &ErrorCode);
-	kernel.setArg(task->getAllData().size()+1,task->getLoad());
+	if (CoreCount <= 1) {
+		kernel.setArg(task->getAllData().size() + 1, task->getLoad());
+	}else
+	{
+		kernel.setArg(task->getAllData().size() + 1, 1);
+	}
 }
 
 void Scheduler::enqueueTak(Task* task, Device* device, cl::CommandQueue commandQueue, cl::Kernel kernel)
 {
-    ErrorCode = commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(1),cl::NDRange(CoreCount));
+    ErrorCode = commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(CoreCount),cl::NDRange(CoreCount));
 //    std::cout << "Enqueue Task: "<<ErrorCode<<std::endl;
 }
 
