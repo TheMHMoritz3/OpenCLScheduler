@@ -317,8 +317,15 @@ void TaskTabWidget::addConstantClicked()
 	dialog->setConstantName(Task->getTaskConstants());
 	if(dialog->exec()==QDialog::DialogCode::Accepted)
 	{
-		Task->add
+		Task->addConstant(dialog->getConstantType(), dialog->constantValue());
+		QList<QStandardItem*> items;
+		QStandardItem* nameItem = new QStandardItem(dialog->getConstantName().c_str());
+		items.append(nameItem);
+		QStandardItem* valueItem = new QStandardItem(*((int*)dialog->constantValue()));
+		items.append(valueItem);
+		ConstantModel->appendRow(items);
 	}
+	decorateForTask();
 }
 
 
