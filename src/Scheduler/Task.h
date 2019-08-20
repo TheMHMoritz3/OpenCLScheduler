@@ -66,6 +66,7 @@ namespace SCHEDULER {
 		void setElapsedTime(float time);
 		float elapsedTime();
 
+		std::vector<std::string> getTaskConstants();
     private:
 		void readDataFromOtherThread();
 

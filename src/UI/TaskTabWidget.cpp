@@ -15,10 +15,15 @@ TaskTabWidget::TaskTabWidget(SCHEDULER::Task* task, QWidget* parent) :
 	Ui.retranslateUi(this);
 	Model = new QStandardItemModel();
 	ExecutionTimeModel = new QStandardItemModel();
+	ConstantModel = new QStandardItemModel();
+
+	ConstantModelHeaderList << tr("Constant Name") << tr("Value");
+	ConstantModel->setHorizontalHeaderLabels(ConstantModelHeaderList);
 	makeConnections();
 	decorateForTask();
 	Ui.DataOfTaskTableView->setModel(Model);
 	Ui.ExecutionTimeTableView->setModel(ExecutionTimeModel);
+	Ui.ConstantTableView->setModel(ConstantModel);
 }
 
 TaskTabWidget::~TaskTabWidget()
@@ -95,6 +100,8 @@ void TaskTabWidget::makeConnections()
 
 void TaskTabWidget::decorateForTask()
 {
+	Ui.AddConstantButton->setEnabled(Task->getTaskConstants().size()>0);
+
 	HeaderList.clear();
 	Model->clear();
 

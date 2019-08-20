@@ -165,6 +165,11 @@ float Task::elapsedTime()
 	return ElapsedTime;
 }
 
+std::vector<std::string> Task::getTaskConstants()
+{
+	return KernelFileParser::getKernelConstantsForKernel(Path, KernelName);
+}
+
 void Task::readDataFromOtherThread()
 {
 	for(Task* task : DependandTasks)

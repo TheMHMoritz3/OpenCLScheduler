@@ -134,6 +134,13 @@ void MainWindow::loadPreset()
 	cruiseControl->addDependandTask(median);
 	Tasks.emplace_back(cruiseControl);
 
+	SCHEDULER::Task* accidentControl = ScheduleManager->addTask("kernels/accident_kernel.cl", "accidentConst");
+	accidentControl->setReturnDataType(SCHEDULER::Type::FLOAT);
+	accidentControl->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
+	accidentControl->addDependandTask(xAxis);
+	accidentControl->addDependandTask(median);
+	Tasks.emplace_back(accidentControl);
+
 	updateTasksModel();
 }
 

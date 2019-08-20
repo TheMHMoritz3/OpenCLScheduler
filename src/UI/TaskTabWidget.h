@@ -41,7 +41,9 @@ private:
 	SCHEDULER::Task* Task;
 	QStandardItemModel* Model;
 	QStandardItemModel* ExecutionTimeModel;
+	QStandardItemModel* ConstantModel;
 	QStringList HeaderList;
+	QStringList ConstantModelHeaderList;
 	CAN::CanManager* CanManager;
 private slots:
 	void generateDataTriggered();

@@ -17,11 +17,11 @@ int inRange(int value, const int min, const int max){
  *
  *       wLoad: Wert 1 für voll parallele Ausführung, Wert MAX_ITEM_SIZE_PER_WORKGROUP für vollständig sequenzielle Ausführung.
  */
-__kernel void accidentConst(global const float* input, global const int* min, global const int* max, global int* result, const int wLoad) {
+__kernel void accidentConst(global const float* input, global const int min, global const int max, global int* result, const int wLoad) {
     int gid = get_global_id(0) * wLoad;
 
     for (int i = 0; i < wLoad; ++i)
-        result[gid+i] = inRange( input[gid+i], min[gid+i], max[gid+i]);
+        result[gid+i] = inRange( input[gid+i], min, max);
 }
 
 
@@ -40,9 +40,9 @@ __kernel void accidentConst(global const float* input, global const int* min, gl
  *
  *       TODO: Prüfen, dass kein Array Out of Bounds provoziert wird
  */
-__kernel void accidentPeak(global const float* input, global const int* min, global const int* max, global int* result, const int wLoad) {
+__kernel void accidentPeak(global const float* input, global const int min, global const int max, global int* result, const int wLoad) {
     int gid = get_global_id(0) * wLoad;
 
     for (int i = 0; i < wLoad; ++i)
-        result[gid+i] = inRange( input[gid+i+1] - input[gid+i], min[gid+i], max[gid+i]);
+        result[gid+i] = inRange( input[gid+i+1] - input[gid+i], min, max);
 }
