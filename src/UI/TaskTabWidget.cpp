@@ -1,6 +1,7 @@
 #include "TaskTabWidget.h"
 #include "RandomNumberGenerator.h"
 #include "../Scheduler/KernelFileParser.h"
+#include "ConstantDialog.h"
 #include <QDebug>
 
 
@@ -15,10 +16,15 @@ TaskTabWidget::TaskTabWidget(SCHEDULER::Task* task, QWidget* parent) :
 	Ui.retranslateUi(this);
 	Model = new QStandardItemModel();
 	ExecutionTimeModel = new QStandardItemModel();
+	ConstantModel = new QStandardItemModel();
+
+	ConstantModelHeaderList << tr("Constant Name") << tr("Value");
+	ConstantModel->setHorizontalHeaderLabels(ConstantModelHeaderList);
 	makeConnections();
 	decorateForTask();
 	Ui.DataOfTaskTableView->setModel(Model);
 	Ui.ExecutionTimeTableView->setModel(ExecutionTimeModel);
+	Ui.ConstantTableView->setModel(ConstantModel);
 }
 
 TaskTabWidget::~TaskTabWidget()
@@ -88,6 +94,7 @@ void TaskTabWidget::makeConnections()
 	connect(Ui.CanRadioButton, SIGNAL(clicked()), this, SLOT(canBusActivated()));
 	connect(Ui.GenerateDataButton, SIGNAL(clicked()), this, SLOT(generateDataTriggered()));
 	connect(Ui.ReadCanBusButton, SIGNAL(clicked()), this, SLOT(readDataFromBusClicked()));
+	connect(Ui.AddConstantButton, SIGNAL(clicked()), this, SLOT(addConstantClicked()));
 	QStringList headerData;
 	headerData.append(tr("ExecutionTimes"));
 	ExecutionTimeModel->setHorizontalHeaderLabels(headerData);
@@ -95,6 +102,8 @@ void TaskTabWidget::makeConnections()
 
 void TaskTabWidget::decorateForTask()
 {
+	Ui.AddConstantButton->setEnabled(Task->getTaskConstants().size()>0);
+
 	HeaderList.clear();
 	Model->clear();
 
@@ -300,6 +309,16 @@ void TaskTabWidget::readDataFromBusClicked() {
 		break;
 	}
 	decorateForTask();
+}
+
+void TaskTabWidget::addConstantClicked()
+{
+	ConstantDialog* dialog = new ConstantDialog(this);
+	dialog->setConstantName(Task->getTaskConstants());
+	if(dialog->exec()==QDialog::DialogCode::Accepted)
+	{
+		Task->add
+	}
 }
 
 

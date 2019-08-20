@@ -70,6 +70,7 @@ namespace SCHEDULER {
 		void addConstant(Type type, void* data);
 		std::vector<std::pair<Type, void*>> getAllConstantData();
 
+		std::vector<std::string> getTaskConstants();
     private:
 		void readDataFromOtherThread();
 

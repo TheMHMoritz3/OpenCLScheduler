@@ -175,6 +175,11 @@ std::vector<std::pair<Type, void*>> Task::getAllConstantData()
 	return ConstantData;
 }
 
+std::vector<std::string> Task::getTaskConstants()
+{
+	return KernelFileParser::getKernelConstantsForKernel(Path, KernelName);
+}
+
 void Task::readDataFromOtherThread()
 {
 	for(Task* task : DependandTasks)

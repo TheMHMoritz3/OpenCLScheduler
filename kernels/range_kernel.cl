@@ -13,12 +13,9 @@
  *          Minimum Battery Voltage = 5,5v
  *          Charge of Battery lasts 2h
  */
-//Als Konstanten, bzw Arrays von Länge 1 oder int Pointer
-__kernel void dist(global const float* inputVoltage, global const float* speed, global const int* maxDur, global const float* minVol, global const float* maxVol, float* result, const int WLOAD) {
+__kernel void dist(global const float* inputVoltage, global const float* speed, global const int Duration, global const float minVoltage, gobal const float maxVoltage, global float* result, const int WLOAD) {
     int gid = get_global_id(0) * WLOAD;
-    int maxDuration = maxDur[0];
-    float minVoltage = minVol[0];
-    float maxVoltage = maxVol[0];
+	
     float maxVoltageDelta = maxVoltage - minVoltage;
     
     for (int i = 0; i < WLOAD; ++i){
