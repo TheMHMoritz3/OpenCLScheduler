@@ -61,10 +61,10 @@ get_target_property(QtCore_location Qt5::Core LOCATION)
 
 include_directories("${PROJECT_BINARY_DIR}")
 
-qt5_wrap_ui(UI_UICHEADERS src/UI/MainWindow.ui src/UI/TaskTabWidget.ui src/UI/OpenTaskWizard.ui)
+qt5_wrap_ui(UI_UICHEADERS src/UI/MainWindow.ui src/UI/ConstantDialog.ui src/UI/TaskTabWidget.ui src/UI/OpenTaskWizard.ui)
 
 # add the executable 
-add_executable(UI ${UI_UICHEADERS} src/UI/main.cpp src/UI/OpenKernelFileWizard.cpp src/UI/OpenKernelFileWizard.h src/UI/TUI.cpp src/UI/TUI.h src/UI/MainWindow.h src/UI/MainWindow.cpp src/UI/TaskTabWidget.h src/UI/TaskTabWidget.cpp src/UI/RandomNumberGenerator.h src/UI/RandomNumberGenerator.cpp)
+add_executable(UI ${UI_UICHEADERS} src/UI/main.cpp src/UI/ConstantDialog.cpp src/UI/ConstantDialog.h src/UI/OpenKernelFileWizard.cpp src/UI/OpenKernelFileWizard.h src/UI/TUI.cpp src/UI/TUI.h src/UI/MainWindow.h src/UI/MainWindow.cpp src/UI/TaskTabWidget.h src/UI/TaskTabWidget.cpp src/UI/RandomNumberGenerator.h src/UI/RandomNumberGenerator.cpp)
 
 add_dependencies(UI Scheduler CAN)
 target_link_libraries(UI LINK_PUBLIC Scheduler CAN Qt5::Widgets)
