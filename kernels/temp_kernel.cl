@@ -15,13 +15,17 @@ __kernel void temp(global const unsigned int* input, global float* resultTemps, 
             resultTemps[gid + i] = in / 4.0f;
         else
             resultTemps[gid + i] = (in - 1024.0f) / 4.0f;
-	
+	    
+    }
+}
+
+
+__kernel void temInformation(global const float* tempreture, global float* result, global const float min, global const float max, const int wLoad){
 	if(resultTemps[gid + i]] < min){
 	    resultRange[gid + i] = -1;
 	}else if(resultTemps[gid + i] > max){
 	    resultRange[gid + i] = 1;
 	}else{
 	    resultRange[gid + i] = 0;
-	}    
-     }
+	}
 }

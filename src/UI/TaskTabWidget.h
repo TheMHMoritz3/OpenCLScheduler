@@ -51,5 +51,6 @@ private slots:
 	void randomNumberChecked();
 	void canBusActivated();
 	void readDataFromBusClicked();
+	void addConstantClicked();
 };
 

@@ -1,6 +1,7 @@
 #include "TaskTabWidget.h"
 #include "RandomNumberGenerator.h"
 #include "../Scheduler/KernelFileParser.h"
+#include "ConstantDialog.h"
 #include <QDebug>
 
 
@@ -93,6 +94,7 @@ void TaskTabWidget::makeConnections()
 	connect(Ui.CanRadioButton, SIGNAL(clicked()), this, SLOT(canBusActivated()));
 	connect(Ui.GenerateDataButton, SIGNAL(clicked()), this, SLOT(generateDataTriggered()));
 	connect(Ui.ReadCanBusButton, SIGNAL(clicked()), this, SLOT(readDataFromBusClicked()));
+	connect(Ui.AddConstantButton, SIGNAL(clicked()), this, SLOT(addConstantClicked()));
 	QStringList headerData;
 	headerData.append(tr("ExecutionTimes"));
 	ExecutionTimeModel->setHorizontalHeaderLabels(headerData);
@@ -307,6 +309,16 @@ void TaskTabWidget::readDataFromBusClicked() {
 		break;
 	}
 	decorateForTask();
+}
+
+void TaskTabWidget::addConstantClicked()
+{
+	ConstantDialog* dialog = new ConstantDialog(this);
+	dialog->setConstantName(Task->getTaskConstants());
+	if(dialog->exec()==QDialog::DialogCode::Accepted)
+	{
+		Task->add
+	}
 }
 
 

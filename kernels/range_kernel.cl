@@ -10,14 +10,11 @@
  *          Minimum Battery Voltage = 5,5v
  *          Charge of Battery lasts 2h
  */
-__kernel void dist(global const float* inputVoltage, global const float* speed, global float* result, const int WLOAD) {
+__kernel void dist(global const float* inputVoltage, global const float* speed, global const int Duration, global const float minVoltage, gobal const float maxVoltage, global float* result, const int WLOAD) {
     int gid = get_global_id(0) * WLOAD;
-
-    int maxDuration = 2;
-    float minVoltage = 5.5;
-    float maxVoltage = 7.5;
+	
     float maxVoltageDelta = maxVoltage - minVoltage;
-    //TODO prüfen ob Formel bei kürzlichen Geschwindigkeitsänderungen nach längerer gleicher Geschwindigkeit Sinn macht
+    
     for (int i = 0; i < WLOAD; ++i){
         float voltageDelta = maxVoltage - inputVoltage[gid+i];
         float percentage = voltageDelta/maxVoltageDelta;
