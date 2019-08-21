@@ -146,26 +146,26 @@ void Scheduler::readConstantsFromTask(Task* task, Device* device, cl::Kernel ker
 		cl::Buffer* bufferToAdd;
 		switch (value.first) {
 		case INT:
-			bufferToAdd = generateBufferForINTConstant(value.second, device->getDeviceContext(), commandQueue, i);
+			bufferToAdd = generateBufferForINTConstant(value.second, device->getDeviceContext(), commandQueue, i,kernel);
 			break;
 		case UINT:
-			bufferToAdd = generateBufferForUINTConstant(value.second, device->getDeviceContext(), commandQueue, i);
+			bufferToAdd = generateBufferForUINTConstant(value.second, device->getDeviceContext(), commandQueue, i,kernel);
 			break;
 		case CHAR:
-			bufferToAdd = generateBufferForCHARConstant(value.second, device->getDeviceContext(), commandQueue, i);
+			bufferToAdd = generateBufferForCHARConstant(value.second, device->getDeviceContext(), commandQueue, i,kernel);
 			break;
 		case FLOAT:
-			bufferToAdd = generateBufferForFLOATConstant(value.second, device->getDeviceContext(), commandQueue, i);
+			bufferToAdd = generateBufferForFLOATConstant(value.second, device->getDeviceContext(), commandQueue, i,kernel);
 			break;
 		case DOUBLE:
-			bufferToAdd = generateBufferForDOUBLEConstant(value.second, device->getDeviceContext(), commandQueue, i);
+			bufferToAdd = generateBufferForDOUBLEConstant(value.second, device->getDeviceContext(), commandQueue, i, kernel);
 			break;
 		case STRING:
-			bufferToAdd = generateBufferForCHARConstant(value.second, device->getDeviceContext(), commandQueue, i);
+			bufferToAdd = generateBufferForCHARConstant(value.second, device->getDeviceContext(), commandQueue, i, kernel);
 			break;
 		default:;
 		}
-		kernel.setArg(i, *bufferToAdd);
+		std::cout << "Error Code for Setting Constant: " << ErrorCode<< std::endl;
 		i++;
 	}
 }
@@ -235,45 +235,48 @@ cl::Buffer* Scheduler::generateBufferForFLOAT(std::vector<void*> data, cl::Conte
 	return buffer;
 }
 
-cl::Buffer* Scheduler::generateBufferForUINTConstant(void* data, cl::Context context, cl::CommandQueue queue, int count)
+cl::Buffer* Scheduler::generateBufferForUINTConstant(void* data, cl::Context context, cl::CommandQueue queue, int count, cl::Kernel kernel)
 {
-	int ErrorCode = 0;
 	cl::Buffer* returnValue = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(unsigned int), &ErrorCode);
-	queue.enqueueWriteBuffer(*returnValue, CL_TRUE, count, sizeof(unsigned int), data);
+	//queue.enqueueWriteBuffer(*returnValue, CL_TRUE, count, sizeof(unsigned int), data);
+	ErrorCode = kernel.setArg(count, *((unsigned int*)data));
 	return returnValue;
 }
 
-cl::Buffer* Scheduler::generateBufferForINTConstant(void* data, cl::Context context, cl::CommandQueue queue, int count)
+cl::Buffer* Scheduler::generateBufferForINTConstant(void* data, cl::Context context, cl::CommandQueue queue, int count, cl::Kernel kernel)
 {
-	int ErrorCode = 0;
 	cl::Buffer* returnValue = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(int), &ErrorCode);
-	queue.enqueueWriteBuffer(*returnValue, CL_TRUE, count, sizeof(int), data);
+	//queue.enqueueWriteBuffer(*returnValue, CL_TRUE, count, sizeof(int), data);
+	ErrorCode = kernel.setArg(count, *((int*)data));
 	return returnValue;
 }
 
 cl::Buffer* Scheduler::generateBufferForFLOATConstant(void* data, cl::Context context, cl::CommandQueue queue,
-	int count)
+	int count, cl::Kernel kernel)
 {
 	int ErrorCode = 0;
 	cl::Buffer* returnValue = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(float), &ErrorCode);
-	queue.enqueueWriteBuffer(*returnValue, CL_TRUE, count, sizeof(float), data);
+	//queue.enqueueWriteBuffer(*returnValue, CL_TRUE, count, sizeof(float), data);
+	ErrorCode = kernel.setArg(count, *((float*)data));
 	return returnValue;
 }
 
 cl::Buffer* Scheduler::generateBufferForDOUBLEConstant(void* data, cl::Context context, cl::CommandQueue queue,
-	int count)
+	int count, cl::Kernel kernel)
 {
 	int ErrorCode = 0;
 	cl::Buffer* returnValue = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(double), &ErrorCode);
-	queue.enqueueWriteBuffer(*returnValue, CL_TRUE, count, sizeof(double), data);
+	//queue.enqueueWriteBuffer(*returnValue, CL_TRUE, count, sizeof(double), data);
+	ErrorCode = kernel.setArg(count, *((double*)data));
 	return returnValue;
 }
 
-cl::Buffer* Scheduler::generateBufferForCHARConstant(void* data, cl::Context context, cl::CommandQueue queue, int count)
+cl::Buffer* Scheduler::generateBufferForCHARConstant(void* data, cl::Context context, cl::CommandQueue queue, int count, cl::Kernel kernel)
 {
 	int ErrorCode = 0;
 	cl::Buffer* returnValue = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(char), &ErrorCode);
-	queue.enqueueWriteBuffer(*returnValue, CL_TRUE, count, sizeof(char), data);
+	//queue.enqueueWriteBuffer(*returnValue, CL_TRUE, count, sizeof(char), data);
+	ErrorCode = kernel.setArg(count, *((char*)data));
 	return returnValue;
 }
 
