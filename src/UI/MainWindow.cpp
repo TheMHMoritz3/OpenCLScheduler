@@ -99,13 +99,19 @@ void MainWindow::loadPreset()
 	median->addDependandTask(speedCalcFR);
 	Tasks.emplace_back(median);
 	
-	SCHEDULER::Task* range = ScheduleManager->addTask("kernels/range_kernel.cl", "dist");
+	SCHEDULER::Task* range = ScheduleManager->addTask("kernels/range_kernel.cl", "distance");
 	range->setReturnDataType(SCHEDULER::Type::FLOAT);
 	range->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
 	range->addDependandTask(batteryCalc);
 	range->addDependandTask(median);
 	Tasks.emplace_back(range);
-	
+
+    SCHEDULER::Task* temInformation = ScheduleManager->addTask("kernels/temp_kernel.cl", "temInformation");
+    temInformation->setReturnDataType(SCHEDULER::Type::FLOAT);
+    temInformation->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
+    temInformation->addDependandTask(temp);
+    Tasks.emplace_back(temInformation);
+
 	SCHEDULER::Task* tractionControl = ScheduleManager->addTask("kernels/traction_kernel.cl", "tractionControl");
 	tractionControl->setReturnDataType(SCHEDULER::Type::INT);
 	tractionControl->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
@@ -137,9 +143,14 @@ void MainWindow::loadPreset()
 	SCHEDULER::Task* accidentControl = ScheduleManager->addTask("kernels/accident_kernel.cl", "accidentConst");
 	accidentControl->setReturnDataType(SCHEDULER::Type::FLOAT);
 	accidentControl->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
-	accidentControl->addDependandTask(xAxis);
-	accidentControl->addDependandTask(median);
+	accidentControl->addDependandTask(dualAxis);
 	Tasks.emplace_back(accidentControl);
+
+    SCHEDULER::Task* temp_range_kernel = ScheduleManager->addTask("kernels/turn_radius_kernel.cl", "tempRange");
+    temp_range_kernel->setReturnDataType(SCHEDULER::Type::FLOAT);
+    temp_range_kernel->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
+    temp_range_kernel->addDependandTask(temp);
+    Tasks.emplace_back(temp_range_kernel);
 
 	updateTasksModel();
 }
