@@ -7,19 +7,6 @@ ConstantDialog::ConstantDialog(QWidget* parent) :
 	Dialog_.retranslateUi(this);
 }
 
-void ConstantDialog::setConstantName(std::vector<std::string> names)
-{
-	for (std::string name : names)
-	{
-		Dialog_.ConstantNameComboBox->addItem(QString(name.c_str()).split(" ").last());
-	}
-}
-
-std::string ConstantDialog::getConstantName()
-{
-	return Dialog_.ConstantNameComboBox->currentText().toStdString();
-}
-
 SCHEDULER::Type ConstantDialog::getConstantType()
 {
 	return (SCHEDULER::Type)Dialog_.TypeComboBox->currentIndex();

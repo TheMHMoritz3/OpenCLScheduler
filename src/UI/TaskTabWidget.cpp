@@ -18,7 +18,7 @@ TaskTabWidget::TaskTabWidget(SCHEDULER::Task* task, QWidget* parent) :
 	ExecutionTimeModel = new QStandardItemModel();
 	ConstantModel = new QStandardItemModel();
 
-	ConstantModelHeaderList << tr("Constant Name") << tr("Value");
+	ConstantModelHeaderList << tr("Value");
 	ConstantModel->setHorizontalHeaderLabels(ConstantModelHeaderList);
 	makeConnections();
 	decorateForTask();
@@ -115,6 +115,9 @@ void TaskTabWidget::decorateForTask()
 
 	for (std::string value : Task->kernelArguments())
 		HeaderList.append(QString::fromStdString(value).split(" ").last());
+
+	readConstantsFromTask();
+
 
 	readValuesFromTask();
 
@@ -314,18 +317,10 @@ void TaskTabWidget::readDataFromBusClicked() {
 void TaskTabWidget::addConstantClicked()
 {
 	ConstantDialog* dialog = new ConstantDialog(this);
-	dialog->setConstantName(Task->getTaskConstants());
-	if(dialog->exec()==QDialog::DialogCode::Accepted)
-	{
-		Task->addConstant(dialog->getConstantType(), dialog->constantValue());
-		QList<QStandardItem*> items;
-		QStandardItem* nameItem = new QStandardItem(dialog->getConstantName().c_str());
-		items.append(nameItem);
-		QStandardItem* valueItem = new QStandardItem(*((int*)dialog->constantValue()));
-		items.append(valueItem);
-		ConstantModel->appendRow(items);
+	if(dialog->exec()==QDialog::Accepted){
+        Task->addConstant(dialog->getConstantType(),dialog->constantValue());
+        decorateForTask();
 	}
-	decorateForTask();
 }
 
 
@@ -347,5 +342,67 @@ void TaskTabWidget::loadCanData(CAN::CanID canId, int load) {
 
 void TaskTabWidget::setCanManager(CAN::CanManager* canManager) {
 	CanManager = canManager;
+}
+
+void TaskTabWidget::readConstantsFromTask() {
+    int i = 0;
+    for(std::pair<SCHEDULER::Type,void*> constant : Task->getAllConstantData()){
+        switch(constant.first){
+            case SCHEDULER::Type::INT:
+                readINTConstantFromTask(constant.second);
+                break;
+            case SCHEDULER::Type::UINT:
+                readUINTConstantFromTask(constant.second);
+                break;
+            case SCHEDULER::Type::CHAR:
+                readCHARConstantFromTask(constant.second);
+                break;
+            case SCHEDULER::Type::FLOAT:
+                readFLOATConstantFromTask(constant.second);
+                break;
+            case SCHEDULER::Type::DOUBLE:
+                readDOUBLEConstantFromTask(constant.second);
+                break;
+            case SCHEDULER::Type::STRING:
+            default:
+                break;
+        }
+        i++;
+    }
+}
+
+void TaskTabWidget::readUINTConstantFromTask(void *data) {
+    QStandardItem* item = new QStandardItem();
+    unsigned int ui_data= *((unsigned int*)data);
+    item->setText(tr("%1").arg(ui_data));
+    ConstantModel->appendRow(item);
+}
+
+void TaskTabWidget::readINTConstantFromTask(void *data) {
+    QStandardItem* item = new QStandardItem();
+    int i_data= *((int*)data);
+    item->setText(tr("%1").arg(i_data));
+    ConstantModel->appendRow(item);
+}
+
+void TaskTabWidget::readFLOATConstantFromTask(void *data) {
+    QStandardItem* item = new QStandardItem();
+    float _data= *((float*)data);
+    item->setText(tr("%1").arg(_data));
+    ConstantModel->appendRow(item);
+}
+
+void TaskTabWidget::readCHARConstantFromTask(void *data) {
+    QStandardItem* item = new QStandardItem();
+    char _data= *((char*)data);
+    item->setText(tr("%1").arg(_data));
+    ConstantModel->appendRow(item);
+}
+
+void TaskTabWidget::readDOUBLEConstantFromTask(void *data) {
+    QStandardItem* item = new QStandardItem();
+    double _data= *((double*)data);
+    item->setText(tr("%1").arg(_data));
+    ConstantModel->appendRow(item);
 }
 

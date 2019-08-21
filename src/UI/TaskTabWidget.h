@@ -24,6 +24,7 @@ private:
 	void makeConnections();
 	void decorateForTask();
 	void readDataFromTask();
+	void readConstantsFromTask();
 	void readValuesFromTask();
 
 	void loadCanData(CAN::CanID canId, int load);
@@ -33,6 +34,12 @@ private:
 	void readFloatDataFromTask(std::vector<void*> data);
 	void readCharDataFromTask(std::vector<void*> data);
 	void readDoubleDataFromTask(std::vector<void*> data);
+
+	void readUINTConstantFromTask(void* data);
+    void readINTConstantFromTask(void* data);
+    void readFLOATConstantFromTask(void* data);
+    void readCHARConstantFromTask(void* data);
+    void readDOUBLEConstantFromTask(void* data);
 
 	void generateExecutionTimeDiagramm();
 
