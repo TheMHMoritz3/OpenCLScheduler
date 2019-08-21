@@ -17,7 +17,8 @@ TaskTabWidget::TaskTabWidget(SCHEDULER::Task* task, QWidget* parent) :
 	Model = new QStandardItemModel();
 	ExecutionTimeModel = new QStandardItemModel();
 	ConstantModel = new QStandardItemModel();
-
+	TasksModel = new QStandardItemModel();
+	Ui.DependandTasksList->setModel(TasksModel);
 	ConstantModelHeaderList << tr("Value");
 	ConstantModel->setHorizontalHeaderLabels(ConstantModelHeaderList);
 	makeConnections();
@@ -95,6 +96,7 @@ void TaskTabWidget::makeConnections()
 	connect(Ui.GenerateDataButton, SIGNAL(clicked()), this, SLOT(generateDataTriggered()));
 	connect(Ui.ReadCanBusButton, SIGNAL(clicked()), this, SLOT(readDataFromBusClicked()));
 	connect(Ui.AddConstantButton, SIGNAL(clicked()), this, SLOT(addConstantClicked()));
+	connect(TasksModel, SIGNAL(itemChanged(QStandardItem*)), this,SLOT(onItemChanged(QStandardItem*)));
 	QStringList headerData;
 	headerData.append(tr("ExecutionTimes"));
 	ExecutionTimeModel->setHorizontalHeaderLabels(headerData);
@@ -404,5 +406,39 @@ void TaskTabWidget::readDOUBLEConstantFromTask(void *data) {
     double _data= *((double*)data);
     item->setText(tr("%1").arg(_data));
     ConstantModel->appendRow(item);
+}
+
+void TaskTabWidget::setTaskModel(std::vector<SCHEDULER::Task *> tasks) {
+    Tasks=tasks;
+    for(SCHEDULER::Task* task : tasks){
+        QStandardItem* item = new QStandardItem(tr((task->getKernelName()+" - %1").c_str()).arg(task->getId()));
+        item->setCheckable(true);
+        for(SCHEDULER::Task* taskd : Task->getDependantTasks()){
+            if(taskd->getId()==task->getId())
+                item->setCheckState(Qt::CheckState::Checked);
+        }
+        TasksModel->appendRow(item);
+    }
+}
+
+void TaskTabWidget::onItemChanged(QStandardItem* item) {
+    if(item->checkState()==Qt::Checked){
+        for(SCHEDULER::Task* task : Tasks){
+            QString taskName = tr((task->getKernelName()+" - %1").c_str()).arg(task->getId());
+            if(taskName.compare(item->text())==0){
+                Task->addDependandTask(task);
+            }
+        }
+    } else{
+        int i = 0;
+        std::vector<SCHEDULER::Task*> tasks = Task->getDependantTasks();
+        Task->getDependantTasks().clear();
+        for(SCHEDULER::Task* task : tasks){
+            QString taskName = tr((task->getKernelName()+" - %1").c_str()).arg(task->getId());
+            if(taskName.compare(item->text())!=0){
+                Task->addDependandTask(task);
+            }
+        }
+    }
 }
 

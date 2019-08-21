@@ -71,6 +71,8 @@ namespace SCHEDULER {
 		std::vector<std::pair<Type, void*>> getAllConstantData();
 
 		std::vector<std::string> getTaskConstants();
+
+		std::vector<Task*> getDependantTasks();
     private:
 		void readDataFromOtherThread();
 

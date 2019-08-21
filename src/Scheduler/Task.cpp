@@ -210,3 +210,7 @@ void Task::addExternalDataMethod(std::function<void()> externalFunctionData)
 {
     GetExternalDataMethods.push_back(externalFunctionData);
 }
+
+std::vector<Task *> Task::getDependantTasks() {
+    return DependandTasks;
+}

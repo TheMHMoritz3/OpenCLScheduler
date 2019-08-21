@@ -242,6 +242,7 @@ void MainWindow::updateTasksModel()
 		TaskTabWidget *widget = new TaskTabWidget(task, this);
 		ui.TasksWidget->addTab(widget, tr((task->getKernelName() + "- %1").c_str()).arg(task->getId()));
 		TaskWidgets.push_back(widget);
+		widget->setTaskModel(Tasks);
 		widget->refresh();
 		widget->setCanManager(CanManager);
 	}

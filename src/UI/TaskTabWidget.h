@@ -18,6 +18,7 @@ public:
 	void refresh();
 
 	void setCanManager(CAN::CanManager* canManager);
+	void setTaskModel(std::vector<SCHEDULER::Task*> tasks);
 
 	void updateCoreCount(int coreCount);
 private:
@@ -49,9 +50,11 @@ private:
 	QStandardItemModel* Model;
 	QStandardItemModel* ExecutionTimeModel;
 	QStandardItemModel* ConstantModel;
+	QStandardItemModel* TasksModel;
 	QStringList HeaderList;
 	QStringList ConstantModelHeaderList;
 	CAN::CanManager* CanManager;
+    std::vector<SCHEDULER::Task*> Tasks;
 private slots:
 	void generateDataTriggered();
 	void diffrentTasksChecked();
@@ -59,5 +62,6 @@ private slots:
 	void canBusActivated();
 	void readDataFromBusClicked();
 	void addConstantClicked();
+	void onItemChanged(QStandardItem* item);
 };
 
