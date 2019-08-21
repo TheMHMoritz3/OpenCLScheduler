@@ -146,7 +146,7 @@ void MainWindow::loadPreset()
 	accidentControl->addDependandTask(dualAxis);
 	Tasks.emplace_back(accidentControl);
 
-    SCHEDULER::Task* temp_range_kernel = ScheduleManager->addTask("kernels/turn_radius_kernel.cl", "tempRange");
+    SCHEDULER::Task* temp_range_kernel = ScheduleManager->addTask("kernels/temp_Range_kernel.cl", "tempRange");
     temp_range_kernel->setReturnDataType(SCHEDULER::Type::FLOAT);
     temp_range_kernel->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
     temp_range_kernel->addDependandTask(temp);

@@ -347,6 +347,7 @@ void TaskTabWidget::setCanManager(CAN::CanManager* canManager) {
 }
 
 void TaskTabWidget::readConstantsFromTask() {
+	ConstantModel->clear();
     int i = 0;
     for(std::pair<SCHEDULER::Type,void*> constant : Task->getAllConstantData()){
         switch(constant.first){
