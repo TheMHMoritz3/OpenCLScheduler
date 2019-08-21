@@ -7,7 +7,7 @@
  *
  *      wLoad: Wert 1 für voll parallele Ausführung, Wert MAX_ITEM_SIZE_PER_WORKGROUP für vollständig sequenzielle Ausführung.
  */
-__kernel void radius(global const float* speedL, global const float* speedR, global const float* axleLength, global float* result, const int WLOAD){
+__kernel void radius(global const float* speedL, global const float* speedR, const float axleLength, global float* result, const int WLOAD){
     int gid = get_global_id(0) * WLOAD;
     const float axleSize = axleLength[0];
 

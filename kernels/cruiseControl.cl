@@ -1,4 +1,4 @@
-__kernel void cruiseControl(global const float* accelSensor, global const float* wSpeedmedian, global const int targetLimit, global float* result, const int WLOAD) {
+__kernel void cruiseControl(global const float* accelSensor, global const float* wSpeedmedian, const int targetLimit, global float* result, const int WLOAD) {
 	int gid = get_global_id(0) * WLOAD;
 	float epsilon = 1e-3;
 
