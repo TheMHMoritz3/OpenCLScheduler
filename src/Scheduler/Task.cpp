@@ -152,7 +152,16 @@ bool Task::hasDependencies()
 
 bool Task::dependenciesAreCalculated()
 {
-	return IsDataSet;
+	bool dependanciesAreCalculated = true;
+	if(hasDependencies())
+	{
+		for(Task* task : DependandTasks)
+		{
+			if(dependanciesAreCalculated)
+				dependanciesAreCalculated = task->isCalculationDone();
+		}
+	}
+	return (IsDataSet || dependanciesAreCalculated);
 }
 
 void Task::setElapsedTime(float time)
