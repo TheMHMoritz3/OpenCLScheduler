@@ -99,17 +99,32 @@ void MainWindow::loadPreset()
 	median->addDependandTask(speedCalcFR);
 	Tasks.emplace_back(median);
 	
-	SCHEDULER::Task* range = ScheduleManager->addTask("kernels/range_kernel.cl", "distance");
+	SCHEDULER::Task* range = ScheduleManager->addTask("kernels/range_kernel.cl", "range");
 	range->setReturnDataType(SCHEDULER::Type::FLOAT);
 	range->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
 	range->addDependandTask(batteryCalc);
 	range->addDependandTask(median);
+    int *duration = new int[1];
+    duration[0]=10.2;
+    range->addConstant(Type::INT,duration);
+    float *minVoltage = new float[1];
+    minVoltage[0]=5.5;
+    range->addConstant(Type::FLOAT,minVoltage);
+    float *maxVoltage = new float[1];
+    maxVoltage[0]=7.5;
+    range->addConstant(Type::FLOAT,maxVoltage);
 	Tasks.emplace_back(range);
 
     SCHEDULER::Task* temInformation = ScheduleManager->addTask("kernels/temp_kernel.cl", "temInformation");
     temInformation->setReturnDataType(SCHEDULER::Type::FLOAT);
     temInformation->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
     temInformation->addDependandTask(temp);
+    float *temInformation_min = new float[1];
+    temInformation_min[0]=10.2;
+    temInformation->addConstant(Type::FLOAT,temInformation_min);
+    float *temInformation_max = new float[1];
+    temInformation_max[0]=25.5;
+    temInformation->addConstant(Type::FLOAT,temInformation_max);
     Tasks.emplace_back(temInformation);
 
 	SCHEDULER::Task* tractionControl = ScheduleManager->addTask("kernels/traction_kernel.cl", "tractionControl");
@@ -118,6 +133,9 @@ void MainWindow::loadPreset()
 	tractionControl->addDependandTask(median);
 	tractionControl->addDependandTask(speedCalcRL);
 	tractionControl->addDependandTask(speedCalcRR);
+    float *tractionControl_threshhold = new float[1];
+    tractionControl_threshhold[0]=5.5;
+    tractionControl->addConstant(Type::FLOAT,tractionControl_threshhold);
 	Tasks.emplace_back(tractionControl);
 	
 	SCHEDULER::Task* turningRadius = ScheduleManager->addTask("kernels/turn_radius_kernel.cl", "radius");
@@ -125,12 +143,18 @@ void MainWindow::loadPreset()
 	turningRadius->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
 	turningRadius->addDependandTask(speedCalcFR);
 	turningRadius->addDependandTask(speedCalcFL);
+    float *radius_axle = new float[1];
+    radius_axle[0]=10.5;
+    turningRadius->addConstant(Type::FLOAT,radius_axle);
 	Tasks.emplace_back(turningRadius);
 	
 	SCHEDULER::Task* distanceTracker = ScheduleManager->addTask("kernels/distanceTracker.cl", "distanceTracker");
 	distanceTracker->setReturnDataType(SCHEDULER::Type::FLOAT);
 	distanceTracker->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
 	distanceTracker->addDependandTask(median);
+    float *distanceTracker_Time = new float[1];
+    distanceTracker_Time[0]=100;
+    distanceTracker->addConstant(Type::FLOAT,distanceTracker_Time);
 	Tasks.emplace_back(distanceTracker);
 	
 	SCHEDULER::Task* cruiseControl = ScheduleManager->addTask("kernels/cruiseControl.cl", "cruiseControl");
@@ -138,18 +162,33 @@ void MainWindow::loadPreset()
 	cruiseControl->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
 	cruiseControl->addDependandTask(xAxis);
 	cruiseControl->addDependandTask(median);
+    int *cruiseControl_targetLimit = new int[1];
+    cruiseControl_targetLimit[0]=10;
+    cruiseControl->addConstant(Type::INT,cruiseControl_targetLimit);
 	Tasks.emplace_back(cruiseControl);
 
 	SCHEDULER::Task* accidentControl = ScheduleManager->addTask("kernels/accident_kernel.cl", "accidentConst");
 	accidentControl->setReturnDataType(SCHEDULER::Type::FLOAT);
 	accidentControl->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
 	accidentControl->addDependandTask(dualAxis);
+    int *accidentControl_min = new int[1];
+    accidentControl_min[0]=1;
+    accidentControl->addConstant(Type::INT,accidentControl_min);
+    int *accidentControl_max = new int[1];
+    accidentControl_max[0]=2;
+    accidentControl->addConstant(Type::INT,accidentControl_max);
 	Tasks.emplace_back(accidentControl);
 
     SCHEDULER::Task* temp_range_kernel = ScheduleManager->addTask("kernels/temp_Range_kernel.cl", "tempRange");
     temp_range_kernel->setReturnDataType(SCHEDULER::Type::FLOAT);
     temp_range_kernel->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
     temp_range_kernel->addDependandTask(temp);
+    float *temp_range_kernel_min = new float[1];
+    temp_range_kernel_min[0]=5.5;
+    temp_range_kernel->addConstant(Type::FLOAT,temp_range_kernel_min);
+    float *temp_range_kernel_max = new float[1];
+    temp_range_kernel_max[0]=10.5;
+    temp_range_kernel->addConstant(Type::FLOAT,temp_range_kernel_max);
     Tasks.emplace_back(temp_range_kernel);
 
 	updateTasksModel();

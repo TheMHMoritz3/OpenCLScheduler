@@ -13,7 +13,7 @@
  *          Minimum Battery Voltage = 5,5v
  *          Charge of Battery lasts 2h
  */
-__kernel void distance(global const float* inputVoltage, global const float* speed, const int duration, const float minVoltage, const float maxVoltage, global float* result, const int WLOAD) {
+__kernel void range(global const float* inputVoltage, global const float* speed, const int duration, const float minVoltage, const float maxVoltage, global float* result, const int WLOAD) {
     int gid = get_global_id(0) * WLOAD;
 	
     float maxVoltageDelta = maxVoltage - minVoltage;
@@ -22,14 +22,14 @@ __kernel void distance(global const float* inputVoltage, global const float* spe
         float voltageDelta = maxVoltage - inputVoltage[gid+i];
         float percentage = voltageDelta/maxVoltageDelta;
         if(speed[gid+i]>1)
-            result[gid+i] = speed[gid+i]*percentage*maxDuration;
+            result[gid+i] = speed[gid+i]*percentage*duration;
         else
-            result[gid+i] = percentage*maxDuration;
+            result[gid+i] = percentage*duration;
     }
 }
 
 //Als Array
-__kernel void dist1(global const float* inputVoltage, global const float* speed, global const int* maxDur, global const float* minVol, global const float* maxVol, float* result, const int WLOAD) {
+__kernel void dist1(global const float* inputVoltage, global const float* speed, global const int* maxDur, global const float* minVol, global const float* maxVol, global float* result, const int WLOAD) {
     int gid = get_global_id(0) * WLOAD;
 
     for (int i = 0; i < WLOAD; ++i){

@@ -32,7 +32,7 @@ int inRange(float value, float min, float max){
  */
 __kernel void tractionControl(global const float* speedF, global const float* speedRL, global const float* speedRR, const float threshold, global int* result, const int wLoad){
     int gid = get_global_id(0) * wLoad;
-    tfloat maxdiff = threshold[0];
+    float maxdiff = threshold;
 
     for (int i = 0; i < wLoad; ++i){
         int resultRL = inRange(speedF[gid+i], speedRL[gid+i]*maxdiff, speedRL[gid+i]*(1+maxdiff));

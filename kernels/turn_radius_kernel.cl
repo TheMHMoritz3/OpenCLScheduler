@@ -9,7 +9,7 @@
  */
 __kernel void radius(global const float* speedL, global const float* speedR, const float axleLength, global float* result, const int WLOAD){
     int gid = get_global_id(0) * WLOAD;
-    const float axleSize = axleLength[0];
+    const float axleSize = axleLength;
 
     for (int i = 0; i < WLOAD; ++i){
         float res = (axleSize/2.0f) * ((speedL[gid + i] + speedR[gid+i])/(speedL[gid + i] - speedR[gid+i]));
