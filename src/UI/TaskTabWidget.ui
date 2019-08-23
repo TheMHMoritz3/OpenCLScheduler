@@ -294,7 +294,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="DataDiagramm">
           <attribute name="title">
@@ -310,7 +310,11 @@
           <attribute name="title">
            <string>Execution Times</string>
           </attribute>
-          <layout class="QHBoxLayout" name="horizontalLayout_5"/>
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <item>
+            <widget class="QwtPlot" name="ExecutionTimes"/>
+           </item>
+          </layout>
          </widget>
         </widget>
        </item>
