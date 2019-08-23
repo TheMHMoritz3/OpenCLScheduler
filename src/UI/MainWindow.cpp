@@ -206,6 +206,7 @@ void MainWindow::deviceComboboxChanged()
 	if (ui.DeviceCombobox->currentIndex() >= Devices.size())
 		decorateAllDevices();
 	else {
+	    ActiveDevicePropertie = Devices.at(ui.DeviceCombobox->currentIndex());
 		if ((ActiveDevicePropertie==nullptr)||(ActiveDevicePropertie->getName() != ui.DeviceCombobox->currentText().toStdString())) {
 			QString deviceName = ui.DeviceCombobox->currentText();
 			readDeviceData(deviceName.toStdString());
