@@ -45,6 +45,8 @@ private:
 	void generateExecutionTimeDiagramm();
 
 	void clear();
+
+	void generateGraph();
 	Ui::TaskTabWidget Ui;
 	SCHEDULER::Task* Task;
 	QStandardItemModel* Model;

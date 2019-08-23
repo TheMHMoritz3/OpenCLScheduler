@@ -57,9 +57,41 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 find_package(Qt5 COMPONENTS REQUIRED Core Gui Widgets)
+
+MESSAGE("Searching for QWT")
+FIND_PATH(QWT_INCLUDE_DIR NAMES qwt.h PATHS
+        /usr/include
+        /usr/local/include
+        "$ENV{LIB_DIR}/include"
+        "$ENV{INCLUDE}"
+        PATH_SUFFIXES qwt-qt4 qwt
+        )
+
+FIND_LIBRARY(QWT_LIBRARY NAMES qwt qwt-qt4 qwt5-qt4 qwt-qt5 PATHS
+        /usr/lib
+        /usr/local/lib
+        "$ENV{LIB_DIR}/lib"
+        "$ENV{LIB}/lib"
+        )
+
+IF (QWT_INCLUDE_DIR AND QWT_LIBRARY)
+    SET(QWT_FOUND TRUE)
+ENDIF (QWT_INCLUDE_DIR AND QWT_LIBRARY)
+
+IF (QWT_FOUND)
+    IF (NOT QWT_FIND_QUIETLY)
+        MESSAGE(STATUS "Found QWT: ${QWT_LIBRARY}")
+    ENDIF (NOT QWT_FIND_QUIETLY)
+ELSE (QWT_FOUND)
+    IF (QWT_FIND_REQUIRED)
+        MESSAGE(FATAL_ERROR "Could not find QWT")
+    ENDIF (QWT_FIND_REQUIRED)
+ENDIF (QWT_FOUND)
+
+
 get_target_property(QtCore_location Qt5::Core LOCATION)
 
-include_directories("${PROJECT_BINARY_DIR}")
+include_directories(${QWT_INCLUDE_DIR} ${PROJECT_BINARY_DIR} )
 
 qt5_wrap_ui(UI_UICHEADERS src/UI/MainWindow.ui src/UI/ConstantDialog.ui src/UI/TaskTabWidget.ui src/UI/OpenTaskWizard.ui)
 
@@ -67,7 +99,7 @@ qt5_wrap_ui(UI_UICHEADERS src/UI/MainWindow.ui src/UI/ConstantDialog.ui src/UI/T
 add_executable(UI ${UI_UICHEADERS} src/UI/main.cpp src/UI/ConstantDialog.cpp src/UI/ConstantDialog.h src/UI/OpenKernelFileWizard.cpp src/UI/OpenKernelFileWizard.h src/UI/TUI.cpp src/UI/TUI.h src/UI/MainWindow.h src/UI/MainWindow.cpp src/UI/TaskTabWidget.h src/UI/TaskTabWidget.cpp src/UI/RandomNumberGenerator.h src/UI/RandomNumberGenerator.cpp)
 
 add_dependencies(UI Scheduler CAN)
-target_link_libraries(UI LINK_PUBLIC Scheduler CAN Qt5::Widgets)
+target_link_libraries(UI LINK_PUBLIC Scheduler CAN Qt5::Widgets ${QWT_LIBRARY})
 
 target_compile_options(UI PUBLIC)
 
