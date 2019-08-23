@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include "OpenKernelFileWizard.h"
 #include <sstream>
+#include <QDebug>
 
 using namespace SCHEDULER;
 using namespace UI;
@@ -223,6 +224,7 @@ void MainWindow::onCoreCountChanged()
 
 void MainWindow::onSchedulingTypeChanged()
 {
+    qDebug()<<(ScheduleType)ui.SchedulingTypeSpinBox->currentIndex();
 	ActiveDevicePropertie->setSchedule((ScheduleType)ui.SchedulingTypeSpinBox->currentIndex());
 }
 
@@ -278,6 +280,7 @@ void MainWindow::makeConnections()
 	connect(TasksToScheduleModel, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(onTasksToScheduleItemClicked(QStandardItem*)));
 	connect(ui.ScheduleButton, SIGNAL(clicked()), this, SLOT(startSchedule()));
 	connect(ui.CoreCountSpinBox, SIGNAL(valueChanged(int)), this, SLOT(onCoreCountChanged()));
+	connect(ui.SchedulingTypeSpinBox,SIGNAL(currentIndexChanged(int)), this, SLOT(onSchedulingTypeChanged()));
 }
 
 void MainWindow::updateTasksModel()

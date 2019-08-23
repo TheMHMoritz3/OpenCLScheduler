@@ -31,6 +31,8 @@ ASAP::ASAP(std::vector<Task*> tasks, std::vector<Device*> device) : Scheduler(ta
 	ErrorCode = 1;
 	if (device.size() <= 1)
 		generateAllPrograms();
+
+    TasksToSchedule = Tasks;
 }
 
 
@@ -39,8 +41,6 @@ void ASAP::schedule() {
 		cout << "Device Name: " << device->getName() << endl;
 		cl::CommandQueue commandQueue(device->getDeviceContext(), device->getOclDevice());
 		CommandQueues.push_back(commandQueue);
-
-		TasksToSchedule = Tasks;
 
 		while (!TasksToSchedule.empty()) {
 			enqueueTasksWithNoDependency();
@@ -55,23 +55,28 @@ void ASAP::schedule() {
 					setRAMBufferForOutput(task, device, kernel);
 					setKernelLoad(task, device, kernel);
 					enqueueTak(task, device, commandQueue, kernel);
+					TasksToReadInStep.push(task);
 				}
 				else
 					cout << "Kernel Creation Resolved Error: " << ErrorCode << endl;
 			}
-			commandQueue.finish();
+            cout << "Command Queue is Finishing: " << ErrorCode << endl;
+			ErrorCode = commandQueue.finish();
+            cout << "Command Queue is finished: " << ErrorCode << endl;
 			while (!TasksToReadInStep.empty()) {
 				Task* task = TasksToReadInStep.front();
 				TasksToReadInStep.pop();
 				readDataFromTask(task, commandQueue);
 			}
+            cout << "Scheduler Finished: "<<ErrorCode<<endl;
 		}
 	}
 }
 
 void ASAP::enqueueTasksWithNoDependency()
 {
-	int i = 0;
+    cout<<"Tasks Left Count: "<<TasksToSchedule.size()<<endl;
+    int i = 0;
 	for (Task* task : TasksToSchedule)
 	{
 		if (task->dependenciesAreCalculated())
