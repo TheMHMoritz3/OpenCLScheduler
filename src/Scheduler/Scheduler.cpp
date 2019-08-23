@@ -25,47 +25,47 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 using namespace SCHEDULER;
 
 Scheduler::Scheduler(std::vector<Task*> tasks, std::vector<Device*> devices) {
-    Tasks=tasks;
-    Devices=devices;
-    CoreCount=1;
+	Tasks = tasks;
+	Devices = devices;
+	CoreCount = 1;
 }
 
 void Scheduler::setRAMForCurrentTask(Task* task, Device* device, cl::Kernel kernel, cl::CommandQueue queue) {
-    int count = 0;
-    for(std::pair<Type, std::vector<void*>> value : task->getAllData()){
-        cl::Buffer *buffer;
-        switch (value.first){
-            case Type::UINT:
-                buffer = generateBufferForUINT(value.second,device->getDeviceContext(),queue,0);
-                break;
-            case Type::INT:
-                buffer = generateBufferForINT(value.second,device->getDeviceContext(),queue,0);
-                break;
-            case Type::CHAR:
-                buffer = generateBufferForCHAR(value.second,device->getDeviceContext(),queue,0);
-                break;
-            case Type::DOUBLE:
-                buffer = generateBufferForDOUBLE(value.second,device->getDeviceContext(),queue,0);
-                break;
-            case Type::FLOAT:
-                buffer = generateBufferForFLOAT(value.second,device->getDeviceContext(),queue,0);
-                break;
-            case Type::STRING:
-                buffer = generateBufferForCHAR(value.second,device->getDeviceContext(),queue,0);
-                break;
-            default:
-				break;
-        }
-        ErrorCode = kernel.setArg(count, *buffer);
-//        std::cout << "Set Ram for Current Task: "<<ErrorCode<<std::endl;
-//        std::cout << "Count "<<count<<std::endl;
+	int count = 0;
+	for (std::pair<Type, std::vector<void*>> value : task->getAllData()) {
+		cl::Buffer* buffer;
+		switch (value.first) {
+		case Type::UINT:
+			buffer = generateBufferForUINT(value.second, device->getDeviceContext(), queue, 0);
+			break;
+		case Type::INT:
+			buffer = generateBufferForINT(value.second, device->getDeviceContext(), queue, 0);
+			break;
+		case Type::CHAR:
+			buffer = generateBufferForCHAR(value.second, device->getDeviceContext(), queue, 0);
+			break;
+		case Type::DOUBLE:
+			buffer = generateBufferForDOUBLE(value.second, device->getDeviceContext(), queue, 0);
+			break;
+		case Type::FLOAT:
+			buffer = generateBufferForFLOAT(value.second, device->getDeviceContext(), queue, 0);
+			break;
+		case Type::STRING:
+			buffer = generateBufferForCHAR(value.second, device->getDeviceContext(), queue, 0);
+			break;
+		default:
+			break;
+		}
+		ErrorCode = kernel.setArg(count, *buffer);
+		std::cout << "Set Ram for Current Task: "<<ErrorCode<<std::endl;
+		std::cout << "Count "<<count<<std::endl;
 		count++;
-    }
+	}
 }
 
 void Scheduler::setRAMBufferForOutput(Task* task, Device* device, cl::Kernel kernel)
 {
-	cl::Buffer *buffer;
+	cl::Buffer* buffer;
 	switch (task->getReturnDataType())
 	{
 	case Type::UINT:
@@ -90,27 +90,23 @@ void Scheduler::setRAMBufferForOutput(Task* task, Device* device, cl::Kernel ker
 		break;
 	}
 	task->setReadBuffer(buffer);
-	ErrorCode = kernel.setArg(task->getAllData().size(), *buffer);
-//    std::cout << "Set Ram Output for Current Task: "<<ErrorCode<<std::endl;
-//    std::cout << "Count "<<task->getAllData().size()<<std::endl;
+	ErrorCode = kernel.setArg(task->getAllData().size() + task->getAllConstantData().size(), *buffer);
+	std::cout << "Set Ram Output for Current Task: "<<ErrorCode<<std::endl;
+	std::cout << "Count "<<task->getAllData().size()<<std::endl;
 }
 
 void Scheduler::setKernelLoad(Task* task, Device* device, cl::Kernel kernel)
 {
-	int ErrorCode=0;
+	int ErrorCode = 0;
 	cl::Buffer* buffer_WORKLOAD = new cl::Buffer(device->getDeviceContext(), CL_MEM_READ_WRITE, sizeof(int), &ErrorCode);
-	if (CoreCount <= 1) {
-		kernel.setArg(task->getAllData().size() + 1, task->getLoad());
-	}else
-	{
-		kernel.setArg(task->getAllData().size() + 1, task->getLoad()/CoreCount);
-	}
+	ErrorCode = kernel.setArg(task->getAllData().size() + task->getAllConstantData().size() + 1, task->getLoad() / CoreCount);
+	std::cout << "Kernel Load Error Code: " << ErrorCode;
 }
 
 void Scheduler::enqueueTak(Task* task, Device* device, cl::CommandQueue commandQueue, cl::Kernel kernel)
 {
-    ErrorCode = commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(CoreCount),cl::NDRange(CoreCount));
-//    std::cout << "Enqueue Task: "<<ErrorCode<<std::endl;
+	ErrorCode = commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(CoreCount), cl::NDRange(CoreCount));
+	std::cout << "Enqueue Task: " << ErrorCode << std::endl;
 }
 
 void Scheduler::readDataFromTask(Task* task, cl::CommandQueue commandQueue)
@@ -142,6 +138,38 @@ void Scheduler::readDataFromTask(Task* task, cl::CommandQueue commandQueue)
 	task->addReturnData(data);
 }
 
+void Scheduler::readConstantsFromTask(Task* task, Device* device, cl::Kernel kernel, cl::CommandQueue commandQueue)
+{
+	int i = task->getAllData().size();
+	for (std::pair<Type, void*> value : task->getAllConstantData())
+	{
+		cl::Buffer* bufferToAdd;
+		switch (value.first) {
+		case INT:
+			bufferToAdd = generateBufferForINTConstant(value.second, device->getDeviceContext(), commandQueue, i,kernel);
+			break;
+		case UINT:
+			bufferToAdd = generateBufferForUINTConstant(value.second, device->getDeviceContext(), commandQueue, i,kernel);
+			break;
+		case CHAR:
+			bufferToAdd = generateBufferForCHARConstant(value.second, device->getDeviceContext(), commandQueue, i,kernel);
+			break;
+		case FLOAT:
+			bufferToAdd = generateBufferForFLOATConstant(value.second, device->getDeviceContext(), commandQueue, i,kernel);
+			break;
+		case DOUBLE:
+			bufferToAdd = generateBufferForDOUBLEConstant(value.second, device->getDeviceContext(), commandQueue, i, kernel);
+			break;
+		case STRING:
+			bufferToAdd = generateBufferForCHARConstant(value.second, device->getDeviceContext(), commandQueue, i, kernel);
+			break;
+		default:;
+		}
+		std::cout << "Error Code for Setting Constant: " << ErrorCode<< std::endl;
+		i++;
+	}
+}
+
 cl::Buffer* Scheduler::generateBufferForUINT(std::vector<void*> data, cl::Context context, cl::CommandQueue queue, int count) {
 	uint32_t* uintRamDataToAdd = new uint32_t[data.size()];
 
@@ -150,62 +178,106 @@ cl::Buffer* Scheduler::generateBufferForUINT(std::vector<void*> data, cl::Contex
 		uintRamDataToAdd[i] = *((uint32_t*)data.at(i));
 	}
 
-
-    cl::Buffer *buffer=new cl::Buffer(context,CL_MEM_READ_WRITE,sizeof(uint32_t)*data.size());
-    ErrorCode = queue.enqueueWriteBuffer(*buffer, CL_TRUE, count, sizeof(uint32_t) * data.size(), uintRamDataToAdd);
-    return buffer;
+	cl::Buffer* buffer = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(uint32_t) * data.size());
+	ErrorCode = queue.enqueueWriteBuffer(*buffer, CL_TRUE, count, sizeof(uint32_t) * data.size(), uintRamDataToAdd);
+	return buffer;
 }
 
 cl::Buffer* Scheduler::generateBufferForINT(std::vector<void*> data, cl::Context context, cl::CommandQueue queue, int count) {
-    int32_t* intRamDataToAdd = new int32_t[data.size()];
+	int32_t* intRamDataToAdd = new int32_t[data.size()];
 
 	for (long unsigned int i = 0; i < data.size(); i++)
 	{
 		intRamDataToAdd[i] = *((int32_t*)data.at(i));
 	}
 
-    cl::Buffer* buffer=new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(int32_t) * data.size());
-    queue.enqueueWriteBuffer(*buffer,CL_TRUE,count, sizeof(int32_t) * data.size(),intRamDataToAdd);
-    return buffer;
+	cl::Buffer* buffer = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(int32_t) * data.size());
+	queue.enqueueWriteBuffer(*buffer, CL_TRUE, count, sizeof(int32_t) * data.size(), intRamDataToAdd);
+	return buffer;
 }
 
 cl::Buffer* Scheduler::generateBufferForCHAR(std::vector<void*> data, cl::Context context, cl::CommandQueue queue, int count) {
-    char* charRamDataToAdd = new char[data.size()];
+	char* charRamDataToAdd = new char[data.size()];
 
 	for (long unsigned int i = 0; i < data.size(); i++)
 	{
 		charRamDataToAdd[i] = *((char*)data.at(i));
 	}
 
-    cl::Buffer *buffer = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(char) * data.size());
-    queue.enqueueWriteBuffer(*buffer,CL_TRUE,count, sizeof(char) * data.size(),charRamDataToAdd);
-    return buffer;
+	cl::Buffer* buffer = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(char) * data.size());
+	queue.enqueueWriteBuffer(*buffer, CL_TRUE, count, sizeof(char) * data.size(), charRamDataToAdd);
+	return buffer;
 }
 
 cl::Buffer* Scheduler::generateBufferForDOUBLE(std::vector<void*> data, cl::Context context, cl::CommandQueue queue, int count) {
-    double* doubleRamDataToAdd = new double[data.size()];
+	double* doubleRamDataToAdd = new double[data.size()];
 
 	for (long unsigned int i = 0; i < data.size(); i++)
 	{
 		doubleRamDataToAdd[i] = *((double*)data.at(i));
 	}
 
-    cl::Buffer *buffer = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(double) * data.size());
-    queue.enqueueWriteBuffer(*buffer,CL_TRUE,count, sizeof(double) * data.size(),doubleRamDataToAdd);
-    return buffer;
+	cl::Buffer* buffer = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(double) * data.size());
+	queue.enqueueWriteBuffer(*buffer, CL_TRUE, count, sizeof(double) * data.size(), doubleRamDataToAdd);
+	return buffer;
 }
 
 cl::Buffer* Scheduler::generateBufferForFLOAT(std::vector<void*> data, cl::Context context, cl::CommandQueue queue, int count) {
-    float* floatRamDataToAdd = new float[data.size()];
+	float* floatRamDataToAdd = new float[data.size()];
 
 	for (long unsigned int i = 0; i < data.size(); i++)
 	{
 		floatRamDataToAdd[i] = *((float*)data.at(i));
 	}
 
-    cl::Buffer *buffer = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(float) * data.size());
-    queue.enqueueWriteBuffer(*buffer,CL_TRUE,count, sizeof(float) * data.size(), floatRamDataToAdd);
-    return buffer;
+	cl::Buffer* buffer = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(float) * data.size());
+	queue.enqueueWriteBuffer(*buffer, CL_TRUE, count, sizeof(float) * data.size(), floatRamDataToAdd);
+	return buffer;
+}
+
+cl::Buffer* Scheduler::generateBufferForUINTConstant(void* data, cl::Context context, cl::CommandQueue queue, int count, cl::Kernel kernel)
+{
+	cl::Buffer* returnValue = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(unsigned int), &ErrorCode);
+	//queue.enqueueWriteBuffer(*returnValue, CL_TRUE, count, sizeof(unsigned int), data);
+	ErrorCode = kernel.setArg(count, *((unsigned int*)data));
+	return returnValue;
+}
+
+cl::Buffer* Scheduler::generateBufferForINTConstant(void* data, cl::Context context, cl::CommandQueue queue, int count, cl::Kernel kernel)
+{
+	cl::Buffer* returnValue = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(int), &ErrorCode);
+	//queue.enqueueWriteBuffer(*returnValue, CL_TRUE, count, sizeof(int), data);
+	ErrorCode = kernel.setArg(count, *((int*)data));
+	return returnValue;
+}
+
+cl::Buffer* Scheduler::generateBufferForFLOATConstant(void* data, cl::Context context, cl::CommandQueue queue,
+	int count, cl::Kernel kernel)
+{
+	int ErrorCode = 0;
+	cl::Buffer* returnValue = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(float), &ErrorCode);
+	//queue.enqueueWriteBuffer(*returnValue, CL_TRUE, count, sizeof(float), data);
+	ErrorCode = kernel.setArg(count, *((float*)data));
+	return returnValue;
+}
+
+cl::Buffer* Scheduler::generateBufferForDOUBLEConstant(void* data, cl::Context context, cl::CommandQueue queue,
+	int count, cl::Kernel kernel)
+{
+	int ErrorCode = 0;
+	cl::Buffer* returnValue = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(double), &ErrorCode);
+	//queue.enqueueWriteBuffer(*returnValue, CL_TRUE, count, sizeof(double), data);
+	ErrorCode = kernel.setArg(count, *((double*)data));
+	return returnValue;
+}
+
+cl::Buffer* Scheduler::generateBufferForCHARConstant(void* data, cl::Context context, cl::CommandQueue queue, int count, cl::Kernel kernel)
+{
+	int ErrorCode = 0;
+	cl::Buffer* returnValue = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(char), &ErrorCode);
+	//queue.enqueueWriteBuffer(*returnValue, CL_TRUE, count, sizeof(char), data);
+	ErrorCode = kernel.setArg(count, *((char*)data));
+	return returnValue;
 }
 
 std::vector<void*> Scheduler::readDataFromBufferForUINT(Task* task, cl::CommandQueue queue, int count)
@@ -213,7 +285,7 @@ std::vector<void*> Scheduler::readDataFromBufferForUINT(Task* task, cl::CommandQ
 	uint32_t* data = new uint32_t[task->getLoad()];
 	uint32_t* copiedData = new uint32_t[task->getLoad()];
 	std::vector<void*> returnData;
-	queue.enqueueReadBuffer(*task->readBuffer(), CL_TRUE,count, sizeof(uint32_t) * task->getLoad(),data);
+	queue.enqueueReadBuffer(*task->readBuffer(), CL_TRUE, count, sizeof(uint32_t) * task->getLoad(), data);
 	queue.finish();
 	for (int i = 0; i < task->getLoad(); i++) {
 		copiedData[i] = data[i];
@@ -285,5 +357,5 @@ std::vector<void*> Scheduler::readDataFromBufferForFLOAT(Task* task, cl::Command
 }
 
 void Scheduler::setCoreCount(int cores) {
-    CoreCount = cores;
+	CoreCount = cores;
 }

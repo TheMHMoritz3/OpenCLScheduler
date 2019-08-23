@@ -43,6 +43,7 @@ void StaticScheduler::schedule() {
 			cl::Kernel kernel = cl::Kernel(task->getProgramm(), task->getKernelName().c_str(),  &ErrorCode);
             if (ErrorCode == CL_SUCCESS) {
 				setRAMForCurrentTask(task, device, kernel, commandQueue);
+				readConstantsFromTask(task, device, kernel, commandQueue);
 				setRAMBufferForOutput(task, device, kernel);
 				setKernelLoad(task, device, kernel);
 				auto start = chrono::steady_clock::now();

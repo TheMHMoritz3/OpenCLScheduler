@@ -152,7 +152,16 @@ bool Task::hasDependencies()
 
 bool Task::dependenciesAreCalculated()
 {
-	return IsDataSet;
+	bool dependanciesAreCalculated = true;
+	if(hasDependencies())
+	{
+		for(Task* task : DependandTasks)
+		{
+			if(dependanciesAreCalculated)
+				dependanciesAreCalculated = task->isCalculationDone();
+		}
+	}
+	return (IsDataSet || dependanciesAreCalculated);
 }
 
 void Task::setElapsedTime(float time)
@@ -163,6 +172,21 @@ void Task::setElapsedTime(float time)
 float Task::elapsedTime()
 {
 	return ElapsedTime;
+}
+
+void Task::addConstant(Type type, void* data)
+{
+	ConstantData.push_back(std::pair<Type, void*>(type,data));
+}
+
+std::vector<std::pair<Type, void*>> Task::getAllConstantData()
+{
+	return ConstantData;
+}
+
+std::vector<std::string> Task::getTaskConstants()
+{
+	return KernelFileParser::getKernelConstantsForKernel(Path, KernelName);
 }
 
 void Task::readDataFromOtherThread()
@@ -194,4 +218,8 @@ void Task::addDependandTask(SCHEDULER::Task* task)
 void Task::addExternalDataMethod(std::function<void()> externalFunctionData)
 {
     GetExternalDataMethods.push_back(externalFunctionData);
+}
+
+std::vector<Task *> Task::getDependantTasks() {
+    return DependandTasks;
 }

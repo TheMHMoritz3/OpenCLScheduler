@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #ifndef EMBEDDEDSYSTEMSPROJECT_TASK_H
 #define EMBEDDEDSYSTEMSPROJECT_TASK_H
 
+#include <utility>
 #include <vector>
 #include <string>
 #include <functional>
@@ -66,6 +67,12 @@ namespace SCHEDULER {
 		void setElapsedTime(float time);
 		float elapsedTime();
 
+		void addConstant(Type type, void* data);
+		std::vector<std::pair<Type, void*>> getAllConstantData();
+
+		std::vector<std::string> getTaskConstants();
+
+		std::vector<Task*> getDependantTasks();
     private:
 		void readDataFromOtherThread();
 
@@ -79,6 +86,7 @@ namespace SCHEDULER {
 		int Load;
         std::vector<std::pair<Type, std::vector<void*>>> Data;
         std::vector<std::vector<void*>> ReturnData;
+		std::vector<std::pair<Type,void*>> ConstantData;
         Type ReturnDataType;
         std::vector<Task*> DependandTasks;
 		DependancyType DepType;

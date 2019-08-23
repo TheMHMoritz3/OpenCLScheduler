@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 #include "ScheduleManager.h"
 #include "StaticScheduler.h"
+#include "ASAP.h"
 #include <iostream>
 #include <fstream>
 #include <CL/cl.hpp>
@@ -52,6 +53,8 @@ void ScheduleManager::startSchedule() {
             ActiveScheduler = new StaticScheduler(Tasks, Devices);
             break;
         case ScheduleType::ASAPHC:
+			ActiveScheduler = new ASAP(Tasks, Devices);
+			break;
         case ScheduleType::LIST:
         default:
             break;
@@ -78,6 +81,8 @@ void ScheduleManager::startSchedule(std::vector<Task*> tasks, Device* device)
 		ActiveScheduler = new StaticScheduler(tasks, devices);
 		break;
 	case ScheduleType::ASAPHC:
+		ActiveScheduler = new ASAP(tasks, devices);
+		break;
 	case ScheduleType::LIST:
 	default:
 		break;

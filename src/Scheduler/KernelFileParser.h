@@ -12,5 +12,6 @@ namespace SCHEDULER {
 		static std::vector<std::string> getKernelNames(std::string path);
 		static std::vector<std::vector<std::string>> getKernelArgs(std::string path);
 		static std::vector<std::string> getKernelArgsForKernel(std::string path, std::string kernelName);
+		static std::vector<std::string> getKernelConstantsForKernel(std::string path, std::string kernelName);
 	};
 }

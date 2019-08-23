@@ -32,7 +32,7 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 
 # add the executable
-add_library(Scheduler SHARED src/Scheduler/KernelFileParser.cpp src/Scheduler/KernelFileParser.h src/Scheduler/Device.cpp src/Scheduler/Device.h src/Scheduler/ScheduleManager.cpp src/Scheduler/ScheduleManager.h src/Scheduler/Scheduler.cpp src/Scheduler/Scheduler.h src/Scheduler/Task.cpp src/Scheduler/Task.h src/Scheduler/StaticScheduler.cpp src/Scheduler/StaticScheduler.h src/Scheduler/SchedulerNamespace.h src/Scheduler/scheduler_global.h src/Scheduler/DevicePropertys.cpp src/Scheduler/DevicePropertys.h)
+add_library(Scheduler SHARED src/Scheduler/KernelFileParser.cpp src/Scheduler/KernelFileParser.h src/Scheduler/Device.cpp src/Scheduler/Device.h src/Scheduler/ScheduleManager.cpp src/Scheduler/ScheduleManager.h src/Scheduler/Scheduler.cpp src/Scheduler/Scheduler.h src/Scheduler/Task.cpp src/Scheduler/Task.h src/Scheduler/StaticScheduler.cpp src/Scheduler/StaticScheduler.h src/Scheduler/ASAP.cpp src/Scheduler/ASAP.h src/Scheduler/SchedulerNamespace.h src/Scheduler/scheduler_global.h src/Scheduler/DevicePropertys.cpp src/Scheduler/DevicePropertys.h)
 if(UNIX)
 target_link_libraries(Scheduler libOpenCL.so)
 target_include_directories (Scheduler PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
@@ -61,10 +61,10 @@ get_target_property(QtCore_location Qt5::Core LOCATION)
 
 include_directories("${PROJECT_BINARY_DIR}")
 
-qt5_wrap_ui(UI_UICHEADERS src/UI/MainWindow.ui src/UI/TaskTabWidget.ui src/UI/OpenTaskWizard.ui)
+qt5_wrap_ui(UI_UICHEADERS src/UI/MainWindow.ui src/UI/ConstantDialog.ui src/UI/TaskTabWidget.ui src/UI/OpenTaskWizard.ui)
 
 # add the executable 
-add_executable(UI ${UI_UICHEADERS} src/UI/main.cpp src/UI/OpenKernelFileWizard.cpp src/UI/OpenKernelFileWizard.h src/UI/TUI.cpp src/UI/TUI.h src/UI/MainWindow.h src/UI/MainWindow.cpp src/UI/TaskTabWidget.h src/UI/TaskTabWidget.cpp src/UI/RandomNumberGenerator.h src/UI/RandomNumberGenerator.cpp)
+add_executable(UI ${UI_UICHEADERS} src/UI/main.cpp src/UI/ConstantDialog.cpp src/UI/ConstantDialog.h src/UI/OpenKernelFileWizard.cpp src/UI/OpenKernelFileWizard.h src/UI/TUI.cpp src/UI/TUI.h src/UI/MainWindow.h src/UI/MainWindow.cpp src/UI/TaskTabWidget.h src/UI/TaskTabWidget.cpp src/UI/RandomNumberGenerator.h src/UI/RandomNumberGenerator.cpp)
 
 add_dependencies(UI Scheduler CAN)
 target_link_libraries(UI LINK_PUBLIC Scheduler CAN Qt5::Widgets)
