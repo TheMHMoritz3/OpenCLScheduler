@@ -141,5 +141,6 @@ void ScheduleManager::setActiveDevice(int id) {
 }
 
 void ScheduleManager::startSingleDeviceScheduling() {
+    Type = ActiveDevice->getProperties()->getSchedule();
     startSchedule(ActiveDevice->getProperties()->getTasksToSchedule(),ActiveDevice);
 }
