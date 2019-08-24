@@ -31,7 +31,8 @@ namespace UI {
 		void onTasksToScheduleItemClicked(QStandardItem* item);
 		void startSchedule();
 		void onShowScheduleGraphClicked();
-
+		void onTabCloseClicked(int id);
+        void onTaskWidgetDoubleClicked(const QModelIndex &index);
 	private:
 		Ui::MainWindow ui;
 

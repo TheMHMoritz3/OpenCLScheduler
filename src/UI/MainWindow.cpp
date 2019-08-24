@@ -284,6 +284,8 @@ void MainWindow::makeConnections()
 	connect(ui.CoreCountSpinBox, SIGNAL(valueChanged(int)), this, SLOT(onCoreCountChanged()));
 	connect(ui.SchedulingTypeSpinBox,SIGNAL(currentIndexChanged(int)), this, SLOT(onSchedulingTypeChanged()));
 	connect(ui.ShowScheduleGraphicButton,SIGNAL(clicked()),this,SLOT(onShowScheduleGraphClicked()));
+	connect(ui.TasksWidget,SIGNAL(tabCloseRequested(int)),this,SLOT(onTabCloseClicked(int)));
+	connect(ui.TasksListView, SIGNAL(doubleClicked(const QModelIndex&)),this,SLOT(onTaskWidgetDoubleClicked(const QModelIndex&)));
 }
 
 void MainWindow::updateTasksModel()
@@ -294,9 +296,9 @@ void MainWindow::updateTasksModel()
 	{
 		QStandardItem* item = new QStandardItem(tr((task->getKernelName() + "- %1").c_str()).arg(task->getId()));
 		item->setCheckable(true);
+		item->setEditable(false);
 		TasksToScheduleModel->invisibleRootItem()->appendRow(item);
 		TaskTabWidget *widget = new TaskTabWidget(task, this);
-		ui.TasksWidget->addTab(widget, tr((task->getKernelName() + "- %1").c_str()).arg(task->getId()));
 		TaskWidgets.push_back(widget);
 		widget->setTaskModel(Tasks);
 		widget->refresh();
@@ -394,4 +396,13 @@ void MainWindow::onShowScheduleGraphClicked() {
 
     ui.TasksWidget->addTab(plot,"Plot");
     ui.TasksWidget->setCurrentIndex(ui.TasksWidget->count()-1);
+}
+
+void MainWindow::onTabCloseClicked(int id) {
+    ui.TasksWidget->removeTab(id);
+}
+
+void MainWindow::onTaskWidgetDoubleClicked(const QModelIndex &index) {
+
+    ui.TasksWidget->addTab(TaskWidgets.at(index.row()), TasksToScheduleModel->item(index.row())->text());
 }
