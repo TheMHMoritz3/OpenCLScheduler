@@ -59,6 +59,12 @@ set(CMAKE_AUTOUIC ON)
 find_package(Qt5 COMPONENTS REQUIRED Core Gui Widgets)
 
 MESSAGE("Searching for QWT")
+IF(WIN32)
+SET(QWT_INCLUDE_DIR ../qwt/src )
+
+set(QWT_LIBRARY ../qwt/lib/qwt )
+
+ELSE(WIN32)
 FIND_PATH(QWT_INCLUDE_DIR NAMES qwt.h PATHS
         /usr/include
         /usr/local/include
@@ -87,7 +93,7 @@ ELSE (QWT_FOUND)
         MESSAGE(FATAL_ERROR "Could not find QWT")
     ENDIF (QWT_FIND_REQUIRED)
 ENDIF (QWT_FOUND)
-
+ENDIF(WIN32)
 
 get_target_property(QtCore_location Qt5::Core LOCATION)
 
