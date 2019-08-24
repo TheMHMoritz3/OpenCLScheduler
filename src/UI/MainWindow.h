@@ -44,6 +44,8 @@ namespace UI {
 
 		void decorateAllDevices();
 
+		void loadCanData(CAN::CanID canID,int canLoad, SCHEDULER::Task* task);
+
 		QStandardItemModel* const TasksToScheduleModel;
 		QStandardItemModel* const ScheduleTimeModel;
 		SCHEDULER::ScheduleManager* ScheduleManager;

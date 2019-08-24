@@ -303,7 +303,7 @@ void TaskTabWidget::canBusActivated()
 }
 
 void TaskTabWidget::readDataFromBusClicked() {
-	qDebug() << "Read Can Data";
+	//qDebug() << "Read Can Data";
 	Task->setDataDependancy(SCHEDULER::DependancyType::UserInput);
 	switch (Ui.CanAdressComboBox->currentIndex()) {
 	case 0:

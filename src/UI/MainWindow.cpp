@@ -49,50 +49,104 @@ void MainWindow::multiThreaddingCheckstateChanged()
 
 void MainWindow::loadPreset()
 {
+	int DefaultCanLoad = 10;
+
+	QMessageBox msg;
+	msg.setIcon(QMessageBox::Question);
+	msg.setText(tr("Do you want to load the preset from the CAN-Bus?"));
+	msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+	bool CANAccepted = (msg.exec() == QMessageBox::StandardButton::Yes);
+
 	SCHEDULER::Task* xAxis = ScheduleManager->addTask("kernels/accel_sensor.cl", "xAxis");
 	xAxis->setReturnDataType(SCHEDULER::Type::FLOAT);
 	xAxis->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
 	Tasks.emplace_back(xAxis);
+	if(CANAccepted)
+	{
+		xAxis->setDataDependancy(SCHEDULER::DependancyType::UserInput);
+		loadCanData(CAN::CanID::AccelerationLongitudinal, DefaultCanLoad,xAxis);
+	}
 
 	SCHEDULER::Task* yAxis = ScheduleManager->addTask("kernels/accel_sensor.cl", "yAxis");
 	yAxis->setReturnDataType(SCHEDULER::Type::FLOAT);
 	yAxis->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
 	Tasks.emplace_back(yAxis);
+	if (CANAccepted)
+	{
+		yAxis->setDataDependancy(SCHEDULER::DependancyType::UserInput);
+		loadCanData(CAN::CanID::AccelerationLateral, DefaultCanLoad, yAxis);
+	}
 
 	SCHEDULER::Task* dualAxis = ScheduleManager->addTask("kernels/accel_sensor.cl", "dualAxis");
 	dualAxis->setReturnDataType(SCHEDULER::Type::FLOAT);
 	dualAxis->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
 	Tasks.emplace_back(dualAxis);
+	if (CANAccepted)
+	{
+		dualAxis->setDataDependancy(SCHEDULER::DependancyType::UserInput);
+		loadCanData(CAN::CanID::AccelerationLongitudinal, DefaultCanLoad, dualAxis);
+		loadCanData(CAN::CanID::AccelerationLateral, DefaultCanLoad, dualAxis);
+	}
 
 	SCHEDULER::Task* batteryCalc = ScheduleManager->addTask("kernels/battery_kernel.cl", "batteryCalc");
 	batteryCalc->setReturnDataType(SCHEDULER::Type::FLOAT);
 	batteryCalc->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
 	Tasks.emplace_back(batteryCalc);
+	if (CANAccepted)
+	{
+		batteryCalc->setDataDependancy(SCHEDULER::DependancyType::UserInput);
+		loadCanData(CAN::CanID::BatteryVoltage, DefaultCanLoad, batteryCalc);
+	}
 
 	SCHEDULER::Task* temp = ScheduleManager->addTask("kernels/temp_kernel.cl", "temp");
 	temp->setReturnDataType(SCHEDULER::Type::FLOAT);
 	temp->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
 	Tasks.emplace_back(temp);
+	if (CANAccepted)
+	{
+		temp->setDataDependancy(SCHEDULER::DependancyType::UserInput);
+		loadCanData(CAN::CanID::Temperature, DefaultCanLoad, temp);
+	}
 
 	SCHEDULER::Task* speedCalcFR = ScheduleManager->addTask("kernels/speed_kernel.cl", "speedCalc");
 	speedCalcFR->setReturnDataType(SCHEDULER::Type::FLOAT);
 	speedCalcFR->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
 	Tasks.emplace_back(speedCalcFR);
+	if (CANAccepted)
+	{
+		speedCalcFR->setDataDependancy(SCHEDULER::DependancyType::UserInput);
+		loadCanData(CAN::CanID::WheelFrontRight, DefaultCanLoad, speedCalcFR);
+	}
 
 	SCHEDULER::Task* speedCalcFL = ScheduleManager->addTask("kernels/speed_kernel.cl", "speedCalc");
 	speedCalcFL->setReturnDataType(SCHEDULER::Type::FLOAT);
 	speedCalcFL->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
 	Tasks.emplace_back(speedCalcFL);
+	if (CANAccepted)
+	{
+		speedCalcFL->setDataDependancy(SCHEDULER::DependancyType::UserInput);
+		loadCanData(CAN::CanID::WheelFrontLeft, DefaultCanLoad, speedCalcFL);
+	}
 
 	SCHEDULER::Task* speedCalcRR = ScheduleManager->addTask("kernels/speed_kernel.cl", "speedCalc");
 	speedCalcRR->setReturnDataType(SCHEDULER::Type::FLOAT);
 	speedCalcRR->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
 	Tasks.emplace_back(speedCalcRR);
+	if (CANAccepted)
+	{
+		speedCalcRR->setDataDependancy(SCHEDULER::DependancyType::UserInput);
+		loadCanData(CAN::CanID::WheelRearRight, DefaultCanLoad, speedCalcRR);
+	}
 
 	SCHEDULER::Task* speedCalcRL = ScheduleManager->addTask("kernels/speed_kernel.cl", "speedCalc");
 	speedCalcRL->setReturnDataType(SCHEDULER::Type::FLOAT);
 	speedCalcRL->setDataDependancy(SCHEDULER::DependancyType::OutsideDependancy);
 	Tasks.emplace_back(speedCalcRL);
+	if (CANAccepted)
+	{
+		speedCalcRL->setDataDependancy(SCHEDULER::DependancyType::UserInput);
+		loadCanData(CAN::CanID::WheelRearLeft, DefaultCanLoad, speedCalcRL);
+	}
 	
 	SCHEDULER::Task* median = ScheduleManager->addTask("kernels/speed_kernel.cl", "median");
 	median->setReturnDataType(SCHEDULER::Type::FLOAT);
@@ -362,6 +416,23 @@ void MainWindow::decorateAllDevices()
 	msg.exec();
 
 	ui.DeviceCombobox->setCurrentIndex(0);
+}
+
+void MainWindow::loadCanData(CAN::CanID canID, int canLoad, SCHEDULER::Task* task)
+{
+	CanManager->create(canID, canLoad);
+	std::vector<uint32_t*> dataSet = CanManager->getData(canID);
+	uint32_t* DataSet = new uint32_t[dataSet.size()];
+	std::vector<void*> taskData;
+	int i = 0;
+	for (uint32_t* data : dataSet)
+	{
+		DataSet[i] = *data;
+		taskData.push_back(&DataSet[i]);
+		i++;
+	}
+	task->setLoad(canLoad);
+	task->addData(taskData, SCHEDULER::UINT);
 }
 
 void MainWindow::onShowScheduleGraphClicked() {

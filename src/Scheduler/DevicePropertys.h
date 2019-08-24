@@ -27,6 +27,7 @@ namespace SCHEDULER {
 		void addTaskToSchedule(Task* task);
 		std::vector<Task*> getTasksToSchedule();
 
+
 	private:
 		std::string DeviceName;
 		ScheduleType Type;
