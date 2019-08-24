@@ -215,8 +215,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>219</width>
-        <height>283</height>
+        <width>793</width>
+        <height>650</height>
        </rect>
       </property>
       <attribute name="label">
@@ -283,8 +283,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>145</width>
-        <height>69</height>
+        <width>793</width>
+        <height>650</height>
        </rect>
       </property>
       <attribute name="label">
@@ -300,13 +300,21 @@
           <attribute name="title">
            <string>Data</string>
           </attribute>
-          <layout class="QHBoxLayout" name="horizontalLayout_6"/>
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <item>
+            <widget class="QwtPlot" name="DiagramPlot"/>
+           </item>
+          </layout>
          </widget>
          <widget class="QWidget" name="ExecutionTimeDiagramm">
           <attribute name="title">
            <string>Execution Times</string>
           </attribute>
-          <layout class="QHBoxLayout" name="horizontalLayout_5"/>
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <item>
+            <widget class="QwtPlot" name="ExecutionTimes"/>
+           </item>
+          </layout>
          </widget>
         </widget>
        </item>
@@ -316,6 +324,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QwtPlot</class>
+   <extends>QFrame</extends>
+   <header>qwt_plot.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
