@@ -208,6 +208,7 @@ void MainWindow::deviceComboboxChanged()
 		decorateAllDevices();
 	else {
 	    ActiveDevicePropertie = Devices.at(ui.DeviceCombobox->currentIndex());
+        ScheduleManager->setActiveDevice(ui.DeviceCombobox->currentIndex());
 		if ((ActiveDevicePropertie==nullptr)||(ActiveDevicePropertie->getName() != ui.DeviceCombobox->currentText().toStdString())) {
 			QString deviceName = ui.DeviceCombobox->currentText();
 			readDeviceData(deviceName.toStdString());
@@ -238,16 +239,18 @@ void MainWindow::onTasksToScheduleItemClicked(QStandardItem* item)
 	}
 }
 
-void MainWindow::startSchedule()
-{
-	auto start = std::chrono::steady_clock::now();
-	ScheduleManager->startMultiDeviceScheduling();
-	auto end = std::chrono::steady_clock::now();
-	for(TaskTabWidget* TaskWidget : TaskWidgets)
-	{
-		TaskWidget->refresh();
-	}
+void MainWindow::startSchedule() {
+    auto start = std::chrono::steady_clock::now();
+    if (ui.DeviceCombobox->currentIndex() >= Devices.size()) {
+        ScheduleManager->startMultiDeviceScheduling();
+    }else{
+        ScheduleManager->startSingleDeviceScheduling();
+    }
+    for (TaskTabWidget *TaskWidget : TaskWidgets) {
+        TaskWidget->refresh();
+    }
 
+    auto end = std::chrono::steady_clock::now();
 	QStandardItem* item = new QStandardItem(tr("%1").arg(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()));
 	ScheduleTimeModel->appendRow(item);
 }

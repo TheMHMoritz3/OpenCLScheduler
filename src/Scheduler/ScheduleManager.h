@@ -37,6 +37,7 @@ namespace SCHEDULER {
 		void searchForDevices();
         void startSchedule();
 		void startMultiDeviceScheduling();
+		void startSingleDeviceScheduling();
         void setScheduleType(ScheduleType type);
 
 		Task* addTask(std::string filePath, std::string kernelName);
@@ -44,6 +45,7 @@ namespace SCHEDULER {
         int getKernelCount();
         int getDeviceCount();
 		DeviceProperties* getDeviceProperties(int i) const;
+		void setActiveDevice(int id);
 
     private:
 		void startSchedule(std::vector<Task*>tasks, Device* device);
@@ -53,6 +55,7 @@ namespace SCHEDULER {
         std::vector<Task*> Tasks;
         std::vector<Device*> Devices;
         Scheduler* ActiveScheduler;
+        Device* ActiveDevice;
     };
 }
 

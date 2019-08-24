@@ -135,3 +135,12 @@ DeviceProperties* ScheduleManager::getDeviceProperties(int i) const
 {
 	return Devices.at(i)->getProperties();
 }
+
+void ScheduleManager::setActiveDevice(int id) {
+    ActiveDevice = Devices.at(id);
+}
+
+void ScheduleManager::startSingleDeviceScheduling() {
+    Type = ActiveDevice->getProperties()->getSchedule();
+    startSchedule(ActiveDevice->getProperties()->getTasksToSchedule(),ActiveDevice);
+}
