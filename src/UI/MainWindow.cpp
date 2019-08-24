@@ -405,4 +405,5 @@ void MainWindow::onTabCloseClicked(int id) {
 void MainWindow::onTaskWidgetDoubleClicked(const QModelIndex &index) {
 
     ui.TasksWidget->addTab(TaskWidgets.at(index.row()), TasksToScheduleModel->item(index.row())->text());
+    TaskWidgets.at(index.row())->refresh();
 }
