@@ -30,6 +30,7 @@ namespace UI {
 		void onSchedulingTypeChanged();
 		void onTasksToScheduleItemClicked(QStandardItem* item);
 		void startSchedule();
+		void onShowScheduleGraphClicked();
 
 	private:
 		Ui::MainWindow ui;

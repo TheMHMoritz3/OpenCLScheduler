@@ -6,7 +6,8 @@
 #include "OpenKernelFileWizard.h"
 #include <sstream>
 #include <QDebug>
-
+#include <qwt_plot.h>
+#include <qwt_plot_barchart.h>
 using namespace SCHEDULER;
 using namespace UI;
 
@@ -247,7 +248,7 @@ void MainWindow::startSchedule()
 		TaskWidget->refresh();
 	}
 
-	QStandardItem* item = new QStandardItem(tr("%1 ms").arg(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()));
+	QStandardItem* item = new QStandardItem(tr("%1").arg(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()));
 	ScheduleTimeModel->appendRow(item);
 }
 
@@ -282,6 +283,7 @@ void MainWindow::makeConnections()
 	connect(ui.ScheduleButton, SIGNAL(clicked()), this, SLOT(startSchedule()));
 	connect(ui.CoreCountSpinBox, SIGNAL(valueChanged(int)), this, SLOT(onCoreCountChanged()));
 	connect(ui.SchedulingTypeSpinBox,SIGNAL(currentIndexChanged(int)), this, SLOT(onSchedulingTypeChanged()));
+	connect(ui.ShowScheduleGraphicButton,SIGNAL(clicked()),this,SLOT(onShowScheduleGraphClicked()));
 }
 
 void MainWindow::updateTasksModel()
@@ -355,4 +357,41 @@ void MainWindow::decorateAllDevices()
 	msg.exec();
 
 	ui.DeviceCombobox->setCurrentIndex(0);
+}
+
+void MainWindow::onShowScheduleGraphClicked() {
+    if(ScheduleTimeModel->rowCount()==0){
+        QMessageBox msg;
+        msg.setIcon(QMessageBox::Information);
+        msg.setText(tr("Please run a Schedule at least once."));
+        msg.exec();
+        return;
+    }
+
+    QwtPlot *plot = new QwtPlot(this);
+
+
+    plot->setTitle("Execution Times");
+    plot->setCanvasBackground(Qt::white);
+
+    QVector<QPointF> points;
+
+    for(int i = 0; i<ScheduleTimeModel->rowCount(); i++)
+        points<<QPointF(i,ScheduleTimeModel->item(i)->text().toDouble());
+
+    plot->setAxisTitle(QwtPlot::xBottom,QString::fromUtf8("Run Number"));
+    plot->setAxisAutoScale(QwtPlot::xBottom);
+    plot->setAxisTitle(QwtPlot::yLeft,QString::fromUtf8("Elapsed Times in ms"));
+    plot->setAxisAutoScale(QwtPlot::yLeft);
+
+    QwtPlotBarChart* curve = new QwtPlotBarChart();
+    curve->setSamples(points);
+    curve->attach(plot);
+
+    plot->replot();
+
+    plot->show();
+
+    ui.TasksWidget->addTab(plot,"Plot");
+    ui.TasksWidget->setCurrentIndex(ui.TasksWidget->count()-1);
 }
