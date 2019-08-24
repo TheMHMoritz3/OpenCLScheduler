@@ -20,6 +20,12 @@
       <property name="currentIndex">
        <number>-1</number>
       </property>
+      <property name="tabsClosable">
+       <bool>true</bool>
+      </property>
+      <property name="movable">
+       <bool>true</bool>
+      </property>
      </widget>
     </item>
    </layout>
@@ -185,10 +191,10 @@
      <item>
       <widget class="QCommandLinkButton" name="ShowScheduleGraphicButton">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="text">
-        <string>CommandLinkButton</string>
+        <string>Schow Shedule Graph</string>
        </property>
        <property name="checkable">
         <bool>false</bool>
