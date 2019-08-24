@@ -5,7 +5,9 @@
 #include <QDebug>
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
+#include <qwt_plot_barchart.h>
 #include <qwt_legend.h>
+#include <qwt_compat.h>
 
 //using namespace SCHEDULER;
 using namespace UI;
@@ -232,6 +234,23 @@ void TaskTabWidget::generateExecutionTimeDiagramm()
 		QStandardItem* item = new QStandardItem();
 		item->setText(tr("%1").arg(Task->elapsedTime()));
 		ExecutionTimeModel->appendRow(item);
+
+		Ui.ExecutionTimes->setTitle("Execution Times");
+        Ui.ExecutionTimes->setCanvasBackground(Qt::white);
+
+        QVector<QPointF> points;
+        points<<QPointF(ExecutionTimeModel->rowCount(),Task->elapsedTime());
+
+        Ui.ExecutionTimes->setAxisTitle(QwtPlot::xBottom,QString::fromUtf8("Run Number"));
+        Ui.ExecutionTimes->setAxisAutoScale(QwtPlot::xBottom);
+        Ui.ExecutionTimes->setAxisTitle(QwtPlot::yLeft,QString::fromUtf8("Elapsed Times in ms"));
+        Ui.ExecutionTimes->setAxisAutoScale(QwtPlot::yLeft);
+
+        QwtPlotBarChart* curve = new QwtPlotBarChart();
+        curve->setSamples(points);
+        curve->attach(Ui.ExecutionTimes);
+
+        Ui.ExecutionTimes->replot();
 	}
 }
 
@@ -451,7 +470,6 @@ void TaskTabWidget::onItemChanged(QStandardItem* item) {
 void TaskTabWidget::generateGraph() {
     Ui.DiagramPlot->setTitle("Data Plot");
     Ui.DiagramPlot->setCanvasBackground(Qt::white);
-    Ui.DiagramPlot->insertLegend(new QwtLegend());
 
     QPolygonF points;
     for(int i = 0; i<Model->rowCount(); i++){

@@ -73,20 +73,23 @@ void ASAP::schedule() {
 	}
 }
 
-void ASAP::enqueueTasksWithNoDependency()
-{
-//    cout<<"Tasks Left Count: "<<TasksToSchedule.size()<<endl;
+void ASAP::enqueueTasksWithNoDependency() {
+//    cout << "Tasks Left Count: " << TasksToSchedule.size() << endl;
     int i = 0;
-	for (Task* task : TasksToSchedule)
-	{
-		if (task->dependenciesAreCalculated())
-		{
-			TasksToScheduleInStep.push(task);
-			TasksToSchedule.erase(TasksToSchedule.begin() + i);
-		}
-		i++;
-	}
+    bool TasksAreRemoved = true;
+    while (TasksAreRemoved) {
+        TasksAreRemoved = false;
+        for (int i = 0; i<TasksToSchedule.size(); i++) {
+            if (TasksToSchedule.at(i)->dependenciesAreCalculated()) {
+                TasksToScheduleInStep.push(TasksToSchedule.at(i));
+                TasksToSchedule.erase(TasksToSchedule.begin() + i);
+                TasksAreRemoved = true;
+            }
+            i++;
+        }
+    }
 }
+
 
 void ASAP::generateAllPrograms()
 {
