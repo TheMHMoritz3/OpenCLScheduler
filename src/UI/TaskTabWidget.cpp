@@ -6,8 +6,7 @@
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_barchart.h>
-#include <qwt_legend.h>
-#include <qwt_compat.h>
+
 
 //using namespace SCHEDULER;
 using namespace UI;
