@@ -3,6 +3,7 @@
 #include "ui_MainWindow.h"
 #include <QMainWindow>
 #include <QStandardItemModel>
+#include <QProgressDialog>
 #include "src/Scheduler/ScheduleManager.h"
 #include "src/Scheduler/DevicePropertys.h"
 #include "src/Scheduler/Task.h"
@@ -33,6 +34,7 @@ namespace UI {
 		void onShowScheduleGraphClicked();
 		void onTabCloseClicked(int id);
         void onTaskWidgetDoubleClicked(const QModelIndex &index);
+
 	private:
 		Ui::MainWindow ui;
 
@@ -41,6 +43,7 @@ namespace UI {
 		void updateTasksModel();
 		void readDeviceData(std::string deviceName);
 		void addTaskToScheduledTasks(std::string taskName);
+        void loadCanData(CAN::CanID canID,int canLoad, SCHEDULER::Task* task);
 
 		void decorateAllDevices();
 
