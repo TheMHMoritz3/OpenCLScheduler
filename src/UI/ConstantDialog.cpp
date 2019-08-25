@@ -28,7 +28,9 @@ void* ConstantDialog::getDataFromValue(SCHEDULER::Type type, QVariant value)
 		return getDataFromCharValue(value);
 	case SCHEDULER::FLOAT: 
 		return getDataFromFloatValue(value);
-	case SCHEDULER::DOUBLE: break;
+	case SCHEDULER::DOUBLE:
+	    return getDataFromDoubleValue(value);
+	    break;
 	case SCHEDULER::STRING:
 	default:
 		return nullptr;

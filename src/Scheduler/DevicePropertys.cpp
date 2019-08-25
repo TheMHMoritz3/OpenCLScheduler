@@ -13,6 +13,7 @@ DeviceProperties::DeviceProperties (std::string deviceName) :
 	DeviceName = deviceName;
 	Type = STATIC;
 	CoreCount = 0;
+	OutOfOrderExecution = false;
 }
 
 
@@ -49,4 +50,13 @@ std::vector<Task*> DeviceProperties::getTasksToSchedule()
 void DeviceProperties::addTaskToSchedule(Task* task)
 {
 	TasksToSchedule.push_back(task);
+}
+
+bool DeviceProperties::getOutOfOrderExecution() {
+    return OutOfOrderExecution;
+}
+
+void DeviceProperties::setOutOfOrderExecution(bool ooe) {
+    if(Type != STATIC)
+        OutOfOrderExecution=ooe;
 }
