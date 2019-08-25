@@ -39,7 +39,7 @@ void ReadyFireScheduler::schedule() {
                     enqueueTak(task, device, commandQueue, kernel,currentEvent);
                     TasksToReadInStep.push_back(task);
                 } else
-//                    cout << "First Step Kernel Creation Resolved Error: " << ErrorCode << endl;
+                    cout << "First Step Kernel Creation Resolved Error: " << ErrorCode << endl;
             }
             cl::Event::waitForEvents(events);
             for (Task *task : TasksToReadInStep) {
