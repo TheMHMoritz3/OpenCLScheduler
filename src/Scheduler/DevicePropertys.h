@@ -15,7 +15,7 @@
 namespace SCHEDULER {
 	class SCHEDULER_EXPORT DeviceProperties {
 	public:
-		DeviceProperties(std::string deviceName);
+		explicit DeviceProperties(std::string deviceName);
 		DeviceProperties() = delete;
 
 		std::string getName();
@@ -27,12 +27,15 @@ namespace SCHEDULER {
 		void addTaskToSchedule(Task* task);
 		std::vector<Task*> getTasksToSchedule();
 
+		bool getOutOfOrderExecution();
+		void setOutOfOrderExecution(bool ooe);
 
 	private:
 		std::string DeviceName;
 		ScheduleType Type;
 		std::vector<Task*> TasksToSchedule;
 		int CoreCount;
+		bool OutOfOrderExecution;
 	};
 }
 

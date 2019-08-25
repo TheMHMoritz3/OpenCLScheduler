@@ -39,9 +39,14 @@ ASAP::ASAP(std::vector<Task*> tasks, std::vector<Device*> device) : Scheduler(ta
 void ASAP::schedule() {
 	for (Device* device : Devices) {
 //		cout << "Device Name: " << device->getName() << endl;
-		cl::CommandQueue commandQueue(device->getDeviceContext(), device->getOclDevice());
-		CommandQueues.push_back(commandQueue);
+        cl::CommandQueue commandQueue;
 
+        if(device->getProperties()->getOutOfOrderExecution())
+		    commandQueue = cl::CommandQueue(device->getDeviceContext(), device->getOclDevice(),CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE);
+        else
+            commandQueue = cl::CommandQueue(device->getDeviceContext(), device->getOclDevice());
+
+		CommandQueues.push_back(commandQueue);
 		while (!TasksToSchedule.empty()) {
 			enqueueTasksWithNoDependency();
 			while (!TasksToScheduleInStep.empty())

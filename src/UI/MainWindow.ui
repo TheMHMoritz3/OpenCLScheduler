@@ -36,7 +36,7 @@
      <x>0</x>
      <y>0</y>
      <width>1283</width>
-     <height>22</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -136,7 +136,7 @@
          <widget class="QComboBox" name="SchedulingTypeSpinBox">
           <item>
            <property name="text">
-            <string>List</string>
+            <string>Static</string>
            </property>
           </item>
           <item>
@@ -146,9 +146,16 @@
           </item>
           <item>
            <property name="text">
-            <string>Static</string>
+            <string>Ready Fire Scheduling</string>
            </property>
           </item>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="OutOfOrderScheduling">
+          <property name="text">
+           <string>Activate Out Of Order Scheduling</string>
+          </property>
          </widget>
         </item>
        </layout>
@@ -205,6 +212,9 @@
    </widget>
   </widget>
   <action name="actionOpen_Kernel">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Open Kernel</string>
    </property>

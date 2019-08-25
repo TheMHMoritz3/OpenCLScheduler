@@ -34,6 +34,7 @@ namespace UI {
 		void onShowScheduleGraphClicked();
 		void onTabCloseClicked(int id);
         void onTaskWidgetDoubleClicked(const QModelIndex &index);
+        void onActivateOutOfOrderSchedulingClicked();
 
 	private:
 		Ui::MainWindow ui;
