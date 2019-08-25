@@ -32,7 +32,7 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 
 # add the executable
-add_library(Scheduler SHARED src/Scheduler/KernelFileParser.cpp src/Scheduler/KernelFileParser.h src/Scheduler/Device.cpp src/Scheduler/Device.h src/Scheduler/ScheduleManager.cpp src/Scheduler/ScheduleManager.h src/Scheduler/Scheduler.cpp src/Scheduler/Scheduler.h src/Scheduler/Task.cpp src/Scheduler/Task.h src/Scheduler/StaticScheduler.cpp src/Scheduler/StaticScheduler.h src/Scheduler/ASAP.cpp src/Scheduler/ASAP.h src/Scheduler/SchedulerNamespace.h src/Scheduler/scheduler_global.h src/Scheduler/DevicePropertys.cpp src/Scheduler/DevicePropertys.h)
+add_library(Scheduler SHARED src/Scheduler/KernelFileParser.cpp src/Scheduler/KernelFileParser.h src/Scheduler/Device.cpp src/Scheduler/Device.h src/Scheduler/ScheduleManager.cpp src/Scheduler/ScheduleManager.h src/Scheduler/Scheduler.cpp src/Scheduler/Scheduler.h src/Scheduler/Task.cpp src/Scheduler/Task.h src/Scheduler/StaticScheduler.cpp src/Scheduler/StaticScheduler.h src/Scheduler/ASAP.cpp src/Scheduler/ASAP.h src/Scheduler/SchedulerNamespace.h src/Scheduler/scheduler_global.h src/Scheduler/DevicePropertys.cpp src/Scheduler/DevicePropertys.h src/Scheduler/ReadyFireScheduler.cpp src/Scheduler/ReadyFireScheduler.h)
 if(UNIX)
 target_link_libraries(Scheduler libOpenCL.so)
 target_include_directories (Scheduler PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
