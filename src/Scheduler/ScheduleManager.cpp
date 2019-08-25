@@ -57,6 +57,8 @@ void ScheduleManager::startSchedule() {
 			ActiveScheduler = new ASAP(Tasks, Devices);
 			break;
         case ScheduleType::READY_FIRE_SCHEDULER:
+            ActiveScheduler = new ReadyFireScheduler(Tasks,Devices);
+            break;
         default:
             break;
     }

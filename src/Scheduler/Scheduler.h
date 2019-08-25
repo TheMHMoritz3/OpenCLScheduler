@@ -38,12 +38,12 @@ namespace SCHEDULER {
         std::vector<Device*> Devices;
 		std::vector<cl::CommandQueue> CommandQueues;
 		cl_int ErrorCode;
-        void setRAMForCurrentTask(Task* task, Device *device, cl::Kernel kernel, cl::CommandQueue queue);
-		void readConstantsFromTask(Task* task, Device* device, cl::Kernel kernel, cl::CommandQueue commandQueue);
-		void setRAMBufferForOutput(Task* task, Device *device, cl::Kernel kernel);
-		void setKernelLoad(Task* task, Device *device, cl::Kernel kernel);
-		void enqueueTak(Task* task, Device *device, cl::CommandQueue commandQueue, cl::Kernel kernel);
-		void readDataFromTask(Task* task, cl::CommandQueue commandQueue);
+        virtual void setRAMForCurrentTask(Task* task, Device *device, cl::Kernel kernel, cl::CommandQueue queue);
+		virtual void readConstantsFromTask(Task* task, Device* device, cl::Kernel kernel, cl::CommandQueue commandQueue);
+		virtual void setRAMBufferForOutput(Task* task, Device *device, cl::Kernel kernel);
+		virtual void setKernelLoad(Task* task, Device *device, cl::Kernel kernel);
+		virtual void enqueueTak(Task* task, Device *device, cl::CommandQueue commandQueue, cl::Kernel kernel);
+		virtual void readDataFromTask(Task* task, cl::CommandQueue commandQueue);
     private:
         cl::Buffer *generateBufferForUINT(std::vector<void*>,cl::Context context ,cl::CommandQueue queue, int count);
         cl::Buffer *generateBufferForINT(std::vector<void*>,cl::Context context ,cl::CommandQueue queue, int count);

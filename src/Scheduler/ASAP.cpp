@@ -80,7 +80,6 @@ void ASAP::schedule() {
 
 void ASAP::enqueueTasksWithNoDependency() {
 //    cout << "Tasks Left Count: " << TasksToSchedule.size() << endl;
-    int i = 0;
     bool TasksAreRemoved = true;
     while (TasksAreRemoved) {
         TasksAreRemoved = false;
