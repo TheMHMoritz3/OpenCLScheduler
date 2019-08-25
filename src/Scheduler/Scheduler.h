@@ -38,6 +38,7 @@ namespace SCHEDULER {
         std::vector<Device*> Devices;
 		std::vector<cl::CommandQueue> CommandQueues;
 		cl_int ErrorCode;
+        int CoreCount;
         virtual void setRAMForCurrentTask(Task* task, Device *device, cl::Kernel kernel, cl::CommandQueue queue);
 		virtual void readConstantsFromTask(Task* task, Device* device, cl::Kernel kernel, cl::CommandQueue commandQueue);
 		virtual void setRAMBufferForOutput(Task* task, Device *device, cl::Kernel kernel);
@@ -62,8 +63,6 @@ namespace SCHEDULER {
 		std::vector<void*> readDataFromBufferForCHAR(Task* task, cl::CommandQueue queue, int count);
 		std::vector<void*> readDataFromBufferForDOUBLE(Task* task, cl::CommandQueue queue, int count);
 		std::vector<void*> readDataFromBufferForFLOAT(Task* task, cl::CommandQueue queue, int count);
-
-		int CoreCount;
     };
 }
 
