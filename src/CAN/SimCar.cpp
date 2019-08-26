@@ -66,7 +66,7 @@ void SimCar::addSensor(int id, Sensor *sensor) {
 int *SimCar::getNextSensorValues(int sensor, int count) {
     //Prüfen, dass man noch in der ArrayRange ist
     //assert(iterMap.at(sensor)+count <= sensorMap.at(sensor)->getCount());
-    return &(sensorMap.at(sensor)->getData()[iterMap.at(sensor)]);
+    return &(sensorMap.find(sensor)->second->getData()[iterMap.find(sensor)->second]);
 }
 
 std::map<int, Sensor *> SimCar::getSensorMap() {
