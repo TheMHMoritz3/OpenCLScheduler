@@ -272,9 +272,9 @@ void MainWindow::onSchedulingTypeChanged() {
 }
 
 void MainWindow::onTasksToScheduleItemClicked(QStandardItem *item) {
-    ActiveDevicePropertie->getTasksToSchedule().clear();
-    for (int i = 0; i < TasksToScheduleModel->rowCount(); i++) {
-        if (TasksToScheduleModel->item(i)->checkState() == Qt::CheckState::Checked) {
+    ActiveDevicePropertie->clearTasksToSchedule();
+    for(int i = 0; i<TasksToScheduleModel->rowCount(); i++){
+        if(TasksToScheduleModel->item(i)->checkState()==Qt::Checked){
             ActiveDevicePropertie->addTaskToSchedule(Tasks.at(i));
         }
     }
@@ -386,17 +386,18 @@ void MainWindow::decorateAllDevices() {
 }
 
 void MainWindow::loadCanData(CAN::CanID canID, int canLoad, SCHEDULER::Task *task) {
-    int *dataSet = CanManager->getValuesFromSimulation(canID, canLoad);
-    int *DataSet = new int[canLoad];
+    CanManager->create(canID, canLoad);
+    std::vector<uint32_t *> dataSet = CanManager->getData(canID);
+    uint32_t *DataSet = new uint32_t[dataSet.size()];
     std::vector<void *> taskData;
     int i = 0;
-    for (int i = 0; i < canLoad; i++) {
-        DataSet[i] = dataSet[i];
+    for (uint32_t *data : dataSet) {
+        DataSet[i] = *data;
         taskData.push_back(&DataSet[i]);
         i++;
     }
-    task->setLoad(canLoad / 2);
-    task->addData(taskData, SCHEDULER::INT);
+    task->setLoad(canLoad);
+    task->addData(taskData, SCHEDULER::UINT);
 }
 
 void MainWindow::onShowScheduleGraphClicked() {
