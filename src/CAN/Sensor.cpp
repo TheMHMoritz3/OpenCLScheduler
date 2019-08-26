@@ -110,7 +110,7 @@ u_int32_t Sensor::encodePulseTime(int speed) {
         return 0xffffffff;
     }
     long pulsetime = 240000 / (26 * speed);
-    std::cout << pulsetime << "//";
+//    std::cout << pulsetime << "//";
     auto *code = new u_int8_t[4];
     code[0] = (u_int8_t) (pulsetime / 65536);
     pulsetime -= (pulsetime / 65536) * 65536;
