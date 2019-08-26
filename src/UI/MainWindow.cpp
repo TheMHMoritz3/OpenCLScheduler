@@ -254,11 +254,8 @@ void MainWindow::deviceComboboxChanged() {
     else {
         ActiveDevicePropertie = Devices.at(ui.DeviceCombobox->currentIndex());
         ScheduleManager->setActiveDevice(ui.DeviceCombobox->currentIndex());
-        if ((ActiveDevicePropertie == nullptr) ||
-            (ActiveDevicePropertie->getName() != ui.DeviceCombobox->currentText().toStdString())) {
-            QString deviceName = ui.DeviceCombobox->currentText();
-            readDeviceData(deviceName.toStdString());
-        }
+        QString deviceName = ui.DeviceCombobox->currentText();
+        readDeviceData(deviceName.toStdString());
     }
 }
 
@@ -276,8 +273,8 @@ void MainWindow::onSchedulingTypeChanged() {
 
 void MainWindow::onTasksToScheduleItemClicked(QStandardItem *item) {
     ActiveDevicePropertie->getTasksToSchedule().clear();
-    for(int i = 0; i<TasksToScheduleModel->rowCount(); i++){
-        if(TasksToScheduleModel->item(i)->checkState()==Qt::CheckState::Checked){
+    for (int i = 0; i < TasksToScheduleModel->rowCount(); i++) {
+        if (TasksToScheduleModel->item(i)->checkState() == Qt::CheckState::Checked) {
             ActiveDevicePropertie->addTaskToSchedule(Tasks.at(i));
         }
     }
@@ -379,16 +376,6 @@ void MainWindow::readDeviceData(std::string deviceName) {
     }
 }
 
-void MainWindow::addTaskToScheduledTasks(std::string taskName) {
-    for (Task *task:Tasks) {
-        std::stringstream ss;
-        ss << task->getId();
-
-        if ((task->getKernelName() + "- " + ss.str()) == taskName)
-            ActiveDevicePropertie->addTaskToSchedule(task);
-    }
-}
-
 void MainWindow::decorateAllDevices() {
     QMessageBox msg;
     msg.setIcon(QMessageBox::Critical);
@@ -399,16 +386,16 @@ void MainWindow::decorateAllDevices() {
 }
 
 void MainWindow::loadCanData(CAN::CanID canID, int canLoad, SCHEDULER::Task *task) {
-    int* dataSet = CanManager->getValuesFromSimulation(canID, canLoad);
-    int* DataSet = new int[canLoad];
+    int *dataSet = CanManager->getValuesFromSimulation(canID, canLoad);
+    int *DataSet = new int[canLoad];
     std::vector<void *> taskData;
     int i = 0;
-    for (int i = 0; i<canLoad; i++) {
+    for (int i = 0; i < canLoad; i++) {
         DataSet[i] = dataSet[i];
         taskData.push_back(&DataSet[i]);
         i++;
     }
-    task->setLoad(canLoad/2);
+    task->setLoad(canLoad / 2);
     task->addData(taskData, SCHEDULER::INT);
 }
 
