@@ -275,8 +275,11 @@ void MainWindow::onSchedulingTypeChanged() {
 }
 
 void MainWindow::onTasksToScheduleItemClicked(QStandardItem *item) {
-    if (item->checkState() == Qt::Checked) {
-        addTaskToScheduledTasks(item->text().toStdString());
+    ActiveDevicePropertie->getTasksToSchedule().clear();
+    for(int i = 0; i<TasksToScheduleModel->rowCount(); i++){
+        if(TasksToScheduleModel->item(i)->checkState()==Qt::CheckState::Checked){
+            ActiveDevicePropertie->addTaskToSchedule(Tasks.at(i));
+        }
     }
 }
 
