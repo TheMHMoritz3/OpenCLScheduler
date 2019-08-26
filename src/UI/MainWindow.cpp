@@ -45,7 +45,7 @@ void MainWindow::multiThreaddingCheckstateChanged() {
 }
 
 void MainWindow::loadPreset() {
-    int DefaultCanLoad = 10;
+    int DefaultCanLoad = 20;
 
     QMessageBox msg;
     msg.setIcon(QMessageBox::Question);
@@ -405,7 +405,7 @@ void MainWindow::loadCanData(CAN::CanID canID, int canLoad, SCHEDULER::Task *tas
         taskData.push_back(&DataSet[i]);
         i++;
     }
-    task->setLoad(canLoad);
+    task->setLoad(canLoad/2);
     task->addData(taskData, SCHEDULER::INT);
 }
 
