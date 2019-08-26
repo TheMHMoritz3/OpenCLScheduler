@@ -396,18 +396,17 @@ void MainWindow::decorateAllDevices() {
 }
 
 void MainWindow::loadCanData(CAN::CanID canID, int canLoad, SCHEDULER::Task *task) {
-    CanManager->create(canID, canLoad);
-    std::vector<uint32_t *> dataSet = CanManager->getData(canID);
-    uint32_t *DataSet = new uint32_t[dataSet.size()];
+    int* dataSet = CanManager->getValuesFromSimulation(canID, canLoad);
+    int* DataSet = new int[canLoad];
     std::vector<void *> taskData;
     int i = 0;
-    for (uint32_t *data : dataSet) {
-        DataSet[i] = *data;
+    for (int i = 0; i<canLoad; i++) {
+        DataSet[i] = dataSet[i];
         taskData.push_back(&DataSet[i]);
         i++;
     }
     task->setLoad(canLoad);
-    task->addData(taskData, SCHEDULER::UINT);
+    task->addData(taskData, SCHEDULER::INT);
 }
 
 void MainWindow::onShowScheduleGraphClicked() {

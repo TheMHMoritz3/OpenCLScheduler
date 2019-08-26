@@ -25,6 +25,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 #include "CanNamespace.h"
 #include "CanAccessor.h"
+#include "SimCar.h"
 #include "can_global.h"
 
 namespace CAN {
@@ -35,9 +36,13 @@ namespace CAN {
         void create(std::vector<CanID> ids, int count);
         static double getSamplingRate(CanID id);
         std::vector<uint32_t*> getData(CanID id);
+        int* getValuesFromSimulation(CAN::CanID id, int count);
 
     private:
         std::map<int,CanAccessor*> CanThreadMap;
+        ValueGen::SimCar* SimCar;
+        bool SimulationTrigger;
+        int Count;
     };
 }
 
