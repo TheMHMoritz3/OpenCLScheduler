@@ -81,7 +81,7 @@ void ScheduleManager::startSchedule(std::vector<Task*> tasks, Device* device)
 	devices.push_back(device);
 	switch (Type) {
 	case ScheduleType::STATIC:
-		ActiveScheduler = new StaticScheduler(tasks, devices);
+	    ActiveScheduler = new StaticScheduler(tasks, devices);
 		break;
 	case ScheduleType::ASAPHC:
 		ActiveScheduler = new ASAP(tasks, devices);

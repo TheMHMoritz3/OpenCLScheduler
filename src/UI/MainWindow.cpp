@@ -270,7 +270,6 @@ void MainWindow::onCoreCountChanged() {
 }
 
 void MainWindow::onSchedulingTypeChanged() {
-    qDebug() << (ScheduleType) ui.SchedulingTypeSpinBox->currentIndex();
     ActiveDevicePropertie->setSchedule((ScheduleType) ui.SchedulingTypeSpinBox->currentIndex());
 }
 
