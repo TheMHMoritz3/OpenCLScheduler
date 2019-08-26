@@ -45,7 +45,7 @@ void MainWindow::multiThreaddingCheckstateChanged() {
 }
 
 void MainWindow::loadPreset() {
-    int DefaultCanLoad = 20;
+    int DefaultCanLoad = 20000;
 
     QMessageBox msg;
     msg.setIcon(QMessageBox::Question);
@@ -386,17 +386,18 @@ void MainWindow::decorateAllDevices() {
 }
 
 void MainWindow::loadCanData(CAN::CanID canID, int canLoad, SCHEDULER::Task *task) {
-    CanManager->create(canID, canLoad);
-    std::vector<uint32_t *> dataSet = CanManager->getData(canID);
-    uint32_t *DataSet = new uint32_t[dataSet.size()];
+//    CanManager->create(canID, canLoad);
+//    std::vector<uint32_t *> dataSet = CanManager->getData(canID);
+    int* dataSet = CanManager->getValuesFromSimulation(canID, canLoad);
+    uint32_t *DataSet = new uint32_t[canLoad];
     std::vector<void *> taskData;
     int i = 0;
-    for (uint32_t *data : dataSet) {
-        DataSet[i] = *data;
+    for (int i = 0; i<canLoad;i++) {
+        DataSet[i] = dataSet[i];
         taskData.push_back(&DataSet[i]);
         i++;
     }
-    task->setLoad(canLoad);
+    task->setLoad(canLoad/2);
     task->addData(taskData, SCHEDULER::UINT);
 }
 
