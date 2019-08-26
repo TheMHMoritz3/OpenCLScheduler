@@ -8,39 +8,49 @@
 #ifndef VALGEN_SENSOR_H
 #define VALGEN_SENSOR_H
 
-namespace ValueGen {
-    class Sensor {
-    public:
-        Sensor(int amount, int minL, int maxL, int minA, int maxA, int smooth, int stepS);
-        void regenValues();
-        int* getData();
-        int getCount();
-        static Sensor* generateWheelspeeds(Sensor main, Sensor curve, Sensor back);
-        void createTempOffset();
-        void modifyForYAccel();
-        void modifyForXAccel();
+namespace CAN {
+    namespace ValueGen {
+        class Sensor {
+        public:
+            Sensor(int amount, int minL, int maxL, int minA, int maxA, int smooth, int stepS);
 
-    private:
-        int nextRandi(int min, int max);
-        std::default_random_engine generator;
+            void regenValues();
 
-        static u_int32_t encodePulseTime(int pulse);
+            int *getData();
 
-        Sensor(int count, int* data);
+            int getCount();
 
-        int amount;     //  Anzahl der Datenpunkte
-        int maxLimit;   //	Obergrenze	differenz muss größer 2
-        int minLimit;   //	Untergrenze
-        int maxAccel;   //	muss positiv
-        int minAccel;   //	muss negativ
-        int smoothness; //	Mittelwert von smoothness Punkten nehmen um Spitzen zu glätten
-        int stepSize;   // 	1/stepSize max dist von vorherigem Datenpunkt
-        int* data;      //  results
+            static Sensor *generateWheelspeeds(Sensor main, Sensor curve, Sensor back);
 
-    protected:
-        Sensor();
+            void createTempOffset();
 
-    };
+            void modifyForYAccel();
+
+            void modifyForXAccel();
+
+        private:
+            int nextRandi(int min, int max);
+
+            std::default_random_engine generator;
+
+            static u_int32_t encodePulseTime(int pulse);
+
+            Sensor(int count, int *data);
+
+            int amount;     //  Anzahl der Datenpunkte
+            int maxLimit;   //	Obergrenze	differenz muss größer 2
+            int minLimit;   //	Untergrenze
+            int maxAccel;   //	muss positiv
+            int minAccel;   //	muss negativ
+            int smoothness; //	Mittelwert von smoothness Punkten nehmen um Spitzen zu glätten
+            int stepSize;   // 	1/stepSize max dist von vorherigem Datenpunkt
+            int *data;      //  results
+
+        protected:
+            Sensor();
+
+        };
+    }
 }
 
 
