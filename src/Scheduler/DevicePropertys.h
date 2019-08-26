@@ -24,8 +24,10 @@ namespace SCHEDULER {
 
 		void setSchedule(ScheduleType type);
 		ScheduleType getSchedule();
+
 		void addTaskToSchedule(Task* task);
 		std::vector<Task*> getTasksToSchedule();
+		void clearTasksToSchedule();
 
 		bool getOutOfOrderExecution();
 		void setOutOfOrderExecution(bool ooe);

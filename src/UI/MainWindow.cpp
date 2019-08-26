@@ -270,13 +270,15 @@ void MainWindow::onCoreCountChanged() {
 }
 
 void MainWindow::onSchedulingTypeChanged() {
-    qDebug() << (ScheduleType) ui.SchedulingTypeSpinBox->currentIndex();
     ActiveDevicePropertie->setSchedule((ScheduleType) ui.SchedulingTypeSpinBox->currentIndex());
 }
 
 void MainWindow::onTasksToScheduleItemClicked(QStandardItem *item) {
-    if (item->checkState() == Qt::Checked) {
-        addTaskToScheduledTasks(item->text().toStdString());
+    ActiveDevicePropertie->clearTasksToSchedule();
+    for(int i = 0; i<TasksToScheduleModel->rowCount(); i++){
+        if(TasksToScheduleModel->item(i)->checkState()==Qt::Checked){
+            ActiveDevicePropertie->addTaskToSchedule(Tasks.at(i));
+        }
     }
 }
 
@@ -373,16 +375,6 @@ void MainWindow::readDeviceData(std::string deviceName) {
                 }
             }
         }
-    }
-}
-
-void MainWindow::addTaskToScheduledTasks(std::string taskName) {
-    for (Task *task:Tasks) {
-        std::stringstream ss;
-        ss << task->getId();
-
-        if ((task->getKernelName() + "- " + ss.str()) == taskName)
-            ActiveDevicePropertie->addTaskToSchedule(task);
     }
 }
 

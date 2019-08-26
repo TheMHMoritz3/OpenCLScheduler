@@ -60,3 +60,7 @@ void DeviceProperties::setOutOfOrderExecution(bool ooe) {
     if(Type != STATIC)
         OutOfOrderExecution=ooe;
 }
+
+void DeviceProperties::clearTasksToSchedule() {
+    TasksToSchedule.clear();
+}

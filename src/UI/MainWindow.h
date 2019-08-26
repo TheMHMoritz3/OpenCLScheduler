@@ -43,7 +43,6 @@ namespace UI {
 		void makeConnections();
 		void updateTasksModel();
 		void readDeviceData(std::string deviceName);
-		void addTaskToScheduledTasks(std::string taskName);
         void loadCanData(CAN::CanID canID,int canLoad, SCHEDULER::Task* task);
 
 		void decorateAllDevices();
