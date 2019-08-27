@@ -166,7 +166,7 @@ void Scheduler::readConstantsFromTask(Task* task, Device* device, cl::Kernel ker
 			break;
 		default:;
 		}
-//		std::cout << "Error Code for Setting Constant: " << ErrorCode<< std::endl;
+		std::cout << "Error Code for Setting Constant: " << ErrorCode<< std::endl;
 		i++;
 	}
 }
