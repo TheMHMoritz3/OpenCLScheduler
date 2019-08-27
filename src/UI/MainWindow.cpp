@@ -231,12 +231,12 @@ void MainWindow::loadPreset() {
     temp_range_kernel->setReturnDataType(SCHEDULER::Type::FLOAT);
     temp_range_kernel->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
     temp_range_kernel->addDependandTask(temp);
-    float *temp_range_kernel_min = new float[1];
-    temp_range_kernel_min[0] = 5.5;
-    temp_range_kernel->addConstant(Type::FLOAT, temp_range_kernel_min);
-    float *temp_range_kernel_max = new float[1];
-    temp_range_kernel_max[0] = 10.5;
-    temp_range_kernel->addConstant(Type::FLOAT, temp_range_kernel_max);
+//    float *temp_range_kernel_min = new float[1];
+//    temp_range_kernel_min[0] = 5.5;
+//    temp_range_kernel->addConstant(Type::FLOAT, temp_range_kernel_min);
+//    float *temp_range_kernel_max = new float[1];
+//    temp_range_kernel_max[0] = 10.5;
+//    temp_range_kernel->addConstant(Type::FLOAT, temp_range_kernel_max);
     Tasks.emplace_back(temp_range_kernel);
 
     updateTasksModel();

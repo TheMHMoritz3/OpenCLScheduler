@@ -15,9 +15,13 @@ int inRange(float value, float min, float max){
  *                  1: über dem oberen Schwellwert
  *
  *      wLoad:      Wert 1 für voll parallele Ausführung, Wert MAX_ITEM_SIZE_PER_WORKGROUP für vollständig sequenzielle Ausführung.
+
+ const float min, const float max,
  */
-__kernel void tempRange(global const float* input, const float min, const float max, global int* result, const int wLoad) {
+__kernel void tempRange(global const float* input, global int* result, const int wLoad) {
     int gid = get_global_id(0) * wLoad;
+    float min = 5.5;
+    float max = 10.5;
 
     for (int i = 0; i < wLoad; ++i){
         unsigned int in = input[gid + i];
@@ -27,7 +31,7 @@ __kernel void tempRange(global const float* input, const float min, const float 
 } 
 
 //Mit Array Min,Max
-__kernel void temp1(global const float* input, global const float* min, global const float*max, global int* result, const int wLoad) {
+__kernel void temp1(global const float* input, global const float* min, global const float* max, global int* result, const int wLoad) {
     int gid = get_global_id(0) * wLoad;
 
     for (int i = 0; i < wLoad; ++i){
