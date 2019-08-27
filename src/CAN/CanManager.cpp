@@ -17,30 +17,35 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "CanManager.h"
+#include <exception>
 
 using namespace std;
 using namespace CAN;
 
 CanManager::CanManager() {
-
+    SimulationTrigger = false;
+    Count=100;
+    SimCar=new ValueGen::SimCar();
 }
 
 void CanManager::create(CAN::CanID id, int count) {
+    Count = count;
     CanAccessor *accessor = new CanAccessor(id, count);
     accessor->startCollectingData();
-    CanThreadMap.insert(pair<int, CanAccessor*>((int)id,accessor));
+    CanThreadMap.insert(pair<int, CanAccessor *>((int) id, accessor));
 }
 
 void CanManager::create(std::vector<CAN::CanID> ids, int count) {
-    for(CanID id : ids){
+    Count = count;
+    for (CanID id : ids) {
         CanAccessor *accessor = new CanAccessor(id, count);
         accessor->startCollectingData();
-        CanThreadMap.insert(pair<int, CanAccessor*>((int)id,accessor));
+        CanThreadMap.insert(pair<int, CanAccessor *>((int) id, accessor));
     }
 }
 
 double CanManager::getSamplingRate(CAN::CanID id) {
-    switch (id){
+    switch (id) {
         case CanID::WheelFrontRight:
         case CanID::WheelFrontLeft:
         case CanID::WheelRearLeft:
@@ -56,6 +61,11 @@ double CanManager::getSamplingRate(CAN::CanID id) {
     }
 }
 
-vector<uint32_t*> CanManager::getData(CAN::CanID id) {
-    return CanThreadMap.at((int)id)->getData();
+vector<uint32_t *> CanManager::getData(CAN::CanID id) {
+    return CanThreadMap.at((int) id)->getData();
 }
+
+int* CanManager::getValuesFromSimulation(CAN::CanID id, int count) {
+    return SimCar->getNextSensorValues(id,count);
+}
+

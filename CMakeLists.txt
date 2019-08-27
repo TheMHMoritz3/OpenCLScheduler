@@ -11,7 +11,7 @@ set (CAN_VERSION_MINOR 0)
 include_directories("${PROJECT_BINARY_DIR}")
 
 # add the executable
-add_library(CAN SHARED src/CAN/CanAccessor.cpp src/CAN/CanAccessor.h src/CAN/CanNamespace.h src/CAN/CanManager.cpp src/CAN/CanManager.h src/CAN/can_global.h)
+add_library(CAN SHARED src/CAN/Sensor.h src/CAN/Sensor.cpp src/CAN/SimCar.cpp src/CAN/SimCar.h src/CAN/CanAccessor.cpp src/CAN/CanAccessor.h src/CAN/CanNamespace.h src/CAN/CanManager.cpp src/CAN/CanManager.h src/CAN/can_global.h)
 if(UNIX)
 target_link_libraries(CAN pthread c3can_core c3can_error)
 endif(UNIX)
