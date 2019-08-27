@@ -285,7 +285,11 @@ void MainWindow::startSchedule() {
     if (ui.DeviceCombobox->currentIndex() >= Devices.size()) {
         ScheduleManager->startMultiDeviceScheduling();
     } else {
-        ScheduleManager->startSingleDeviceScheduling();
+        try {
+            ScheduleManager->startSingleDeviceScheduling();
+        }catch (std::exception ex){
+            std::cout<<"Exception: "<<ex.what()<<srd::endl;
+        }
     }
     for (TaskTabWidget *TaskWidget : TaskWidgets) {
         TaskWidget->refresh();
