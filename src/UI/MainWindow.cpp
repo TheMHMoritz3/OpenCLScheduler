@@ -288,7 +288,7 @@ void MainWindow::startSchedule() {
         try {
             ScheduleManager->startSingleDeviceScheduling();
         }catch (std::exception ex){
-            std::cout<<"Exception: "<<ex.what()<<srd::endl;
+            std::cout<<"Exception: "<<ex.what()<<std::endl;
         }
     }
     for (TaskTabWidget *TaskWidget : TaskWidgets) {
