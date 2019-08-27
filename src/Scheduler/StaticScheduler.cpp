@@ -38,6 +38,7 @@ void StaticScheduler::schedule() {
 		cl::CommandQueue commandQueue(device->getDeviceContext(), device->getOclDevice());
 		CommandQueues.push_back(commandQueue);
 		for (Task* task : Tasks) {
+		    cout << "Task Name: "<<task->getKernelName()<<endl;
 			device->generateProgramm(task);
 
 			cl::Kernel kernel = cl::Kernel(task->getProgramm(), task->getKernelName().c_str(),  &ErrorCode);
