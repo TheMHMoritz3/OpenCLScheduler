@@ -135,6 +135,7 @@ void Scheduler::readDataFromTask(Task* task, cl::CommandQueue commandQueue)
 	default:
 		break;
 	}
+	std::cout<<"Read Data from Task ErrorCode: "<<ErrorCode;
 	task->addReturnData(data);
 }
 
@@ -285,8 +286,8 @@ std::vector<void*> Scheduler::readDataFromBufferForUINT(Task* task, cl::CommandQ
 	uint32_t* data = new uint32_t[task->getLoad()];
 	uint32_t* copiedData = new uint32_t[task->getLoad()];
 	std::vector<void*> returnData;
-	queue.enqueueReadBuffer(*task->readBuffer(), CL_TRUE, count, sizeof(uint32_t) * task->getLoad(), data);
-	queue.finish();
+	ErrorCode = queue.enqueueReadBuffer(*task->readBuffer(), CL_TRUE, count, sizeof(uint32_t) * task->getLoad(), data);
+    ErrorCode = queue.finish();
 	for (int i = 0; i < task->getLoad(); i++) {
 		copiedData[i] = data[i];
 		void* value = &copiedData[i];
@@ -300,8 +301,8 @@ std::vector<void*> Scheduler::readDataFromBufferForINT(Task* task, cl::CommandQu
 	int32_t* data = new int32_t[task->getLoad()];
 	int32_t* copiedData = new int32_t[task->getLoad()];
 	std::vector<void*> returnData;
-	queue.enqueueReadBuffer(*task->readBuffer(), CL_TRUE, count, sizeof(int32_t) * task->getLoad(), data);
-	queue.finish();
+    ErrorCode = queue.enqueueReadBuffer(*task->readBuffer(), CL_TRUE, count, sizeof(int32_t) * task->getLoad(), data);
+    ErrorCode = queue.finish();
 	for (int i = 0; i < task->getLoad(); i++) {
 		copiedData[i] = data[i];
 		void* value = &copiedData[i];
@@ -315,8 +316,8 @@ std::vector<void*> Scheduler::readDataFromBufferForCHAR(Task* task, cl::CommandQ
 	char* data = new char[task->getLoad()];
 	char* copiedData = new char[task->getLoad()];
 	std::vector<void*> returnData;
-	queue.enqueueReadBuffer(*task->readBuffer(), CL_TRUE, count, sizeof(char) * task->getLoad(), data);
-	queue.finish();
+    ErrorCode =queue.enqueueReadBuffer(*task->readBuffer(), CL_TRUE, count, sizeof(char) * task->getLoad(), data);
+    ErrorCode =queue.finish();
 	for (int i = 0; i < task->getLoad(); i++) {
 		copiedData[i] = data[i];
 		void* value = &copiedData[i];
@@ -330,8 +331,8 @@ std::vector<void*> Scheduler::readDataFromBufferForDOUBLE(Task* task, cl::Comman
 	double* data = new double[task->getLoad()];
 	double* copiedData = new double[task->getLoad()];
 	std::vector<void*> returnData;
-	queue.enqueueReadBuffer(*task->readBuffer(), CL_TRUE, count, sizeof(double) * task->getLoad(), data);
-	queue.finish();
+    ErrorCode =queue.enqueueReadBuffer(*task->readBuffer(), CL_TRUE, count, sizeof(double) * task->getLoad(), data);
+    ErrorCode =queue.finish();
 	for (int i = 0; i < task->getLoad(); i++) {
 		copiedData[i] = data[i];
 		void* value = &copiedData[i];
@@ -345,8 +346,8 @@ std::vector<void*> Scheduler::readDataFromBufferForFLOAT(Task* task, cl::Command
 	float* data = new  float[task->getLoad()];
 	float* copiedData = new float[task->getLoad()];
 	std::vector<void*> returnData;
-	queue.enqueueReadBuffer(*task->readBuffer(), CL_TRUE, count, sizeof(float) * task->getLoad(), data);
-	queue.finish();
+    ErrorCode =queue.enqueueReadBuffer(*task->readBuffer(), CL_TRUE, count, sizeof(float) * task->getLoad(), data);
+    ErrorCode =queue.finish();
 
 	for (int i = 0; i < task->getLoad(); i++) {
 		copiedData[i] = data[i];
