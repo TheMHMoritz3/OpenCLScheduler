@@ -241,6 +241,7 @@ cl::Buffer* Scheduler::generateBufferForUINTConstant(void* data, cl::Context con
 	cl::Buffer* returnValue = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(unsigned int), &ErrorCode);
 	//queue.enqueueWriteBuffer(*returnValue, CL_TRUE, count, sizeof(unsigned int), data);
 	ErrorCode = kernel.setArg(count, *((unsigned int*)data));
+    std::cout << "Error Code for Setting uint Constant: " << ErrorCode<< std::endl;
 	return returnValue;
 }
 
@@ -249,35 +250,36 @@ cl::Buffer* Scheduler::generateBufferForINTConstant(void* data, cl::Context cont
 	cl::Buffer* returnValue = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(int), &ErrorCode);
 	//queue.enqueueWriteBuffer(*returnValue, CL_TRUE, count, sizeof(int), data);
 	ErrorCode = kernel.setArg(count, *((int*)data));
+    std::cout << "Error Code for Setting int Constant: " << ErrorCode<< std::endl;
 	return returnValue;
 }
 
 cl::Buffer* Scheduler::generateBufferForFLOATConstant(void* data, cl::Context context, cl::CommandQueue queue,
 	int count, cl::Kernel kernel)
 {
-	int ErrorCode = 0;
 	cl::Buffer* returnValue = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(float), &ErrorCode);
 	//queue.enqueueWriteBuffer(*returnValue, CL_TRUE, count, sizeof(float), data);
 	ErrorCode = kernel.setArg(count, *((float*)data));
+    std::cout << "Error Code for Setting float Constant: " << ErrorCode<< std::endl;
 	return returnValue;
 }
 
 cl::Buffer* Scheduler::generateBufferForDOUBLEConstant(void* data, cl::Context context, cl::CommandQueue queue,
 	int count, cl::Kernel kernel)
 {
-	int ErrorCode = 0;
 	cl::Buffer* returnValue = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(double), &ErrorCode);
 	//queue.enqueueWriteBuffer(*returnValue, CL_TRUE, count, sizeof(double), data);
 	ErrorCode = kernel.setArg(count, *((double*)data));
+    std::cout << "Error Code for Setting double Constant: " << ErrorCode<< std::endl;
 	return returnValue;
 }
 
 cl::Buffer* Scheduler::generateBufferForCHARConstant(void* data, cl::Context context, cl::CommandQueue queue, int count, cl::Kernel kernel)
 {
-	int ErrorCode = 0;
 	cl::Buffer* returnValue = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(char), &ErrorCode);
 	//queue.enqueueWriteBuffer(*returnValue, CL_TRUE, count, sizeof(char), data);
 	ErrorCode = kernel.setArg(count, *((char*)data));
+    std::cout << "Error Code for Setting char Constant: " << ErrorCode<< std::endl;
 	return returnValue;
 }
 
