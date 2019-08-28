@@ -402,10 +402,10 @@ void MainWindow::loadCanData(CAN::CanID canID, int canLoad, SCHEDULER::Task *tas
 //    CanManager->create(canID, canLoad);
 //    std::vector<uint32_t *> dataSet = CanManager->getData(canID);
     int* dataSet = CanManager->getValuesFromSimulation(canID, 2*canLoad);
-    uint32_t *DataSet = new uint32_t[canLoad];
+    uint32_t *DataSet = new uint32_t[2*canLoad];
     std::vector<void *> taskData;
     int i = 0;
-    for (int i = 0; i<canLoad;i++) {
+    for (int i = 0; i<2*canLoad;i++) {
         DataSet[i] = dataSet[i];
         taskData.push_back(&DataSet[i]);
         i++;
