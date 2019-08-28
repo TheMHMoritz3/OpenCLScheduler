@@ -30,11 +30,11 @@ int inRange(float value, float min, float max){
  *
  *      wLoad:   Wert 1 für voll parallele Ausführung, Wert MAX_ITEM_SIZE_PER_WORKGROUP für vollständig sequenzielle Ausführung.
  */
-__kernel void tractionControl(global const float* speedF, global const float* speedRL, global const float* speedRR, const float threshold, global int* result, const int wLoad){
+__kernel void tractionControl(global const float* threshold, global const float* speedF, global const float* speedRL, global const float* speedRR, global int* result, const int wLoad){
     int gid = get_global_id(0) * wLoad;
-    float maxdiff = threshold;
-
+    
     for (int i = 0; i < wLoad; ++i){
+        float maxdiff = threshold[gid+i];
         int resultRL = inRange(speedF[gid+i], speedRL[gid+i]*maxdiff, speedRL[gid+i]*(1+maxdiff));
         int resultRR = inRange(speedF[gid+i], speedRR[gid+i]*maxdiff, speedRR[gid+i]*(1+maxdiff));
 

@@ -18,12 +18,12 @@ __kernel void temp(global const unsigned int* input, global float* result, const
 }
 
 
-__kernel void temInformation(global const float* temperature, const float min, const float max, global float* result, const int wLoad){
+__kernel void temInformation(global const float* min, global const float* max, global const float* temperature, global float* result, const int wLoad){
 	int gid = get_global_id(0) * wLoad;
 	for (int i = 0; i < wLoad; ++i){
-		if(temperature[gid + i] < min){
+		if(temperature[gid + i] < min[gid + i]){
 			result[gid + i] = -1;
-		}else if(temperature[gid + i] > max){
+		}else if(temperature[gid + i] > max[gid + i]){
 			result[gid + i] = 1;
 		}else{
 			result[gid + i] = 0;
