@@ -176,7 +176,27 @@ float Task::elapsedTime()
 
 void Task::addConstant(Type type, void* data)
 {
-	ConstantData.push_back(std::pair<Type, void*>(type,data));
+    switch (type){
+        case INT:
+            addINTConstant(data);
+            break;
+        case UINT:
+            addUINTConstant(data);
+            break;
+        case CHAR:
+            addCHARConstant(data);
+            break;
+        case FLOAT:
+            addFloatConstant(data);
+            break;
+        case DOUBLE:
+            addDOUBLEConstant(data);
+            break;
+        case STRING:
+        default:
+            break;
+    }
+//	ConstantData.push_back(std::pair<Type, void*>(type,data));
 }
 
 std::vector<std::pair<Type, void*>> Task::getAllConstantData()
@@ -222,4 +242,54 @@ void Task::addExternalDataMethod(std::function<void()> externalFunctionData)
 
 std::vector<Task *> Task::getDependantTasks() {
     return DependandTasks;
+}
+
+void Task::addINTConstant(void *data) {
+    std::vector<void*> dataSet;
+    int* value = new int[getLoad()];
+    for(int i = 0; i<getLoad(); i++){
+        value[i]=*((int*)data);
+        dataSet.push_back(&value[i]);
+    }
+    addData(dataSet,INT);
+}
+
+void Task::addUINTConstant(void *data) {
+    std::vector<void*> dataSet;
+    unsigned int* value = new unsigned int[getLoad()];
+    for(int i = 0; i<getLoad(); i++){
+        value[i]=*((unsigned int*)data);
+        dataSet.push_back(&value[i]);
+    }
+    addData(dataSet,UINT);
+}
+
+void Task::addDOUBLEConstant(void *data) {
+    std::vector<void*> dataSet;
+    double* value = new double[getLoad()];
+    for(int i = 0; i<getLoad(); i++){
+        value[i]=*((double*)data);
+        dataSet.push_back(&value[i]);
+    }
+    addData(dataSet,DOUBLE);
+}
+
+void Task::addCHARConstant(void *data) {
+    std::vector<void*> dataSet;
+    char* value = new char[getLoad()];
+    for(int i = 0; i<getLoad(); i++){
+        value[i]=*((char*)data);
+        dataSet.push_back(&value[i]);
+    }
+    addData(dataSet,CHAR);
+}
+
+void Task::addFloatConstant(void *data) {
+    std::vector<void*> dataSet;
+    float* value = new float[getLoad()];
+    for(int i = 0; i<getLoad(); i++){
+        value[i]=*((float*)data);
+        dataSet.push_back(&value[i]);
+    }
+    addData(dataSet,FLOAT);
 }

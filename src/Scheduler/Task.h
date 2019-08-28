@@ -74,6 +74,11 @@ namespace SCHEDULER {
 
 		std::vector<Task*> getDependantTasks();
     private:
+	    void addINTConstant(void* data);
+	    void addUINTConstant(void* data);
+	    void addDOUBLEConstant(void* data);
+	    void addCHARConstant(void* data);
+	    void addFloatConstant(void* data);
 		void readDataFromOtherThread();
 
         std::string KernelName;

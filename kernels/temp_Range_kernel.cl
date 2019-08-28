@@ -18,15 +18,13 @@ int inRange(float value, float min, float max){
 
  const float min, const float max,
  */
-__kernel void tempRange(global const float* input, global const float* min, global const float* max, global int* result, const int wLoad) {
+__kernel void tempRange(global const float* min, global const float* max, global const float* input, global int* result, const int wLoad) {
     int gid = get_global_id(0) * wLoad;
-    float min = 5.5;
-    float max = 10.5;
 
     for (int i = 0; i < wLoad; ++i){
         unsigned int in = input[gid + i];
 
-        result[gid+i] = inRange(input[gid+i], min, max);
+        result[gid+i] = inRange(input[gid+i], min[gid+i], max[gid+i]);
     }
 } 
 

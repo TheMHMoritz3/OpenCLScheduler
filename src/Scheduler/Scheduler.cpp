@@ -100,7 +100,7 @@ void Scheduler::setKernelLoad(Task* task, Device* device, cl::Kernel kernel)
 	int ErrorCode = 0;
 	cl::Buffer* buffer_WORKLOAD = new cl::Buffer(device->getDeviceContext(), CL_MEM_READ_WRITE, sizeof(int), &ErrorCode);
 	ErrorCode = kernel.setArg(task->getAllData().size() + task->getAllConstantData().size() + 1, task->getLoad() / CoreCount);
-	std::cout << "Kernel Load Error Code: " << ErrorCode;
+	std::cout << "Kernel Load Error Code: " << ErrorCode << " Size: "<<task->getAllData().size() + task->getAllConstantData().size() + 1<<std::endl;
 }
 
 void Scheduler::enqueueTak(Task* task, Device* device, cl::CommandQueue commandQueue, cl::Kernel kernel)
