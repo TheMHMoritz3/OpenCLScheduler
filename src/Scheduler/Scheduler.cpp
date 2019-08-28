@@ -57,8 +57,8 @@ void Scheduler::setRAMForCurrentTask(Task* task, Device* device, cl::Kernel kern
 			break;
 		}
 		ErrorCode = kernel.setArg(count, *buffer);
-		std::cout << "Set Ram for Current Task: "<<ErrorCode<<std::endl;
-		std::cout << "Count "<<count<<std::endl;
+//		std::cout << "Set Ram for Current Task: "<<ErrorCode<<std::endl;
+//		std::cout << "Count "<<count<<std::endl;
 		count++;
 	}
 }
@@ -91,23 +91,23 @@ void Scheduler::setRAMBufferForOutput(Task* task, Device* device, cl::Kernel ker
 	}
 	task->setReadBuffer(buffer);
 	ErrorCode = kernel.setArg(task->getAllData().size() + task->getAllConstantData().size(), *buffer);
-	std::cout << "Set Ram Output for Current Task: "<<ErrorCode<<std::endl;
-	std::cout << "Count "<<task->getAllData().size()<<std::endl;
+//	std::cout << "Set Ram Output for Current Task: "<<ErrorCode<<std::endl;
+//	std::cout << "Count "<<task->getAllData().size()<<std::endl;
 }
 
 void Scheduler::setKernelLoad(Task* task, Device* device, cl::Kernel kernel)
 {
 	int ErrorCode = 0;
 	cl::Buffer* buffer_WORKLOAD = new cl::Buffer(device->getDeviceContext(), CL_MEM_READ_WRITE, sizeof(int), &ErrorCode);
-	std::cout << "Error Code Buffer Kernel Load: "<<ErrorCode;
+//	std::cout << "Error Code Buffer Kernel Load: "<<ErrorCode;
 	ErrorCode = kernel.setArg(task->getAllData().size() + 1, (int)(task->getLoad() / CoreCount));
-	std::cout << "Kernel Load Error Code: " << ErrorCode << " Value: "<< task->getLoad() / CoreCount<<std::endl;
+//	std::cout << "Kernel Load Error Code: " << ErrorCode << " Value: "<< task->getLoad() / CoreCount<<std::endl;
 }
 
 void Scheduler::enqueueTak(Task* task, Device* device, cl::CommandQueue commandQueue, cl::Kernel kernel)
 {
 	ErrorCode = commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(CoreCount), cl::NDRange(CoreCount));
-	std::cout << "Enqueue Task: " << ErrorCode << std::endl;
+//	std::cout << "Enqueue Task: " << ErrorCode << std::endl;
 }
 
 void Scheduler::readDataFromTask(Task* task, cl::CommandQueue commandQueue)
@@ -136,7 +136,7 @@ void Scheduler::readDataFromTask(Task* task, cl::CommandQueue commandQueue)
 	default:
 		break;
 	}
-	std::cout<<"Read Data from Task ErrorCode: "<<ErrorCode;
+//	std::cout<<"Read Data from Task ErrorCode: "<<ErrorCode;
 	task->addReturnData(data);
 }
 
@@ -167,7 +167,7 @@ void Scheduler::readConstantsFromTask(Task* task, Device* device, cl::Kernel ker
 			break;
 		default:;
 		}
-		std::cout << "Error Code for Setting Constant: " << ErrorCode<< std::endl;
+//		std::cout << "Error Code for Setting Constant: " << ErrorCode<< std::endl;
         ErrorCode = kernel.setArg(i, *bufferToAdd);
 		i++;
 	}
