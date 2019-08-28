@@ -196,6 +196,7 @@ void Task::addConstant(Type type, void* data)
         default:
             break;
     }
+    IsDataSet=false;
 //	ConstantData.push_back(std::pair<Type, void*>(type,data));
 }
 
