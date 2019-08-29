@@ -34,11 +34,11 @@ StaticScheduler::StaticScheduler(std::vector<Task*> tasks, std::vector<Device*> 
 
 void StaticScheduler::schedule() {
 	for (Device* device : Devices) {
-		cout << "Device Name: " << device->getName()<<endl;
+//		cout << "Device Name: " << device->getName()<<endl;
 		cl::CommandQueue commandQueue(device->getDeviceContext(), device->getOclDevice());
 		CommandQueues.push_back(commandQueue);
 		for (Task* task : Tasks) {
-		    cout << "Task Name: "<<task->getKernelName()<<endl;
+//		    cout << "Task Name: "<<task->getKernelName()<<endl;
 			device->generateProgramm(task);
 
 			cl::Kernel kernel = cl::Kernel(task->getProgramm(), task->getKernelName().c_str(),  &ErrorCode);

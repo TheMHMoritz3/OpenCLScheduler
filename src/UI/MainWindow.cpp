@@ -45,7 +45,7 @@ void MainWindow::multiThreaddingCheckstateChanged() {
 }
 
 void MainWindow::loadPreset() {
-    int DefaultCanLoad = 20000;
+    int DefaultCanLoad = 10000;
 
     QMessageBox msg;
     msg.setIcon(QMessageBox::Question);
@@ -146,6 +146,7 @@ void MainWindow::loadPreset() {
     SCHEDULER::Task *range = ScheduleManager->addTask("kernels/range_kernel.cl", "range");
     range->setReturnDataType(SCHEDULER::Type::FLOAT);
     range->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
+    range->setLoad(DefaultCanLoad);
     range->addDependandTask(batteryCalc);
     range->addDependandTask(median);
     int *duration = new int[1];
@@ -163,6 +164,7 @@ void MainWindow::loadPreset() {
     temInformation->setReturnDataType(SCHEDULER::Type::FLOAT);
     temInformation->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
     temInformation->addDependandTask(temp);
+    temInformation->setLoad(DefaultCanLoad);
     float *temInformation_min = new float[1];
     temInformation_min[0] = 10.2;
     temInformation->addConstant(Type::FLOAT, temInformation_min);
@@ -178,6 +180,7 @@ void MainWindow::loadPreset() {
     tractionControl->addDependandTask(median);
     tractionControl->addDependandTask(speedCalcRL);
     tractionControl->addDependandTask(speedCalcRR);
+    tractionControl->setLoad(DefaultCanLoad);
     float *tractionControl_threshhold = new float[1];
     tractionControl_threshhold[0] = 5.5;
     tractionControl->addConstant(Type::FLOAT, tractionControl_threshhold);
@@ -189,6 +192,7 @@ void MainWindow::loadPreset() {
     turningRadius->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
     turningRadius->addDependandTask(speedCalcFR);
     turningRadius->addDependandTask(speedCalcFL);
+    turningRadius->setLoad(DefaultCanLoad);
     float *radius_axle = new float[1];
     radius_axle[0] = 10.5;
     turningRadius->addConstant(Type::FLOAT, radius_axle);
@@ -199,9 +203,11 @@ void MainWindow::loadPreset() {
     distanceTracker->setReturnDataType(SCHEDULER::Type::FLOAT);
     distanceTracker->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
     distanceTracker->addDependandTask(median);
+    distanceTracker->setLoad(DefaultCanLoad);
     float *distanceTracker_Time = new float[1];
     distanceTracker_Time[0] = 100;
     distanceTracker->addConstant(Type::FLOAT, distanceTracker_Time);
+    distanceTracker->setLoad(DefaultCanLoad);
     Tasks.emplace_back(distanceTracker);
 
 
@@ -210,6 +216,7 @@ void MainWindow::loadPreset() {
     cruiseControl->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
     cruiseControl->addDependandTask(xAxis);
     cruiseControl->addDependandTask(median);
+    cruiseControl->setLoad(DefaultCanLoad);
     int *cruiseControl_targetLimit = new int[1];
     cruiseControl_targetLimit[0] = 10;
     cruiseControl->addConstant(Type::INT, cruiseControl_targetLimit);
@@ -219,6 +226,7 @@ void MainWindow::loadPreset() {
     accidentControl->setReturnDataType(SCHEDULER::Type::FLOAT);
     accidentControl->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
     accidentControl->addDependandTask(dualAxis);
+    accidentControl->setLoad(DefaultCanLoad);
     int *accidentControl_min = new int[1];
     accidentControl_min[0] = 1;
     accidentControl->addConstant(Type::INT, accidentControl_min);
@@ -231,6 +239,7 @@ void MainWindow::loadPreset() {
     temp_range_kernel->setReturnDataType(SCHEDULER::Type::FLOAT);
     temp_range_kernel->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
     temp_range_kernel->addDependandTask(temp);
+    temp_range_kernel->setLoad(DefaultCanLoad);
     float *temp_range_kernel_min = new float[1];
     temp_range_kernel_min[0] = 5.5;
     temp_range_kernel->addConstant(Type::FLOAT, temp_range_kernel_min);
@@ -285,7 +294,11 @@ void MainWindow::startSchedule() {
     if (ui.DeviceCombobox->currentIndex() >= Devices.size()) {
         ScheduleManager->startMultiDeviceScheduling();
     } else {
-        ScheduleManager->startSingleDeviceScheduling();
+        try {
+            ScheduleManager->startSingleDeviceScheduling();
+        }catch (std::exception ex){
+            std::cout<<"Exception: "<<ex.what()<<std::endl;
+        }
     }
     for (TaskTabWidget *TaskWidget : TaskWidgets) {
         TaskWidget->refresh();
@@ -388,16 +401,16 @@ void MainWindow::decorateAllDevices() {
 void MainWindow::loadCanData(CAN::CanID canID, int canLoad, SCHEDULER::Task *task) {
 //    CanManager->create(canID, canLoad);
 //    std::vector<uint32_t *> dataSet = CanManager->getData(canID);
-    int* dataSet = CanManager->getValuesFromSimulation(canID, canLoad);
-    uint32_t *DataSet = new uint32_t[canLoad];
+    int* dataSet = CanManager->getValuesFromSimulation(canID, 2*canLoad);
+    uint32_t *DataSet = new uint32_t[2*canLoad];
     std::vector<void *> taskData;
     int i = 0;
-    for (int i = 0; i<canLoad;i++) {
+    for (int i = 0; i<2*canLoad;i++) {
         DataSet[i] = dataSet[i];
         taskData.push_back(&DataSet[i]);
         i++;
     }
-    task->setLoad(canLoad/2);
+    task->setLoad(canLoad);
     task->addData(taskData, SCHEDULER::UINT);
 }
 
