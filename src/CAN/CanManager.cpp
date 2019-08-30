@@ -25,7 +25,7 @@ using namespace CAN;
 CanManager::CanManager() {
     SimulationTrigger = false;
     Count=100;
-    SimCar=new ValueGen::SimCar();
+    //SimCar=new ValueGen::SimCar();
 }
 
 void CanManager::create(CAN::CanID id, int count) {
@@ -65,7 +65,7 @@ vector<uint32_t *> CanManager::getData(CAN::CanID id) {
     return CanThreadMap.at((int) id)->getData();
 }
 
-int* CanManager::getValuesFromSimulation(CAN::CanID id, int count) {
-    return SimCar->getNextSensorValues(id,count);
-}
+//int* CanManager::getValuesFromSimulation(CAN::CanID id, int count) {
+//    //return SimCar->getNextSensorValues(id,count);
+//}
 

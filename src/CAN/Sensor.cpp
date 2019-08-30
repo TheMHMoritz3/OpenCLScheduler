@@ -17,7 +17,7 @@ Sensor::Sensor(int count, int minL, int maxL, int minA, int maxA, int smooth, in
     maxAccel = maxA;
     smoothness = smooth;
     stepSize = stepS;
-    data = new int[count + smoothness * 2];
+    data = new int[count];
     regenValues();
 }
 
@@ -55,43 +55,48 @@ void Sensor::regenValues() {
     int transLength = 0;
     int oldY = 0;
 
-    for (int i = 0; i < amount + smoothness * 2; i++) {
-        if (oldY + transLength == i) {
-            oldX = newX;
-            int spread = abs(maxLimit - minLimit) / stepSize;
-            if (spread == 0) spread = 2;
-            int offset;
-            if (newX < (spread / 2) + minLimit)
-                offset = minLimit;
-            else if (newX > maxLimit - (spread / 2))
-                offset = maxLimit - (spread);
-            else
-                offset = newX - spread / 2;
-            newX = nextRandi(offset, spread);
-            oldY = i;
-            //Aus der möglichen Distanz einen zufälligen Wert suchen
-            if (oldX == newX) {
-                transLength = smoothness;
-            } else if (newX > oldX) {
-                int minLength = abs((newX - oldX) / maxAccel);
-                if (minLength == 0) minLength = 1;
-                transLength = nextRandi(minLength, minLength * 3);
-            } else {
-                int minLength = abs((newX - oldX) / minAccel);
-                if (minLength == 0) minLength = 1;
-                //System.out.println("["+minLength+"]");
-                transLength = nextRandi(minLength, minLength * 3);
-            }
-        }
-        data[i] = (int) (oldX * (1.0 - ((double) (i - oldY) / (double) transLength)) +
-                         newX * ((double) (i - oldY) / (double) transLength));
-    }
-    for (int i = 0; i < amount; i++) {
-        int sum = 0;
-        for (int j = 0; j < smoothness * 2; j++)
-            sum += data[i + j];
-        data[i] = sum / (smoothness * 2);
-    }
+	for(int i =0; i<amount; i++)
+	{
+		data[i] = nextRandi(minLimit, maxLimit);
+	}
+
+    //for (int i = 0; i < amount + smoothness * 2; i++) {
+    //    if (oldY + transLength == i) {
+    //        oldX = newX;
+    //        int spread = abs(maxLimit - minLimit) / stepSize;
+    //        if (spread == 0) spread = 2;
+    //        int offset;
+    //        if (newX < (spread / 2) + minLimit)
+    //            offset = minLimit;
+    //        else if (newX > maxLimit - (spread / 2))
+    //            offset = maxLimit - (spread);
+    //        else
+    //            offset = newX - spread / 2;
+    //        newX = nextRandi(offset, spread);
+    //        oldY = i;
+    //        //Aus der möglichen Distanz einen zufälligen Wert suchen
+    //        if (oldX == newX) {
+    //            transLength = smoothness;
+    //        } else if (newX > oldX) {
+    //            int minLength = abs((newX - oldX) / maxAccel);
+    //            if (minLength == 0) minLength = 1;
+    //            transLength = nextRandi(minLength, minLength * 3);
+    //        } else {
+    //            int minLength = abs((newX - oldX) / minAccel);
+    //            if (minLength == 0) minLength = 1;
+    //            //System.out.println("["+minLength+"]");
+    //            transLength = nextRandi(minLength, minLength * 3);
+    //        }
+    //    }
+    //    data[i] = (int) (oldX * (1.0 - ((double) (i - oldY) / (double) transLength)) +
+    //                     newX * ((double) (i - oldY) / (double) transLength));
+    //}
+    //for (int i = 0; i < amount; i++) {
+    //    int sum = 0;
+    //    for (int j = 0; j < smoothness * 2; j++)
+    //        sum += data[i + j];
+    //    data[i] = sum / (smoothness * 2);
+    //}
 }
 
 int *Sensor::getData() {
@@ -103,7 +108,7 @@ int Sensor::getCount() {
 }
 
 //Hilfsfunktion für WheelSpeedumwandlung
-u_int32_t Sensor::encodePulseTime(int speed) {
+uint32_t Sensor::encodePulseTime(int speed) {
     //std::cout<< speed <<";";
     if (speed == 0) {
         //TODO check
@@ -111,14 +116,14 @@ u_int32_t Sensor::encodePulseTime(int speed) {
     }
     long pulsetime = 240000 / (26 * speed);
 //    std::cout << pulsetime << "//";
-    auto *code = new u_int8_t[4];
-    code[0] = (u_int8_t) (pulsetime / 65536);
+    auto *code = new uint8_t[4];
+    code[0] = (uint8_t) (pulsetime / 65536);
     pulsetime -= (pulsetime / 65536) * 65536;
     code[1] = pulsetime / 256;
     pulsetime -= (pulsetime / 256) * 256;
     code[3] = pulsetime;
     code[4] = 0;
-    return *reinterpret_cast<u_int32_t *>(code);
+    return *reinterpret_cast<uint32_t *>(code);
 }
 
 //4er-Array mit Pointern auf die 4-wheelspeed Arrays

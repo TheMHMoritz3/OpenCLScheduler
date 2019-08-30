@@ -10,6 +10,7 @@
 #include <qwt_plot_barchart.h>
 #include <QProgressDialog>
 #include <QtCore/QThread>
+#include "RandomNumberGenerator.h"
 
 using namespace SCHEDULER;
 using namespace UI;
@@ -300,11 +301,11 @@ void MainWindow::startSchedule() {
             std::cout<<"Exception: "<<ex.what()<<std::endl;
         }
     }
-    for (TaskTabWidget *TaskWidget : TaskWidgets) {
-        TaskWidget->refresh();
-    }
+	auto end = std::chrono::steady_clock::now();
+	//for (TaskTabWidget *TaskWidget : TaskWidgets) {
+ //       TaskWidget->refresh();
+ //   }
 
-    auto end = std::chrono::steady_clock::now();
     QStandardItem *item = new QStandardItem(
             tr("%1").arg(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()));
     ScheduleTimeModel->appendRow(item);
@@ -359,7 +360,6 @@ void MainWindow::updateTasksModel() {
         TaskTabWidget *widget = new TaskTabWidget(task, this);
         TaskWidgets.push_back(widget);
         widget->setTaskModel(Tasks);
-        widget->refresh();
         widget->setCanManager(CanManager);
     }
 }
@@ -401,17 +401,18 @@ void MainWindow::decorateAllDevices() {
 void MainWindow::loadCanData(CAN::CanID canID, int canLoad, SCHEDULER::Task *task) {
 //    CanManager->create(canID, canLoad);
 //    std::vector<uint32_t *> dataSet = CanManager->getData(canID);
-    int* dataSet = CanManager->getValuesFromSimulation(canID, 2*canLoad);
-    uint32_t *DataSet = new uint32_t[2*canLoad];
-    std::vector<void *> taskData;
-    int i = 0;
-    for (int i = 0; i<2*canLoad;i++) {
-        DataSet[i] = dataSet[i];
-        taskData.push_back(&DataSet[i]);
-        i++;
-    }
+    //int* dataSet = CanManager->getValuesFromSimulation(canID, 2*canLoad);
+    //uint32_t *DataSet = new uint32_t[2*canLoad];
+    //std::vector<void *> taskData;
+    //int i = 0;
+    //for (int i = 0; i<2*canLoad;i++) {
+    //    DataSet[i] = dataSet[i];
+    //    taskData.push_back(&DataSet[i]);
+    //    i++;
+    //}
+
     task->setLoad(canLoad);
-    task->addData(taskData, SCHEDULER::UINT);
+    task->addData(RandomNumberGenerator::generateRandomNumbers(canLoad, SCHEDULER::UINT), SCHEDULER::UINT);
 }
 
 void MainWindow::onShowScheduleGraphClicked() {
