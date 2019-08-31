@@ -37,6 +37,8 @@ namespace SCHEDULER {
         std::vector<Task*> Tasks;
         std::vector<Device*> Devices;
 		std::vector<cl::CommandQueue> CommandQueues;
+		std::vector<cl::Buffer*> DeleteAbleBuffer;
+		std::vector<void*> DeleteableDatasets;
 		cl_int ErrorCode;
         int CoreCount;
         virtual void setRAMForCurrentTask(Task* task, Device *device, cl::Kernel kernel, cl::CommandQueue queue);
@@ -45,6 +47,8 @@ namespace SCHEDULER {
 		virtual void setKernelLoad(Task* task, Device *device, cl::Kernel kernel);
 		virtual void enqueueTak(Task* task, Device *device, cl::CommandQueue commandQueue, cl::Kernel kernel);
 		virtual void readDataFromTask(Task* task, cl::CommandQueue commandQueue);
+		virtual void deleteAllBuffers();
+
     private:
         cl::Buffer *generateBufferForUINT(std::vector<void*>,cl::Context context ,cl::CommandQueue queue, int count);
         cl::Buffer *generateBufferForINT(std::vector<void*>,cl::Context context ,cl::CommandQueue queue, int count);

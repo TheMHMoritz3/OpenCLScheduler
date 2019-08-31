@@ -1,5 +1,4 @@
 #include "TaskTabWidget.h"
-#include "RandomNumberGenerator.h"
 #include "../Scheduler/KernelFileParser.h"
 #include "ConstantDialog.h"
 #include <QDebug>
@@ -8,8 +7,6 @@
 #include <qwt_plot_barchart.h>
 
 
-//using namespace SCHEDULER;
-using namespace UI;
 
 TaskTabWidget::TaskTabWidget(SCHEDULER::Task* task, QWidget* parent) :
 	QWidget(parent)
@@ -263,7 +260,7 @@ void TaskTabWidget::generateDataTriggered()
 	clear();
 	Task->setLoad(Ui.LoadSpinBox->value());
 	for (int j = 0; j < Task->kernelArguments().size(); j++) {
-		std::vector<void*> data = RandomNumberGenerator::generateRandomNumbers(Ui.LoadSpinBox->value(), SCHEDULER::Type::UINT);
+		std::vector<void*> data = CanManager->getValuesFromSimulation(CAN::WheelFrontLeft, Ui.LoadSpinBox->value());
 		Task->addData(data, SCHEDULER::Type::INT);
 	}
 	decorateForTask();
@@ -467,23 +464,23 @@ void TaskTabWidget::onItemChanged(QStandardItem* item) {
 }
 
 void TaskTabWidget::generateGraph() {
-//    Ui.DiagramPlot->setTitle("Data Plot");
-//    Ui.DiagramPlot->setCanvasBackground(Qt::white);
-//
-//    QPolygonF points;
-//    for(int i = 0; i<Model->rowCount(); i++){
-//        points<<QPointF(i,Model->item(i,Model->columnCount()-1)->text().toDouble());
-//    }
-//    Ui.DiagramPlot->setAxisTitle(QwtPlot::xBottom,QString::fromUtf8("Data Point"));
-//    Ui.DiagramPlot->setAxisAutoScale(QwtPlot::xBottom);
-//    Ui.DiagramPlot->setAxisTitle(QwtPlot::yLeft,QString::fromUtf8("Data"));
-//    Ui.DiagramPlot->setAxisAutoScale(QwtPlot::yLeft);
-//
-//    QwtPlotCurve* curve = new QwtPlotCurve();
-//    curve->setPen(QPen(Qt::blue));
-//    curve->setSamples(points);
-//    curve->attach(Ui.DiagramPlot);
-//    curve->setCurveAttribute(QwtPlotCurve::Fitted,true);
-//    Ui.DiagramPlot->replot();
+    Ui.DiagramPlot->setTitle("Data Plot");
+    Ui.DiagramPlot->setCanvasBackground(Qt::white);
+
+    QPolygonF points;
+    for(int i = 0; i<Model->rowCount(); i++){
+        points<<QPointF(i,Model->item(i,Model->columnCount()-1)->text().toDouble());
+    }
+    Ui.DiagramPlot->setAxisTitle(QwtPlot::xBottom,QString::fromUtf8("Data Point"));
+    Ui.DiagramPlot->setAxisAutoScale(QwtPlot::xBottom);
+    Ui.DiagramPlot->setAxisTitle(QwtPlot::yLeft,QString::fromUtf8("Data"));
+    Ui.DiagramPlot->setAxisAutoScale(QwtPlot::yLeft);
+
+    QwtPlotCurve* curve = new QwtPlotCurve();
+    curve->setPen(QPen(Qt::blue));
+    curve->setSamples(points);
+    curve->attach(Ui.DiagramPlot);
+    curve->setCurveAttribute(QwtPlotCurve::Fitted,true);
+    Ui.DiagramPlot->replot();
 }
 

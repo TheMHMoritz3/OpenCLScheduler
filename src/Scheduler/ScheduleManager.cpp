@@ -63,6 +63,7 @@ void ScheduleManager::startSchedule() {
             break;
     }
     ActiveScheduler->schedule();
+	delete ActiveScheduler;
 }
 
 void ScheduleManager::startMultiDeviceScheduling()
@@ -96,6 +97,7 @@ void ScheduleManager::startSchedule(std::vector<Task*> tasks, Device* device)
 	    ActiveScheduler->setCoreCount(device->getProperties()->getCoureCount());
 	}
 	ActiveScheduler->schedule();
+	delete ActiveScheduler;
 }
 
 void ScheduleManager::setScheduleType(ScheduleType type) {

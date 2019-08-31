@@ -36,8 +36,8 @@ MainWindow::~MainWindow() {
 void MainWindow::multiThreaddingCheckstateChanged() {
     ui.CoreCountSpinBox->setEnabled(ui.MultiThreaddedRadioButton->isChecked());
     if (!ui.MultiThreaddedRadioButton->isChecked()) {
-        for (TaskTabWidget *widget : TaskWidgets) {
-            widget->updateCoreCount(1);
+		for (int i = 0; i < ui.TasksWidget->count();i++) {
+			(dynamic_cast<TaskTabWidget*>(ui.TasksWidget->widget(i)))->updateCoreCount(1);
         }
         ActiveDevicePropertie->setCoreCount(1);
     } else
@@ -270,13 +270,12 @@ void MainWindow::deviceComboboxChanged() {
 
 void MainWindow::onCoreCountChanged() {
     ActiveDevicePropertie->setCoreCount(ui.CoreCountSpinBox->value());
-    for (TaskTabWidget *widget : TaskWidgets) {
-        widget->updateCoreCount(ui.CoreCountSpinBox->value());
-    }
+	for (int i = 0; i < ui.TasksWidget->count(); i++) {
+		(dynamic_cast<TaskTabWidget*>(ui.TasksWidget->widget(i)))->updateCoreCount(ui.CoreCountSpinBox->value());
+	}
 }
 
 void MainWindow::onSchedulingTypeChanged() {
-    qDebug() << (ScheduleType) ui.SchedulingTypeSpinBox->currentIndex();
     ActiveDevicePropertie->setSchedule((ScheduleType) ui.SchedulingTypeSpinBox->currentIndex());
 }
 
@@ -300,11 +299,8 @@ void MainWindow::startSchedule() {
             std::cout<<"Exception: "<<ex.what()<<std::endl;
         }
     }
-    for (TaskTabWidget *TaskWidget : TaskWidgets) {
-        TaskWidget->refresh();
-    }
+	auto end = std::chrono::steady_clock::now();
 
-    auto end = std::chrono::steady_clock::now();
     QStandardItem *item = new QStandardItem(
             tr("%1").arg(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()));
     ScheduleTimeModel->appendRow(item);
@@ -356,11 +352,6 @@ void MainWindow::updateTasksModel() {
         item->setCheckable(true);
         item->setEditable(false);
         TasksToScheduleModel->invisibleRootItem()->appendRow(item);
-        TaskTabWidget *widget = new TaskTabWidget(task, this);
-        TaskWidgets.push_back(widget);
-        widget->setTaskModel(Tasks);
-        widget->refresh();
-        widget->setCanManager(CanManager);
     }
 }
 
@@ -399,19 +390,8 @@ void MainWindow::decorateAllDevices() {
 }
 
 void MainWindow::loadCanData(CAN::CanID canID, int canLoad, SCHEDULER::Task *task) {
-//    CanManager->create(canID, canLoad);
-//    std::vector<uint32_t *> dataSet = CanManager->getData(canID);
-    int* dataSet = CanManager->getValuesFromSimulation(canID, 2*canLoad);
-    uint32_t *DataSet = new uint32_t[2*canLoad];
-    std::vector<void *> taskData;
-    int i = 0;
-    for (int i = 0; i<2*canLoad;i++) {
-        DataSet[i] = dataSet[i];
-        taskData.push_back(&DataSet[i]);
-        i++;
-    }
     task->setLoad(canLoad);
-    task->addData(taskData, SCHEDULER::UINT);
+    task->addData(CanManager->getValuesFromSimulation(canID,canLoad), SCHEDULER::UINT);
 }
 
 void MainWindow::onShowScheduleGraphClicked() {
@@ -452,13 +432,18 @@ void MainWindow::onShowScheduleGraphClicked() {
 }
 
 void MainWindow::onTabCloseClicked(int id) {
-    ui.TasksWidget->removeTab(id);
+	QWidget* deleteAbleWidget = ui.TasksWidget->widget(id);
+	ui.TasksWidget->removeTab(id);
+	delete deleteAbleWidget;
 }
 
 void MainWindow::onTaskWidgetDoubleClicked(const QModelIndex &index) {
+	TaskTabWidget* widget = new TaskTabWidget(Tasks.at(index.row()), this);
+	widget->setTaskModel(Tasks);
+	widget->setCanManager(CanManager);
 
-    ui.TasksWidget->addTab(TaskWidgets.at(index.row()), TasksToScheduleModel->item(index.row())->text());
-    TaskWidgets.at(index.row())->refresh();
+    ui.TasksWidget->addTab(widget, TasksToScheduleModel->item(index.row())->text());
+	widget->refresh();
     ui.TasksWidget->setCurrentIndex(ui.TasksWidget->count() - 1);
 }
 

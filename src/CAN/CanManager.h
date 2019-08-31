@@ -36,7 +36,7 @@ namespace CAN {
         void create(std::vector<CanID> ids, int count);
         static double getSamplingRate(CanID id);
         std::vector<uint32_t*> getData(CanID id);
-        int* getValuesFromSimulation(CAN::CanID id, int count);
+        std::vector<void*> getValuesFromSimulation(CAN::CanID id, int count);
 
     private:
         std::map<int,CanAccessor*> CanThreadMap;

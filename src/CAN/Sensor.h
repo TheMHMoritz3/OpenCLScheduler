@@ -33,7 +33,7 @@ namespace CAN {
 
             std::default_random_engine generator;
 
-            static u_int32_t encodePulseTime(int pulse);
+            static uint32_t encodePulseTime(int pulse);
 
             Sensor(int count, int *data);
 

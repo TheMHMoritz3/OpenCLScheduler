@@ -75,6 +75,7 @@ void ASAP::schedule() {
 			}
 //            cout << "Scheduler Finished: "<<ErrorCode<<endl;
 		}
+		deleteAllBuffers();
 	}
 }
 

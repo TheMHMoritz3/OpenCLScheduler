@@ -60,6 +60,7 @@ void Scheduler::setRAMForCurrentTask(Task* task, Device* device, cl::Kernel kern
 //		std::cout << "Set Ram for Current Task: "<<ErrorCode<<std::endl;
 //		std::cout << "Count "<<count<<std::endl;
 		count++;
+		DeleteAbleBuffer.push_back(buffer);
 	}
 }
 
@@ -93,6 +94,7 @@ void Scheduler::setRAMBufferForOutput(Task* task, Device* device, cl::Kernel ker
 	ErrorCode = kernel.setArg(task->getAllData().size() + task->getAllConstantData().size(), *buffer);
 //	std::cout << "Set Ram Output for Current Task: "<<ErrorCode<<std::endl;
 //	std::cout << "Count "<<task->getAllData().size()<<std::endl;
+	DeleteAbleBuffer.push_back(buffer);
 }
 
 void Scheduler::setKernelLoad(Task* task, Device* device, cl::Kernel kernel)
@@ -102,6 +104,7 @@ void Scheduler::setKernelLoad(Task* task, Device* device, cl::Kernel kernel)
 //	std::cout << "Error Code Buffer Kernel Load: "<<ErrorCode;
 	ErrorCode = kernel.setArg(task->getAllData().size() + 1, (int)(task->getLoad() / CoreCount));
 //	std::cout << "Kernel Load Error Code: " << ErrorCode << " Value: "<< task->getLoad() / CoreCount<<std::endl;
+	DeleteAbleBuffer.push_back(buffer_WORKLOAD);
 }
 
 void Scheduler::enqueueTak(Task* task, Device* device, cl::CommandQueue commandQueue, cl::Kernel kernel)
@@ -138,6 +141,23 @@ void Scheduler::readDataFromTask(Task* task, cl::CommandQueue commandQueue)
 	}
 //	std::cout<<"Read Data from Task ErrorCode: "<<ErrorCode;
 	task->addReturnData(data);
+}
+
+void Scheduler::deleteAllBuffers()
+{
+	while(!DeleteAbleBuffer.empty())
+	{
+		cl::Buffer* bufferToDelete = DeleteAbleBuffer.at(0);
+		DeleteAbleBuffer.erase(DeleteAbleBuffer.begin());
+		delete bufferToDelete;
+	}
+
+	while (!DeleteableDatasets.empty())
+	{
+		void* ToDelete = DeleteableDatasets.at(0);
+		DeleteableDatasets.erase(DeleteableDatasets.begin());
+		delete ToDelete;
+	}
 }
 
 void Scheduler::readConstantsFromTask(Task* task, Device* device, cl::Kernel kernel, cl::CommandQueue commandQueue)
@@ -183,6 +203,7 @@ cl::Buffer* Scheduler::generateBufferForUINT(std::vector<void*> data, cl::Contex
 
 	cl::Buffer* buffer = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(uint32_t) * data.size());
 	ErrorCode = queue.enqueueWriteBuffer(*buffer, CL_TRUE, count, sizeof(uint32_t) * data.size(), uintRamDataToAdd);
+	DeleteableDatasets.push_back(uintRamDataToAdd);
 	return buffer;
 }
 
@@ -196,6 +217,7 @@ cl::Buffer* Scheduler::generateBufferForINT(std::vector<void*> data, cl::Context
 
 	cl::Buffer* buffer = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(int32_t) * data.size());
     ErrorCode =queue.enqueueWriteBuffer(*buffer, CL_TRUE, count, sizeof(int32_t) * data.size(), intRamDataToAdd);
+	DeleteableDatasets.push_back(intRamDataToAdd);
 	return buffer;
 }
 
@@ -209,6 +231,7 @@ cl::Buffer* Scheduler::generateBufferForCHAR(std::vector<void*> data, cl::Contex
 
 	cl::Buffer* buffer = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(char) * data.size());
     ErrorCode =queue.enqueueWriteBuffer(*buffer, CL_TRUE, count, sizeof(char) * data.size(), charRamDataToAdd);
+	DeleteableDatasets.push_back(charRamDataToAdd);
 	return buffer;
 }
 
@@ -222,6 +245,7 @@ cl::Buffer* Scheduler::generateBufferForDOUBLE(std::vector<void*> data, cl::Cont
 
 	cl::Buffer* buffer = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(double) * data.size());
     ErrorCode =queue.enqueueWriteBuffer(*buffer, CL_TRUE, count, sizeof(double) * data.size(), doubleRamDataToAdd);
+	DeleteableDatasets.push_back(doubleRamDataToAdd);
 	return buffer;
 }
 
@@ -235,6 +259,7 @@ cl::Buffer* Scheduler::generateBufferForFLOAT(std::vector<void*> data, cl::Conte
 
 	cl::Buffer* buffer = new cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(float) * data.size());
     ErrorCode =queue.enqueueWriteBuffer(*buffer, CL_TRUE, count, sizeof(float) * data.size(), floatRamDataToAdd);
+	DeleteableDatasets.push_back(floatRamDataToAdd);
 	return buffer;
 }
 
