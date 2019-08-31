@@ -53,7 +53,6 @@ namespace UI {
 		std::vector<SCHEDULER::DeviceProperties*> Devices;
 		SCHEDULER::DeviceProperties* ActiveDevicePropertie;
 		std::vector<SCHEDULER::Task*> Tasks;
-		std::vector<TaskTabWidget*> TaskWidgets;
 		CAN::CanManager* CanManager;
 	};
 }

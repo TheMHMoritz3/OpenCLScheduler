@@ -1,5 +1,4 @@
 #include "TaskTabWidget.h"
-#include "RandomNumberGenerator.h"
 #include "../Scheduler/KernelFileParser.h"
 #include "ConstantDialog.h"
 #include <QDebug>
@@ -8,8 +7,6 @@
 #include <qwt_plot_barchart.h>
 
 
-//using namespace SCHEDULER;
-using namespace UI;
 
 TaskTabWidget::TaskTabWidget(SCHEDULER::Task* task, QWidget* parent) :
 	QWidget(parent)
@@ -263,7 +260,7 @@ void TaskTabWidget::generateDataTriggered()
 	clear();
 	Task->setLoad(Ui.LoadSpinBox->value());
 	for (int j = 0; j < Task->kernelArguments().size(); j++) {
-		std::vector<void*> data = RandomNumberGenerator::generateRandomNumbers(Ui.LoadSpinBox->value(), SCHEDULER::Type::UINT);
+		std::vector<void*> data = CanManager->getValuesFromSimulation(CAN::WheelFrontLeft, Ui.LoadSpinBox->value());
 		Task->addData(data, SCHEDULER::Type::INT);
 	}
 	decorateForTask();

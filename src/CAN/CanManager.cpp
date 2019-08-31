@@ -18,54 +18,69 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 #include "CanManager.h"
 #include <exception>
+#include "RandomNumberGenerator.h"
 
 using namespace std;
 using namespace CAN;
 
 CanManager::CanManager() {
-    SimulationTrigger = false;
-    Count=100;
-    //SimCar=new ValueGen::SimCar();
+	SimulationTrigger = false;
+	Count = 100;
+	//SimCar=new ValueGen::SimCar();
 }
 
 void CanManager::create(CAN::CanID id, int count) {
-    Count = count;
-    CanAccessor *accessor = new CanAccessor(id, count);
-    accessor->startCollectingData();
-    CanThreadMap.insert(pair<int, CanAccessor *>((int) id, accessor));
+	Count = count;
+	CanAccessor* accessor = new CanAccessor(id, count);
+	accessor->startCollectingData();
+	CanThreadMap.insert(pair<int, CanAccessor*>((int)id, accessor));
 }
 
 void CanManager::create(std::vector<CAN::CanID> ids, int count) {
-    Count = count;
-    for (CanID id : ids) {
-        CanAccessor *accessor = new CanAccessor(id, count);
-        accessor->startCollectingData();
-        CanThreadMap.insert(pair<int, CanAccessor *>((int) id, accessor));
-    }
+	Count = count;
+	for (CanID id : ids) {
+		CanAccessor* accessor = new CanAccessor(id, count);
+		accessor->startCollectingData();
+		CanThreadMap.insert(pair<int, CanAccessor*>((int)id, accessor));
+	}
 }
 
 double CanManager::getSamplingRate(CAN::CanID id) {
-    switch (id) {
-        case CanID::WheelFrontRight:
-        case CanID::WheelFrontLeft:
-        case CanID::WheelRearLeft:
-        case CanID::WheelRearRight:
-        case CanID::AccelerationLateral:
-        case CanID::AccelerationLongitudinal:
-        case CanID::Temperature:
-            return 0.050;
-        case CanID::BatteryVoltage:
-            return 0.2;
-        default:
-            return 0.0;
-    }
+	switch (id) {
+	case CanID::WheelFrontRight:
+	case CanID::WheelFrontLeft:
+	case CanID::WheelRearLeft:
+	case CanID::WheelRearRight:
+	case CanID::AccelerationLateral:
+	case CanID::AccelerationLongitudinal:
+	case CanID::Temperature:
+		return 0.050;
+	case CanID::BatteryVoltage:
+		return 0.2;
+	default:
+		return 0.0;
+	}
 }
 
-vector<uint32_t *> CanManager::getData(CAN::CanID id) {
-    return CanThreadMap.at((int) id)->getData();
+vector<uint32_t*> CanManager::getData(CAN::CanID id) {
+	return CanThreadMap.at((int)id)->getData();
 }
 
-//int* CanManager::getValuesFromSimulation(CAN::CanID id, int count) {
-//    //return SimCar->getNextSensorValues(id,count);
-//}
-
+std::vector<void*> CanManager::getValuesFromSimulation(CAN::CanID id, int count)
+{
+	switch (id) {
+	case WheelFrontRight: 
+	case WheelFrontLeft:
+	case WheelRearLeft: 
+	case WheelRearRight:
+		return RandomNumberGenerator::generateRandomNumbers(count);
+	case BatteryVoltage:
+		return RandomNumberGenerator::generateRandomNumbers(count, 300, 600);
+	case AccelerationLongitudinal:
+	case AccelerationLateral:
+		return RandomNumberGenerator::generateRandomNumbers(count, 2000, 2100);
+	case Temperature:
+		return RandomNumberGenerator::generateRandomNumbers(count, 0, 400);
+	default:;
+	}
+}
