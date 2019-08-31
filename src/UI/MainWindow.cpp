@@ -26,6 +26,7 @@ MainWindow::MainWindow(QWidget* parent) :
 	ui.ScheduleTimeTableView->setModel(ScheduleTimeModel);
 	fillStartUI();
 	makeConnections();
+	ui.ScheduleButton->setEnabled(Tasks.size() > 1);
 }
 
 MainWindow::~MainWindow() {
@@ -290,6 +291,22 @@ void MainWindow::onTasksToScheduleItemClicked(QStandardItem* item) {
 }
 
 void MainWindow::startSchedule() {
+	bool acceptedOnce = false;
+	for (Task* task : Tasks)
+	{
+		if ((task->dependenciesAreCalculated()) && (task->getLoad() % ui.CoreCountSpinBox->value()) && (!acceptedOnce))
+		{
+			QMessageBox msg;
+			msg.setIcon(QMessageBox::Question);
+			msg.setText(tr("The Load is not dividable by the Workitem Count. This can cause Problems.\nDo you want to start anyway?"));
+			msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+			if (msg.exec() != QMessageBox::StandardButton::Yes)
+			{
+				return;
+			}
+			acceptedOnce = true;
+		}
+	}
 	auto start = std::chrono::steady_clock::now();
 	if (ui.DeviceCombobox->currentIndex() >= Devices.size()) {
 		ScheduleManager->startMultiDeviceScheduling();
@@ -333,16 +350,13 @@ void MainWindow::makeConnections() {
 	connect(ui.actionLoad_Preset, SIGNAL(triggered(bool)), this, SLOT(loadPreset()));
 	connect(ui.actionOpen_Kernel, SIGNAL(triggered(bool)), this, SLOT(addKernel()));
 	connect(ui.DeviceCombobox, SIGNAL(currentIndexChanged(int)), this, SLOT(deviceComboboxChanged()));
-	connect(TasksToScheduleModel, SIGNAL(itemChanged(QStandardItem*)), this,
-		SLOT(onTasksToScheduleItemClicked(QStandardItem*)));
+	connect(TasksToScheduleModel, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(onTasksToScheduleItemClicked(QStandardItem*)));
 	connect(ui.ScheduleButton, SIGNAL(clicked()), this, SLOT(startSchedule()));
 	connect(ui.CoreCountSpinBox, SIGNAL(valueChanged(int)), this, SLOT(onCoreCountChanged()));
 	connect(ui.SchedulingTypeSpinBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onSchedulingTypeChanged()));
 	connect(ui.ShowScheduleGraphicButton, SIGNAL(clicked()), this, SLOT(onShowScheduleGraphClicked()));
 	connect(ui.TasksWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(onTabCloseClicked(int)));
-	connect(ui.TasksListView, SIGNAL(doubleClicked(
-		const QModelIndex&)), this, SLOT(onTaskWidgetDoubleClicked(
-			const QModelIndex&)));
+	connect(ui.TasksListView, SIGNAL(doubleClicked(const QModelIndex&)), this, SLOT(onTaskWidgetDoubleClicked(const QModelIndex&)));
 	connect(ui.actionSchow_Execution_Graphic, SIGNAL(triggered(bool)), this, SLOT(onShowScheduleGraphClicked()));
 	connect(ui.OutOfOrderScheduling, SIGNAL(stateChanged(int)), this, SLOT(onActivateOutOfOrderSchedulingClicked()));
 }
@@ -356,6 +370,8 @@ void MainWindow::updateTasksModel() {
 		item->setEditable(false);
 		TasksToScheduleModel->invisibleRootItem()->appendRow(item);
 	}
+
+	ui.ScheduleButton->setEnabled(Tasks.size() > 1);
 }
 
 void MainWindow::readDeviceData(std::string deviceName) {
