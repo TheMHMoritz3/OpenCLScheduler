@@ -15,7 +15,7 @@
 namespace SCHEDULER {
 	class SCHEDULER_EXPORT DeviceProperties {
 	public:
-		explicit DeviceProperties(std::string deviceName);
+		explicit DeviceProperties(std::string deviceName, int maxCoreCount);
 		DeviceProperties() = delete;
 
 		std::string getName();
@@ -32,11 +32,13 @@ namespace SCHEDULER {
 		bool getOutOfOrderExecution();
 		void setOutOfOrderExecution(bool ooe);
 
+		int getMaxCoreCount();
 	private:
 		std::string DeviceName;
 		ScheduleType Type;
 		std::vector<Task*> TasksToSchedule;
 		int CoreCount;
+		int MaxCoreCount;
 		bool OutOfOrderExecution;
 	};
 }
