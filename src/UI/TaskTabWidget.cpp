@@ -464,23 +464,23 @@ void TaskTabWidget::onItemChanged(QStandardItem* item) {
 }
 
 void TaskTabWidget::generateGraph() {
-//    Ui.DiagramPlot->setTitle("Data Plot");
-//    Ui.DiagramPlot->setCanvasBackground(Qt::white);
-//
-//    QPolygonF points;
-//    for(int i = 0; i<Model->rowCount(); i++){
-//        points<<QPointF(i,Model->item(i,Model->columnCount()-1)->text().toDouble());
-//    }
-//    Ui.DiagramPlot->setAxisTitle(QwtPlot::xBottom,QString::fromUtf8("Data Point"));
-//    Ui.DiagramPlot->setAxisAutoScale(QwtPlot::xBottom);
-//    Ui.DiagramPlot->setAxisTitle(QwtPlot::yLeft,QString::fromUtf8("Data"));
-//    Ui.DiagramPlot->setAxisAutoScale(QwtPlot::yLeft);
-//
-//    QwtPlotCurve* curve = new QwtPlotCurve();
-//    curve->setPen(QPen(Qt::blue));
-//    curve->setSamples(points);
-//    curve->attach(Ui.DiagramPlot);
-//    curve->setCurveAttribute(QwtPlotCurve::Fitted,true);
-//    Ui.DiagramPlot->replot();
+    Ui.DiagramPlot->setTitle("Data Plot");
+    Ui.DiagramPlot->setCanvasBackground(Qt::white);
+
+    QPolygonF points;
+    for(int i = 0; i<Model->rowCount(); i++){
+        points<<QPointF(i,Model->item(i,Model->columnCount()-1)->text().toDouble());
+    }
+    Ui.DiagramPlot->setAxisTitle(QwtPlot::xBottom,QString::fromUtf8("Data Point"));
+    Ui.DiagramPlot->setAxisAutoScale(QwtPlot::xBottom);
+    Ui.DiagramPlot->setAxisTitle(QwtPlot::yLeft,QString::fromUtf8("Data"));
+    Ui.DiagramPlot->setAxisAutoScale(QwtPlot::yLeft);
+
+    QwtPlotCurve* curve = new QwtPlotCurve();
+    curve->setPen(QPen(Qt::blue));
+    curve->setSamples(points);
+    curve->attach(Ui.DiagramPlot);
+    curve->setCurveAttribute(QwtPlotCurve::Fitted,true);
+    Ui.DiagramPlot->replot();
 }
 

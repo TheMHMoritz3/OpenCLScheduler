@@ -46,6 +46,7 @@ void ReadyFireScheduler::schedule() {
                 readDataFromTask(task, commandQueue);
             }
         }
+		deleteAllBuffers();
     }
 }
 

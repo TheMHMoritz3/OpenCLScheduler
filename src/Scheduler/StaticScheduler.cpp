@@ -57,6 +57,7 @@ void StaticScheduler::schedule() {
 			else
 				cout << "Kernel Creation Resolved Error: " << ErrorCode<<endl;
 		}
+		deleteAllBuffers();
 	}
 }
 
