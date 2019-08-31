@@ -27,7 +27,7 @@ OclDevice(oclDevice)
 {
     OclContext =  cl::Context({OclDevice});
     Id=id;
-	Properties = new DeviceProperties(getName());
+	Properties = new DeviceProperties(getName(),getWorkgroupSize());
 }
 
 Device::~Device() {

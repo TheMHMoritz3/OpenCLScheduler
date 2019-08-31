@@ -7,10 +7,10 @@
 
 using namespace SCHEDULER;
 
-DeviceProperties::DeviceProperties (std::string deviceName) :
-	DeviceName(deviceName)
+DeviceProperties::DeviceProperties (std::string deviceName, int maxCoreCount) :
+	DeviceName(deviceName),
+	MaxCoreCount(maxCoreCount)
 {
-	DeviceName = deviceName;
 	Type = STATIC;
 	CoreCount = 0;
 	OutOfOrderExecution = false;
@@ -59,6 +59,11 @@ bool DeviceProperties::getOutOfOrderExecution() {
 void DeviceProperties::setOutOfOrderExecution(bool ooe) {
     if(Type != STATIC)
         OutOfOrderExecution=ooe;
+}
+
+int DeviceProperties::getMaxCoreCount()
+{
+	return MaxCoreCount;
 }
 
 void DeviceProperties::clearTasksToSchedule() {
