@@ -158,23 +158,9 @@ void MainWindow::loadPreset() {
     minVoltage[0] = 5.5;
     range->addConstant(Type::FLOAT, minVoltage);
     float *maxVoltage = new float[1];
-    maxVoltage[0] = 7.5;
+    maxVoltage[0] = 12.5;
     range->addConstant(Type::FLOAT, maxVoltage);
     Tasks.emplace_back(range);
-
-    SCHEDULER::Task *temInformation = ScheduleManager->addTask("kernels/temp_kernel.cl", "temInformation");
-    temInformation->setReturnDataType(SCHEDULER::Type::FLOAT);
-    temInformation->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
-    temInformation->addDependandTask(temp);
-    temInformation->setLoad(DefaultCanLoad);
-    float *temInformation_min = new float[1];
-    temInformation_min[0] = 10.2;
-    temInformation->addConstant(Type::FLOAT, temInformation_min);
-    float *temInformation_max = new float[1];
-    temInformation_max[0] = 25.5;
-    temInformation->addConstant(Type::FLOAT, temInformation_max);
-    Tasks.emplace_back(temInformation);
-
 
     SCHEDULER::Task *tractionControl = ScheduleManager->addTask("kernels/traction_kernel.cl", "tractionControl");
     tractionControl->setReturnDataType(SCHEDULER::Type::INT);
@@ -225,20 +211,20 @@ void MainWindow::loadPreset() {
     Tasks.emplace_back(cruiseControl);
 
     SCHEDULER::Task *accidentControl = ScheduleManager->addTask("kernels/accident_kernel.cl", "accidentConst");
-    accidentControl->setReturnDataType(SCHEDULER::Type::FLOAT);
+    accidentControl->setReturnDataType(SCHEDULER::Type::INT);
     accidentControl->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
     accidentControl->addDependandTask(dualAxis);
     accidentControl->setLoad(DefaultCanLoad);
-    int *accidentControl_min = new int[1];
-    accidentControl_min[0] = 1;
-    accidentControl->addConstant(Type::INT, accidentControl_min);
-    int *accidentControl_max = new int[1];
-    accidentControl_max[0] = 2;
-    accidentControl->addConstant(Type::INT, accidentControl_max);
+    float *accidentControl_min = new float[1];
+    accidentControl_min[0] = -1;
+    accidentControl->addConstant(Type::FLOAT, accidentControl_min);
+    float *accidentControl_max = new float[1];
+    accidentControl_max[0] = 1;
+    accidentControl->addConstant(Type::FLOAT, accidentControl_max);
     Tasks.emplace_back(accidentControl);
 
     SCHEDULER::Task *temp_range_kernel = ScheduleManager->addTask("kernels/temp_Range_kernel.cl", "tempRange");
-    temp_range_kernel->setReturnDataType(SCHEDULER::Type::FLOAT);
+    temp_range_kernel->setReturnDataType(SCHEDULER::Type::INT);
     temp_range_kernel->setDataDependancy(SCHEDULER::DependancyType::OtherTask);
     temp_range_kernel->addDependandTask(temp);
     temp_range_kernel->setLoad(DefaultCanLoad);
@@ -246,7 +232,7 @@ void MainWindow::loadPreset() {
     temp_range_kernel_min[0] = 5.5;
     temp_range_kernel->addConstant(Type::FLOAT, temp_range_kernel_min);
     float *temp_range_kernel_max = new float[1];
-    temp_range_kernel_max[0] = 10.5;
+    temp_range_kernel_max[0] = 45.1;
     temp_range_kernel->addConstant(Type::FLOAT, temp_range_kernel_max);
     Tasks.emplace_back(temp_range_kernel);
 

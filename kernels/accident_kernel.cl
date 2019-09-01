@@ -1,4 +1,4 @@
-int inRange(int value, const int min, const int max){
+int inRange(float value, const float min, const float max){
     if(value>max) return -1;
     if(value<min) return -2;
     return 0;
@@ -17,7 +17,7 @@ int inRange(int value, const int min, const int max){
  *
  *       wLoad: Wert 1 für voll parallele Ausführung, Wert MAX_ITEM_SIZE_PER_WORKGROUP für vollständig sequenzielle Ausführung.
  */
-__kernel void accidentConst(global const int* min, global const int* max, global const float* input, global int* result, const int wLoad) {
+__kernel void accidentConst(global const float* min, global const float* max, global const float* input, global int* result, const int wLoad) {
     int gid = get_global_id(0) * wLoad;
 
     for (int i = 0; i < wLoad; ++i)

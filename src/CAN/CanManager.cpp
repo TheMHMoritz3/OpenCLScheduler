@@ -73,7 +73,7 @@ std::vector<void*> CanManager::getValuesFromSimulation(CAN::CanID id, int count)
 	case WheelFrontLeft:
 	case WheelRearLeft: 
 	case WheelRearRight:
-		return RandomNumberGenerator::generateRandomNumbers(count);
+		return RandomNumberGenerator::generateRandomNumbers(count,500,2000);
 	case BatteryVoltage:
 		return RandomNumberGenerator::generateRandomNumbers(count, 300, 600);
 	case AccelerationLongitudinal:
