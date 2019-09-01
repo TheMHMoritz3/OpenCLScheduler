@@ -22,9 +22,14 @@ __kernel void tempRange(global const float* min, global const float* max, global
     int gid = get_global_id(0) * wLoad;
 
     for (int i = 0; i < wLoad; ++i){
-        unsigned int in = input[gid + i];
-
-        result[gid+i] = inRange(input[gid+i], min[gid+i], max[gid+i]);
+        if(input[gid + i] < min[gid + i]){
+			result[gid + i] = -1;
+		}else if(input[gid + i] > max[gid + i]){
+			result[gid + i] = 1;
+		}else{
+			result[gid + i] = 0;
+		}
+        // result[gid+i] = inRange(input[gid+i], min[gid+i], max[gid+i]);
     }
 } 
 
