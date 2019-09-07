@@ -51,7 +51,7 @@ void StaticScheduler::schedule() {
 				enqueueTak(task, device, commandQueue, kernel);
                 commandQueue.finish();
 				auto end = chrono::steady_clock::now();
-				task->addElapsedTime(chrono::duration_cast<chrono::milliseconds>(end - start).count());
+				task->addElapsedTime(chrono::duration_cast<chrono::nanoseconds>(end - start).count());
 				readDataFromTask(task, commandQueue);
 			}
 			else

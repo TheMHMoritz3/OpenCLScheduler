@@ -97,9 +97,7 @@ void TaskTabWidget::makeConnections()
 	connect(Ui.ReadCanBusButton, SIGNAL(clicked()), this, SLOT(readDataFromBusClicked()));
 	connect(Ui.AddConstantButton, SIGNAL(clicked()), this, SLOT(addConstantClicked()));
 	connect(TasksModel, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(onItemChanged(QStandardItem*)));
-	QStringList headerData;
-	headerData.append(tr("ExecutionTimes"));
-	ExecutionTimeModel->setHorizontalHeaderLabels(headerData);
+
 }
 
 void TaskTabWidget::decorateForTask()
@@ -225,6 +223,10 @@ void TaskTabWidget::readDoubleDataFromTask(std::vector<void*> data)
 
 void TaskTabWidget::generateExecutionTimeDiagramm()
 {
+    ExecutionTimeModel->clear();
+    QStringList headerData;
+    headerData.append(tr("Execution Times"));
+    ExecutionTimeModel->setHorizontalHeaderLabels(headerData);
 	Ui.ExecutionTimes->setTitle("Execution Times");
 	Ui.ExecutionTimes->setCanvasBackground(Qt::white);
 	QVector<QPointF> points;
@@ -234,12 +236,12 @@ void TaskTabWidget::generateExecutionTimeDiagramm()
 			QStandardItem* item = new QStandardItem();
 			item->setText(tr("%1").arg(Task->elapsedTime().at(i)));
 			ExecutionTimeModel->appendRow(item);
-			points << QPointF(ExecutionTimeModel->rowCount(), Task->elapsedTime().at(i));
+			points << QPointF(i, Task->elapsedTime().at(i));
 		}
 	}
 	Ui.ExecutionTimes->setAxisTitle(QwtPlot::xBottom, QString::fromUtf8("Run Number"));
 	Ui.ExecutionTimes->setAxisAutoScale(QwtPlot::xBottom);
-	Ui.ExecutionTimes->setAxisTitle(QwtPlot::yLeft, QString::fromUtf8("Elapsed Times in microseconds"));
+	Ui.ExecutionTimes->setAxisTitle(QwtPlot::yLeft, QString::fromUtf8("Elapsed Times in ns"));
 	Ui.ExecutionTimes->setAxisAutoScale(QwtPlot::yLeft);
 
 	QwtPlotBarChart* curve = new QwtPlotBarChart();
