@@ -35,7 +35,7 @@ StaticScheduler::StaticScheduler(std::vector<Task*> tasks, std::vector<Device*> 
 void StaticScheduler::schedule() {
 	for (Device* device : Devices) {
 //		cout << "Device Name: " << device->getName()<<endl;
-		cl::CommandQueue commandQueue(device->getDeviceContext(), device->getOclDevice());
+		cl::CommandQueue commandQueue(device->getDeviceContext(), device->getOclDevice(), CL_QUEUE_PROFILING_ENABLE);
 		CommandQueues.push_back(commandQueue);
 		for (Task* task : Tasks) {
 //		    cout << "Task Name: "<<task->getKernelName()<<endl;
@@ -47,11 +47,12 @@ void StaticScheduler::schedule() {
 				readConstantsFromTask(task, device, kernel, commandQueue);
 				setRAMBufferForOutput(task, device, kernel);
 				setKernelLoad(task, device, kernel);
+                commandQueue.finish();
 				auto start = chrono::steady_clock::now();
 				enqueueTak(task, device, commandQueue, kernel);
                 commandQueue.finish();
 				auto end = chrono::steady_clock::now();
-				task->setElapsedTime(chrono::duration_cast<chrono::microseconds>(end - start).count());
+				task->addElapsedTime(chrono::duration_cast<chrono::nanoseconds>(end - start).count());
 				readDataFromTask(task, commandQueue);
 			}
 			else
