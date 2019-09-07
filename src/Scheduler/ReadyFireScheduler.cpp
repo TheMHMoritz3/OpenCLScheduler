@@ -24,7 +24,6 @@ void ReadyFireScheduler::schedule() {
         commandQueue = cl::CommandQueue(device->getDeviceContext(), device->getOclDevice(),CL_QUEUE_PROFILING_ENABLE);
         CommandQueues.push_back(commandQueue);
         while(!TasksToSchedule.empty()) {
-            cout<<"while(!TasksToSchedule.empty())"<<endl;
             getQueueTasksWithNoDependencies();
             std::vector<cl::Event> events;
             for (int i = 0; i < TasksToScheduleInStep.size(); i++) {
@@ -42,17 +41,10 @@ void ReadyFireScheduler::schedule() {
                 } else
                     cout << "First Step Kernel Creation Resolved Error: " << ErrorCode << endl;
             }
-            cout<<"Before Wait for Events"<<endl;
             cl::Event::waitForEvents(events);
-            cout<<"after Wait for Events"<<endl;
             for (int i = 0; i<TasksToReadInStep.size(); i++) {
                 readDataFromTask(TasksToReadInStep.at(i), commandQueue);
-                auto start = events.at(i).getProfilingInfo<CL_PROFILING_COMMAND_START>();
-                auto end = events.at(i).getProfilingInfo<CL_PROFILING_COMMAND_END>();
-                cout << start <<" - "<< end <<" = "<<end-start;
-                TasksToReadInStep.at(i)->addElapsedTime(end-start);
             }
-            cout<<"What the Actual Shit is going on"<<endl;
             TasksToReadInStep.clear();
         }
 		deleteAllBuffers();
