@@ -231,6 +231,7 @@ void TaskTabWidget::generateExecutionTimeDiagramm()
 	Ui.ExecutionTimes->setCanvasBackground(Qt::white);
 	QVector<QPointF> points;
 	for (int i = 0; i < Task->elapsedTime().size(); i++) {
+	    qDebug()<<"Test Times: "<<Task->elapsedTime().at(i);
 		if (Task->elapsedTime().at(i) > 0.0)
 		{
 			QStandardItem* item = new QStandardItem();
