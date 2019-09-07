@@ -19,9 +19,9 @@ void ReadyFireScheduler::schedule() {
         cl::CommandQueue commandQueue;
 
         if (device->getProperties()->getOutOfOrderExecution())
-            commandQueue = cl::CommandQueue(device->getDeviceContext(), device->getOclDevice(), CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE);
+            commandQueue = cl::CommandQueue(device->getDeviceContext(), device->getOclDevice(), CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE | CL_QUEUE_PROFILING_ENABLE);
         else
-        commandQueue = cl::CommandQueue(device->getDeviceContext(), device->getOclDevice());
+        commandQueue = cl::CommandQueue(device->getDeviceContext(), device->getOclDevice(),CL_QUEUE_PROFILING_ENABLE);
         CommandQueues.push_back(commandQueue);
         while(!TasksToSchedule.empty()) {
             getQueueTasksWithNoDependencies();
@@ -42,9 +42,10 @@ void ReadyFireScheduler::schedule() {
                     cout << "First Step Kernel Creation Resolved Error: " << ErrorCode << endl;
             }
             cl::Event::waitForEvents(events);
-            for (Task *task : TasksToReadInStep) {
-                readDataFromTask(task, commandQueue);
+            for (int i = 0; i<TasksToReadInStep.size(); i++) {
+                readDataFromTask(TasksToReadInStep.at(i), commandQueue);
             }
+            TasksToReadInStep.clear();
         }
 		deleteAllBuffers();
     }

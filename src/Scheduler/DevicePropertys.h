@@ -33,6 +33,8 @@ namespace SCHEDULER {
 		void setOutOfOrderExecution(bool ooe);
 
 		int getMaxCoreCount();
+
+		std::string toString();
 	private:
 		std::string DeviceName;
 		ScheduleType Type;

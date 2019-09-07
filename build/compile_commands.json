@@ -31,23 +31,13 @@
 },
 {
   "directory": "/home/moritz/Dokumente/Projekte/EmbeddedSystemsProject/build",
-  "command": "/bin/g++-8  -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -I/home/moritz/Dokumente/Projekte/EmbeddedSystemsProject/build/UI_autogen/include -I/home/moritz/Dokumente/Projekte/EmbeddedSystemsProject/build -I/usr/include/qwt -I/home/moritz/Dokumente/Projekte/EmbeddedSystemsProject -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++  -g   -fPIC -std=gnu++11 -o CMakeFiles/UI.dir/src/UI/RandomNumberGenerator.cpp.o -c /home/moritz/Dokumente/Projekte/EmbeddedSystemsProject/src/UI/RandomNumberGenerator.cpp",
-  "file": "/home/moritz/Dokumente/Projekte/EmbeddedSystemsProject/src/UI/RandomNumberGenerator.cpp"
-},
-{
-  "directory": "/home/moritz/Dokumente/Projekte/EmbeddedSystemsProject/build",
   "command": "/bin/g++-8  -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -I/home/moritz/Dokumente/Projekte/EmbeddedSystemsProject/build/UI_autogen/include -I/home/moritz/Dokumente/Projekte/EmbeddedSystemsProject/build -I/usr/include/qwt -I/home/moritz/Dokumente/Projekte/EmbeddedSystemsProject -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++  -g   -fPIC -std=gnu++11 -o CMakeFiles/UI.dir/UI_autogen/mocs_compilation.cpp.o -c /home/moritz/Dokumente/Projekte/EmbeddedSystemsProject/build/UI_autogen/mocs_compilation.cpp",
   "file": "/home/moritz/Dokumente/Projekte/EmbeddedSystemsProject/build/UI_autogen/mocs_compilation.cpp"
 },
 {
   "directory": "/home/moritz/Dokumente/Projekte/EmbeddedSystemsProject/build",
-  "command": "/bin/g++-8  -DCAN_EXPORTS -I/home/moritz/Dokumente/Projekte/EmbeddedSystemsProject/build -I/usr/include/qwt  -g -fPIC   -std=gnu++11 -o CMakeFiles/CAN.dir/src/CAN/Sensor.cpp.o -c /home/moritz/Dokumente/Projekte/EmbeddedSystemsProject/src/CAN/Sensor.cpp",
-  "file": "/home/moritz/Dokumente/Projekte/EmbeddedSystemsProject/src/CAN/Sensor.cpp"
-},
-{
-  "directory": "/home/moritz/Dokumente/Projekte/EmbeddedSystemsProject/build",
-  "command": "/bin/g++-8  -DCAN_EXPORTS -I/home/moritz/Dokumente/Projekte/EmbeddedSystemsProject/build -I/usr/include/qwt  -g -fPIC   -std=gnu++11 -o CMakeFiles/CAN.dir/src/CAN/SimCar.cpp.o -c /home/moritz/Dokumente/Projekte/EmbeddedSystemsProject/src/CAN/SimCar.cpp",
-  "file": "/home/moritz/Dokumente/Projekte/EmbeddedSystemsProject/src/CAN/SimCar.cpp"
+  "command": "/bin/g++-8  -DCAN_EXPORTS -I/home/moritz/Dokumente/Projekte/EmbeddedSystemsProject/build -I/usr/include/qwt  -g -fPIC   -std=gnu++11 -o CMakeFiles/CAN.dir/src/CAN/RandomNumberGenerator.cpp.o -c /home/moritz/Dokumente/Projekte/EmbeddedSystemsProject/src/CAN/RandomNumberGenerator.cpp",
+  "file": "/home/moritz/Dokumente/Projekte/EmbeddedSystemsProject/src/CAN/RandomNumberGenerator.cpp"
 },
 {
   "directory": "/home/moritz/Dokumente/Projekte/EmbeddedSystemsProject/build",
