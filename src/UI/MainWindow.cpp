@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <qwt_plot.h>
 #include <qwt_plot_barchart.h>
+#include <qwt_plot_histogram.h>
 #include <QProgressDialog>
 #include <QtCore/QThread>
 
@@ -278,6 +279,7 @@ void MainWindow::onTasksToScheduleItemClicked(QStandardItem *item) {
 }
 
 void MainWindow::startSchedule() {
+	qDebug() << "Start Schedule Triggered";
     bool acceptedOnce = false;
     for (Task *task : Tasks) {
         if ((task->dependenciesAreCalculated()) && (task->getLoad() % ui.CoreCountSpinBox->value()) &&
@@ -293,6 +295,7 @@ void MainWindow::startSchedule() {
             acceptedOnce = true;
         }
     }
+	qDebug() << "Nessesary Tests finished - Starting Schedule";
     auto start = std::chrono::steady_clock::now();
     if (ui.DeviceCombobox->currentIndex() >= Devices.size()) {
         ScheduleManager->startMultiDeviceScheduling();
@@ -305,10 +308,15 @@ void MainWindow::startSchedule() {
         }
     }
     auto end = std::chrono::steady_clock::now();
-
-    QStandardItem *item = new QStandardItem(
-            tr("%1").arg(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()));
-    ScheduleTimeModel->appendRow(item);
+	qDebug() << "Scheduleing Finished gathering Data";
+	QList<QStandardItem*> items;
+	QStandardItem* infoItem = new QStandardItem(ActiveDevicePropertie->toString().c_str());
+	items.append(infoItem);
+	QStandardItem* dataitem = new QStandardItem(
+		tr("%1").arg(std::chrono::duration_cast<std::chrono::milliseconds> (end - start).count()));
+	items.append(dataitem);
+    
+	ScheduleTimeModel->appendRow(items);
 }
 
 void MainWindow::fillStartUI() {
@@ -324,6 +332,7 @@ void MainWindow::fillStartUI() {
     ui.DeviceCombobox->addItem(tr("All Devices"));
 
     QStringList headerItems;
+	headerItems.append(tr("Informations"));
     headerItems.append(tr("Execution Times"));
 
     ScheduleTimeModel->setHorizontalHeaderLabels(headerItems);
@@ -414,19 +423,24 @@ void MainWindow::onShowScheduleGraphClicked() {
     plot->setTitle("Execution Times");
     plot->setCanvasBackground(Qt::white);
 
-    QVector<QPointF> points;
+    QVector<QwtIntervalSample> points;
 
-    for (int i = 0; i < ScheduleTimeModel->rowCount(); i++)
-        points << QPointF(i, ScheduleTimeModel->item(i)->text().toDouble());
+	for (int i = 0; i < ScheduleTimeModel->rowCount(); i++) {
+		QwtIntervalSample sample( ScheduleTimeModel->item(i, 1)->text().toDouble(),i,i+1);
+		points << sample;
+	}
 
     plot->setAxisTitle(QwtPlot::xBottom, QString::fromUtf8("Run Number"));
     plot->setAxisAutoScale(QwtPlot::xBottom);
     plot->setAxisTitle(QwtPlot::yLeft, QString::fromUtf8("Elapsed Times in ms"));
     plot->setAxisAutoScale(QwtPlot::yLeft);
 
-    QwtPlotBarChart *curve = new QwtPlotBarChart();
-    curve->setSamples(points);
+    QwtPlotHistogram *curve = new QwtPlotHistogram();
+	curve->setSamples(points);
     curve->attach(plot);
+	curve->setPen(QPen(QColor(Qt::GlobalColor::blue)));
+	curve->setBrush(QBrush(QColor(Qt::GlobalColor::darkBlue), Qt::BrushStyle::SolidPattern));
+	curve->setStyle(QwtPlotHistogram::Columns);
 
     plot->replot();
 

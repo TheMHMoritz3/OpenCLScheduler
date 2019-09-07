@@ -4,15 +4,16 @@
 
 #include "DevicePropertys.h"
 #include <iostream>
+#include <sstream>
 
 using namespace SCHEDULER;
 
-DeviceProperties::DeviceProperties (std::string deviceName, int maxCoreCount) :
+DeviceProperties::DeviceProperties(std::string deviceName, int maxCoreCount) :
 	DeviceName(deviceName),
 	MaxCoreCount(maxCoreCount)
 {
 	Type = STATIC;
-	CoreCount = 0;
+	CoreCount = 1;
 	OutOfOrderExecution = false;
 }
 
@@ -53,12 +54,12 @@ void DeviceProperties::addTaskToSchedule(Task* task)
 }
 
 bool DeviceProperties::getOutOfOrderExecution() {
-    return OutOfOrderExecution;
+	return OutOfOrderExecution;
 }
 
 void DeviceProperties::setOutOfOrderExecution(bool ooe) {
-    if(Type != STATIC)
-        OutOfOrderExecution=ooe;
+	if (Type != STATIC)
+		OutOfOrderExecution = ooe;
 }
 
 int DeviceProperties::getMaxCoreCount()
@@ -66,6 +67,32 @@ int DeviceProperties::getMaxCoreCount()
 	return MaxCoreCount;
 }
 
-void DeviceProperties::clearTasksToSchedule() {
-    TasksToSchedule.clear();
+std::string DeviceProperties::toString()
+{
+	std::stringstream stream;
+	stream << "Device: " << getName();
+	switch (Type) {
+	case STATIC: 
+		stream << " - " << "Staticshedule";
+		break;
+	case ASAPHC: 
+		stream << " - " << "ASAP";
+		break;
+	case READY_FIRE_SCHEDULER: 
+		stream << " - " << "R. F. S.";
+		break;
+	default:;
+	}
+
+	if (getOutOfOrderExecution())
+		stream << " OOE ";
+
+	stream << " - Workgroup Size: " << getCoureCount();
+
+	return stream.str();
 }
+
+void DeviceProperties::clearTasksToSchedule() {
+	TasksToSchedule.clear();
+}
+
