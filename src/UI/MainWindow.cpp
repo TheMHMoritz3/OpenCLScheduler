@@ -279,7 +279,7 @@ void MainWindow::onTasksToScheduleItemClicked(QStandardItem *item) {
 }
 
 void MainWindow::startSchedule() {
-	qDebug() << "Start Schedule Triggered";
+
     bool acceptedOnce = false;
     for (Task *task : Tasks) {
         if ((task->dependenciesAreCalculated()) && (task->getLoad() % ui.CoreCountSpinBox->value()) &&
@@ -295,7 +295,7 @@ void MainWindow::startSchedule() {
             acceptedOnce = true;
         }
     }
-	qDebug() << "Nessesary Tests finished - Starting Schedule";
+
     auto start = std::chrono::steady_clock::now();
     if (ui.DeviceCombobox->currentIndex() >= Devices.size()) {
         ScheduleManager->startMultiDeviceScheduling();
@@ -308,7 +308,7 @@ void MainWindow::startSchedule() {
         }
     }
     auto end = std::chrono::steady_clock::now();
-	qDebug() << "Scheduleing Finished gathering Data";
+
 	QList<QStandardItem*> items;
 	QStandardItem* infoItem = new QStandardItem(ActiveDevicePropertie->toString().c_str());
 	items.append(infoItem);
@@ -426,7 +426,7 @@ void MainWindow::onShowScheduleGraphClicked() {
     QVector<QwtIntervalSample> points;
 
 	for (int i = 0; i < ScheduleTimeModel->rowCount(); i++) {
-		QwtIntervalSample sample( ScheduleTimeModel->item(i, 1)->text().toDouble(),i,i+1);
+		QwtIntervalSample sample( ScheduleTimeModel->item(i, 1)->text().toDouble(),i+0.8,i+1.2);
 		points << sample;
 	}
 

@@ -26,8 +26,7 @@ using namespace SCHEDULER;
 Task::Task(int id) {
     ID=id;
 	IsCalculationDone = false;
-    IsDataSet = false;
-	ElapsedTime = 0.0;
+	IsDataSet = false;
 }
 
 int Task::getId() {
@@ -164,12 +163,12 @@ bool Task::dependenciesAreCalculated()
 	return (IsDataSet || dependanciesAreCalculated);
 }
 
-void Task::setElapsedTime(float time)
+void Task::addElapsedTime(int time)
 {
-	ElapsedTime = time;
+	ElapsedTime.push_back(time);
 }
 
-float Task::elapsedTime()
+std::vector<int> Task::elapsedTime()
 {
 	return ElapsedTime;
 }
