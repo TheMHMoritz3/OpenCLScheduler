@@ -163,12 +163,12 @@ bool Task::dependenciesAreCalculated()
 	return (IsDataSet || dependanciesAreCalculated);
 }
 
-void Task::addElapsedTime(int time)
+void Task::addElapsedTime(unsigned long time)
 {
 	ElapsedTime.push_back(time);
 }
 
-std::vector<int> Task::elapsedTime()
+std::vector<unsigned long> Task::elapsedTime()
 {
 	return ElapsedTime;
 }

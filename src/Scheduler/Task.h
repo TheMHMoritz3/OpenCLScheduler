@@ -64,8 +64,8 @@ namespace SCHEDULER {
 		bool hasDependencies();
 		bool dependenciesAreCalculated();
 
-		void addElapsedTime(int time);
-		std::vector<int> elapsedTime();
+		void addElapsedTime(unsigned long time);
+		std::vector<unsigned long> elapsedTime();
 
 		void addConstant(Type type, void* data);
 		std::vector<std::pair<Type, void*>> getAllConstantData();
@@ -98,7 +98,7 @@ namespace SCHEDULER {
 		bool IsCalculationDone;
 		bool IsDataSet;
 		std::vector<std::function<void(void)>> GetExternalDataMethods;
-		std::vector<int> ElapsedTime;
+		std::vector<unsigned long> ElapsedTime;
     };
 }
 
