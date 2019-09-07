@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #include "StaticScheduler.h"
 #include "ASAP.h"
 #include "ReadyFireScheduler.h"
+#include "NewStaticScheduler.h"
 #include <iostream>
 #include <fstream>
 #include <CL/cl.hpp>
@@ -50,8 +51,11 @@ void ScheduleManager::searchForDevices() {
 
 void ScheduleManager::startSchedule() {
     switch(Type){
-        case ScheduleType::STATIC:
+        case ScheduleType::SERIAL:
             ActiveScheduler = new StaticScheduler(Tasks, Devices);
+            break;
+        case ScheduleType::STATIC:
+            ActiveScheduler = new NewStaticScheduler(Tasks,Devices);
             break;
         case ScheduleType::ASAPHC:
 			ActiveScheduler = new ASAP(Tasks, Devices);
@@ -81,9 +85,12 @@ void ScheduleManager::startSchedule(std::vector<Task*> tasks, Device* device)
 	std::vector<Device*> devices;
 	devices.push_back(device);
 	switch (Type) {
-	case ScheduleType::STATIC:
+	case ScheduleType::SERIAL:
 	    ActiveScheduler = new StaticScheduler(tasks, devices);
 		break;
+	    case ScheduleType::STATIC:
+            ActiveScheduler = new NewStaticScheduler(tasks,devices);
+	        break;
 	case ScheduleType::ASAPHC:
 		ActiveScheduler = new ASAP(tasks, devices);
 		break;

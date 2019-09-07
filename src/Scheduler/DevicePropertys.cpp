@@ -12,7 +12,7 @@ DeviceProperties::DeviceProperties(std::string deviceName, int maxCoreCount) :
 	DeviceName(deviceName),
 	MaxCoreCount(maxCoreCount)
 {
-	Type = STATIC;
+	Type = SERIAL;
 	CoreCount = 1;
 	OutOfOrderExecution = false;
 }
@@ -58,7 +58,7 @@ bool DeviceProperties::getOutOfOrderExecution() {
 }
 
 void DeviceProperties::setOutOfOrderExecution(bool ooe) {
-	if (Type != STATIC)
+	if (Type != SERIAL)
 		OutOfOrderExecution = ooe;
 }
 
@@ -72,7 +72,7 @@ std::string DeviceProperties::toString()
 	std::stringstream stream;
 	stream << "Device: " << getName();
 	switch (Type) {
-	case STATIC: 
+	case SERIAL:
 		stream << " - " << "Staticshedule";
 		break;
 	case ASAPHC: 

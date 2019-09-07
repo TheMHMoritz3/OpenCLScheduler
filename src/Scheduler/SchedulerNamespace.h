@@ -24,6 +24,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace SCHEDULER {
 
 	enum SCHEDULER_EXPORT ScheduleType {
+        SERIAL,
         STATIC,
 	    ASAPHC,
         READY_FIRE_SCHEDULER
