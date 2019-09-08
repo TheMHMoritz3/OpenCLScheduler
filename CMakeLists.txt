@@ -56,7 +56,9 @@ add_library(Scheduler SHARED src/Scheduler/KernelFileParser.cpp
 			src/Scheduler/DevicePropertys.cpp
 			src/Scheduler/DevicePropertys.h
 			src/Scheduler/ReadyFireScheduler.cpp
-			src/Scheduler/ReadyFireScheduler.h)
+			src/Scheduler/ReadyFireScheduler.h
+			src/Scheduler/NewStaticScheduler.cpp
+			src/Scheduler/NewStaticScheduler.h)
 			
 			
 if(UNIX)

@@ -136,6 +136,11 @@
          <widget class="QComboBox" name="SchedulingTypeSpinBox">
           <item>
            <property name="text">
+            <string>Serial</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
             <string>Static</string>
            </property>
           </item>

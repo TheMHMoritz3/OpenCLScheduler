@@ -20,15 +20,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #include "StaticScheduler.h"
 #include "ASAP.h"
 #include "ReadyFireScheduler.h"
+#include "NewStaticScheduler.h"
 #include <iostream>
 #include <fstream>
 #include <CL/cl.hpp>
+#include <chrono>
 
 using namespace SCHEDULER;
 using namespace std;
 
 ScheduleManager::ScheduleManager() {
-
+    LastScheduleTime = 0;
 }
 
 void ScheduleManager::searchForDevices() {
@@ -50,8 +52,11 @@ void ScheduleManager::searchForDevices() {
 
 void ScheduleManager::startSchedule() {
     switch(Type){
-        case ScheduleType::STATIC:
+        case ScheduleType::SERIAL:
             ActiveScheduler = new StaticScheduler(Tasks, Devices);
+            break;
+        case ScheduleType::STATIC:
+            ActiveScheduler = new NewStaticScheduler(Tasks,Devices);
             break;
         case ScheduleType::ASAPHC:
 			ActiveScheduler = new ASAP(Tasks, Devices);
@@ -62,7 +67,10 @@ void ScheduleManager::startSchedule() {
         default:
             break;
     }
+    auto start = std::chrono::steady_clock::now();
     ActiveScheduler->schedule();
+    auto end = std::chrono::steady_clock::now();
+    LastScheduleTime = std::chrono::duration_cast<std::chrono::milliseconds> (end - start).count();
 	delete ActiveScheduler;
 }
 
@@ -81,9 +89,12 @@ void ScheduleManager::startSchedule(std::vector<Task*> tasks, Device* device)
 	std::vector<Device*> devices;
 	devices.push_back(device);
 	switch (Type) {
-	case ScheduleType::STATIC:
+	case ScheduleType::SERIAL:
 	    ActiveScheduler = new StaticScheduler(tasks, devices);
 		break;
+	    case ScheduleType::STATIC:
+            ActiveScheduler = new NewStaticScheduler(tasks,devices);
+	        break;
 	case ScheduleType::ASAPHC:
 		ActiveScheduler = new ASAP(tasks, devices);
 		break;
@@ -96,7 +107,10 @@ void ScheduleManager::startSchedule(std::vector<Task*> tasks, Device* device)
 	if(device->getProperties()->getCoureCount()>1){
 	    ActiveScheduler->setCoreCount(device->getProperties()->getCoureCount());
 	}
-	ActiveScheduler->schedule();
+    auto start = std::chrono::steady_clock::now();
+    ActiveScheduler->schedule();
+    auto end = std::chrono::steady_clock::now();
+    LastScheduleTime = std::chrono::duration_cast<std::chrono::milliseconds> (end - start).count();
 	delete ActiveScheduler;
 }
 
@@ -150,4 +164,8 @@ void ScheduleManager::setActiveDevice(int id) {
 void ScheduleManager::startSingleDeviceScheduling() {
     Type = ActiveDevice->getProperties()->getSchedule();
     startSchedule(ActiveDevice->getProperties()->getTasksToSchedule(),ActiveDevice);
+}
+
+int ScheduleManager::getLastScheduleTime() const {
+    return LastScheduleTime;
 }

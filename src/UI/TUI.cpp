@@ -114,7 +114,7 @@ void TUI::setSchedule()
 	int userInput;
 	cin >> userInput;
 	if (userInput == 1)
-		ScheduleManager->setScheduleType(SCHEDULER::ScheduleType::STATIC);
+		ScheduleManager->setScheduleType(SCHEDULER::ScheduleType::SERIAL);
 	ScheduleManager->startSchedule();
 }
 

@@ -296,7 +296,6 @@ void MainWindow::startSchedule() {
         }
     }
 
-    auto start = std::chrono::steady_clock::now();
     if (ui.DeviceCombobox->currentIndex() >= Devices.size()) {
         ScheduleManager->startMultiDeviceScheduling();
     } else {
@@ -307,13 +306,12 @@ void MainWindow::startSchedule() {
             std::cout << "Exception: " << ex.what() << std::endl;
         }
     }
-    auto end = std::chrono::steady_clock::now();
 
 	QList<QStandardItem*> items;
 	QStandardItem* infoItem = new QStandardItem(ActiveDevicePropertie->toString().c_str());
 	items.append(infoItem);
 	QStandardItem* dataitem = new QStandardItem(
-		tr("%1").arg(std::chrono::duration_cast<std::chrono::milliseconds> (end - start).count()));
+		tr("%1").arg(ScheduleManager->getLastScheduleTime()));
 	items.append(dataitem);
     
 	ScheduleTimeModel->appendRow(items);

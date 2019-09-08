@@ -358,15 +358,26 @@
 \section{First Results}
 \begin{frame}
    \frametitle{Execution Results - Raspberry PI 2 B+}
-   
-
     \begin{columns}
         \column{.5\textwidth}
        \includegraphics[width=\textwidth]{res/DataRaspberryPI2B+.png}
         \column{.5\textwidth}
         \begin{enumerate}
 	\item Static Scheduler Runs with and without Workgroupsize > 1
-	\item ASAP and Readyfire with and without Workgroupsize > 1,  first run is with Out of Order Scheduling activated
+	\item ASAP and Readyfire with and without Workgroupsize > 1,  ¸first run is with Out of Order Scheduling activated
+        \end{enumerate}
+    \end{columns}
+\end{frame}
+\begin{frame}
+   \frametitle{Execution Results - Raspberry PI 2 B}
+    \begin{columns}
+        \column{.5\textwidth}
+       \includegraphics[width=\textwidth]{res/RaspberryPi2B_POCL_VS_VC4CL.png}
+        \column{.5\textwidth}
+        \begin{enumerate}
+            \item Static run with VC4CL
+            \item Run with nothing Scheduled
+            \item Static run with POCL
         \end{enumerate}
     \end{columns}
 \end{frame}

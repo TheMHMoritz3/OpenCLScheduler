@@ -30,9 +30,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace SCHEDULER {
 	class SCHEDULER_EXPORT Task {
     public:
-        Task() = delete;
         Task(int id);
-
+        Task() = delete;
 		void setProgam(cl::Program program);
 		void setKernel(std::string kernelName);
 		void setPath(std::string path);
@@ -59,7 +58,6 @@ namespace SCHEDULER {
 		Type getReturnDataType();
 		Task operator=(Task other);
 		DependancyType dependancyType();
-		bool isCalculationDone();
 		std::vector<std::string> kernelArguments();
 		bool hasDependencies();
 		bool dependenciesAreCalculated();
@@ -73,6 +71,12 @@ namespace SCHEDULER {
 		std::vector<std::string> getTaskConstants();
 
 		std::vector<Task*> getDependantTasks();
+
+		bool isScheduled();
+		void setScheduled(bool scheduled);
+
+        bool isCalculationDone();
+        void resetIsCalculationDone();
     private:
 	    void addINTConstant(void* data);
 	    void addUINTConstant(void* data);
@@ -99,6 +103,7 @@ namespace SCHEDULER {
 		bool IsDataSet;
 		std::vector<std::function<void(void)>> GetExternalDataMethods;
 		std::vector<unsigned long> ElapsedTime;
+		bool IsScheduled;
     };
 }
 

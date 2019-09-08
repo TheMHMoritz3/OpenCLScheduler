@@ -47,6 +47,8 @@ namespace SCHEDULER {
 		DeviceProperties* getDeviceProperties(int i) const;
 		void setActiveDevice(int id);
 
+		int getLastScheduleTime() const;
+
     private:
 		void startSchedule(std::vector<Task*>tasks, Device* device);
 		cl::Program::Sources* convertSources(std::string file);
@@ -56,6 +58,7 @@ namespace SCHEDULER {
         std::vector<Device*> Devices;
         Scheduler* ActiveScheduler;
         Device* ActiveDevice;
+        int LastScheduleTime;
     };
 }
 

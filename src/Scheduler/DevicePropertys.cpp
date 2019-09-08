@@ -12,7 +12,7 @@ DeviceProperties::DeviceProperties(std::string deviceName, int maxCoreCount) :
 	DeviceName(deviceName),
 	MaxCoreCount(maxCoreCount)
 {
-	Type = STATIC;
+	Type = SERIAL;
 	CoreCount = 1;
 	OutOfOrderExecution = false;
 }
@@ -58,7 +58,7 @@ bool DeviceProperties::getOutOfOrderExecution() {
 }
 
 void DeviceProperties::setOutOfOrderExecution(bool ooe) {
-	if (Type != STATIC)
+	if (Type != SERIAL)
 		OutOfOrderExecution = ooe;
 }
 
@@ -70,16 +70,19 @@ int DeviceProperties::getMaxCoreCount()
 std::string DeviceProperties::toString()
 {
 	std::stringstream stream;
-	stream << "Device: " << getName();
+
 	switch (Type) {
-	case STATIC: 
-		stream << " - " << "Staticshedule";
+	case SERIAL:
+		stream << "Serial";
 		break;
+	    case STATIC:
+	        stream<< "Static";
+	        break;
 	case ASAPHC: 
-		stream << " - " << "ASAP";
+		stream << "ASAP";
 		break;
 	case READY_FIRE_SCHEDULER: 
-		stream << " - " << "R. F. S.";
+		stream << "R. F. S.";
 		break;
 	default:;
 	}
@@ -88,7 +91,7 @@ std::string DeviceProperties::toString()
 		stream << " OOE ";
 
 	stream << " - Workgroup Size: " << getCoureCount();
-
+    stream << " - Device: " << getName();
 	return stream.str();
 }
 

@@ -67,6 +67,8 @@ namespace SCHEDULER {
 		std::vector<void*> readDataFromBufferForCHAR(Task* task, cl::CommandQueue queue, int count);
 		std::vector<void*> readDataFromBufferForDOUBLE(Task* task, cl::CommandQueue queue, int count);
 		std::vector<void*> readDataFromBufferForFLOAT(Task* task, cl::CommandQueue queue, int count);
+
+		void resetTasks();
     };
 }
 
