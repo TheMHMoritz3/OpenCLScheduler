@@ -24,12 +24,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #include <iostream>
 #include <fstream>
 #include <CL/cl.hpp>
+#include <chrono>
 
 using namespace SCHEDULER;
 using namespace std;
 
 ScheduleManager::ScheduleManager() {
-
+    LastScheduleTime = 0;
 }
 
 void ScheduleManager::searchForDevices() {
@@ -66,7 +67,10 @@ void ScheduleManager::startSchedule() {
         default:
             break;
     }
+    auto start = std::chrono::steady_clock::now();
     ActiveScheduler->schedule();
+    auto end = std::chrono::steady_clock::now();
+    LastScheduleTime = std::chrono::duration_cast<std::chrono::milliseconds> (end - start).count();
 	delete ActiveScheduler;
 }
 
@@ -103,7 +107,10 @@ void ScheduleManager::startSchedule(std::vector<Task*> tasks, Device* device)
 	if(device->getProperties()->getCoureCount()>1){
 	    ActiveScheduler->setCoreCount(device->getProperties()->getCoureCount());
 	}
-	ActiveScheduler->schedule();
+    auto start = std::chrono::steady_clock::now();
+    ActiveScheduler->schedule();
+    auto end = std::chrono::steady_clock::now();
+    LastScheduleTime = std::chrono::duration_cast<std::chrono::milliseconds> (end - start).count();
 	delete ActiveScheduler;
 }
 
@@ -157,4 +164,8 @@ void ScheduleManager::setActiveDevice(int id) {
 void ScheduleManager::startSingleDeviceScheduling() {
     Type = ActiveDevice->getProperties()->getSchedule();
     startSchedule(ActiveDevice->getProperties()->getTasksToSchedule(),ActiveDevice);
+}
+
+int ScheduleManager::getLastScheduleTime() const {
+    return LastScheduleTime;
 }

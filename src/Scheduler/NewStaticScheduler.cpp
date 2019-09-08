@@ -11,58 +11,38 @@ NewStaticScheduler::NewStaticScheduler(std::vector<Task *> tasks, std::vector<De
         Scheduler(tasks, device) {
     ErrorCode = 1;
     generateAllPrograms();
+    scheduleTasks(Tasks);
 }
 
 
 void NewStaticScheduler::schedule() {
     for (Device *device : Devices) {
-        TasksToSchedule = Tasks;
-        std::vector<cl::CommandQueue> commandQueues;
-
-        while(!TasksToSchedule.empty()) {
-            getQueueTasksWithNoDependencies();
-            std::vector<cl::Event> events;
-            for (int i = 0; i < TasksToScheduleInStep.size(); i++) {
-                commandQueues.push_back(cl::CommandQueue(device->getDeviceContext(), device->getOclDevice()));
-                cl::Event currentEvent;
-                events.push_back(currentEvent);
-                Task *task = TasksToScheduleInStep.at(i);
+        cl::CommandQueue commandQueue;
+        if(device->getProperties()->getOutOfOrderExecution())
+            commandQueue = cl::CommandQueue(device->getDeviceContext(), device->getOclDevice(),CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE);
+        else
+            commandQueue = cl::CommandQueue(device->getDeviceContext(), device->getOclDevice());
+        for(std::vector<Task*> tasks : TasksToSchedule){
+            for(Task* task : tasks){
                 cl::Kernel kernel = cl::Kernel(task->getProgramm(), task->getKernelName().c_str(), &ErrorCode);
                 if (ErrorCode == CL_SUCCESS) {
-                    SCHEDULER::Scheduler::setRAMForCurrentTask(task, device, kernel, commandQueues.at(i));
-                    readConstantsFromTask(task, device, kernel, commandQueues.at(i));
+                    setRAMForCurrentTask(task, device, kernel, commandQueue);
+                    readConstantsFromTask(task, device, kernel, commandQueue);
                     setRAMBufferForOutput(task, device, kernel);
                     setKernelLoad(task, device, kernel);
-                    enqueueTak(task, device, commandQueues.at(i), kernel,currentEvent);
-                    TasksToReadInStep.push_back(task);
-                } else
-                    std::cout << "First Step Kernel Creation Resolved Error: " << ErrorCode << std::endl;
+                    enqueueTak(task, device, commandQueue, kernel);
+                }
+                else
+                    std::cout << "Kernel Creation Resolved Error: " << ErrorCode << std::endl;
             }
-            cl::Event::waitForEvents(events);
-            for (int i = 0; i<TasksToReadInStep.size(); i++) {
-                readDataFromTask(TasksToReadInStep.at(i), commandQueues.at(i));
+            commandQueue.finish();
+            for(Task* task : tasks){
+                readDataFromTask(task, commandQueue);
             }
-            TasksToReadInStep.clear();
         }
-        deleteAllBuffers();
     }
 }
 
-void NewStaticScheduler::getQueueTasksWithNoDependencies() {
-    bool TasksAreRemoved = true;
-    while (TasksAreRemoved) {
-        TasksAreRemoved = false;
-        for (int i = 0; i < TasksToSchedule.size(); i++) {
-            if (TasksToSchedule.at(i)->dependenciesAreCalculated()) {
-                TasksToScheduleInStep.push_back(TasksToSchedule.at(i));
-                TasksToSchedule.erase(TasksToSchedule.begin() + i);
-                TasksAreRemoved = true;
-            }
-            i++;
-        }
-    }
-//    std::cout << "Tasks to Schedule: " << TasksToSchedule.size() << endl;
-}
 
 void NewStaticScheduler::generateAllPrograms() {
     for (Device *device : Devices)
@@ -70,7 +50,31 @@ void NewStaticScheduler::generateAllPrograms() {
             device->generateProgramm(task);
 }
 
-void NewStaticScheduler::enqueueTak(Task *task, Device *device, cl::CommandQueue commandQueue, cl::Kernel kernel, cl::Event &event) {
-    ErrorCode = commandQueue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(CoreCount), cl::NDRange(CoreCount),NULL,&event);
-//    std::cout << "Enqueue Task: " << ErrorCode << std::endl;
+bool NewStaticScheduler::areTaskDependenciesScheduled(Task* task) {
+    for(Task* dtask : task->getDependantTasks()){
+        if(!dtask->isScheduled())
+            return false;
+    }
+    return true;
+}
+
+void NewStaticScheduler::scheduleTasks(std::vector<Task *> tasks) {
+    bool AnythingScheduled=false;
+    do{
+        AnythingScheduled=false;
+        std::vector<Task*> scheduledTasks;
+        for(Task *task : tasks)
+        {
+            if((areTaskDependenciesScheduled(task))&&(!task->isScheduled())){
+                scheduledTasks.push_back(task);
+                AnythingScheduled=true;
+            }
+        }
+        for(Task* task : scheduledTasks) {
+            task->setScheduled(true);
+        }
+        if(AnythingScheduled)
+            TasksToSchedule.emplace_back(scheduledTasks);
+
+    }while(AnythingScheduled);
 }

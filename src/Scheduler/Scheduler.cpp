@@ -28,6 +28,7 @@ Scheduler::Scheduler(std::vector<Task*> tasks, std::vector<Device*> devices) {
 	Tasks = tasks;
 	Devices = devices;
 	CoreCount = 1;
+	resetTasks();
 }
 
 void Scheduler::setRAMForCurrentTask(Task* task, Device* device, cl::Kernel kernel, cl::CommandQueue queue) {
@@ -396,4 +397,13 @@ std::vector<void*> Scheduler::readDataFromBufferForFLOAT(Task* task, cl::Command
 
 void Scheduler::setCoreCount(int cores) {
 	CoreCount = cores;
+}
+
+void Scheduler::resetTasks() {
+    for(Task *task : Tasks)
+    {
+        task->resetIsCalculationDone();
+        task->setScheduled(false);
+    }
+
 }

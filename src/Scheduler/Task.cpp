@@ -27,6 +27,7 @@ Task::Task(int id) {
     ID=id;
 	IsCalculationDone = false;
 	IsDataSet = false;
+	IsScheduled = false;
 }
 
 int Task::getId() {
@@ -160,7 +161,7 @@ bool Task::dependenciesAreCalculated()
 				dependanciesAreCalculated = task->isCalculationDone();
 		}
 	}
-	return (IsDataSet || dependanciesAreCalculated);
+	return dependanciesAreCalculated;
 }
 
 void Task::addElapsedTime(unsigned long time)
@@ -292,4 +293,16 @@ void Task::addFloatConstant(void *data) {
         dataSet.push_back(&value[i]);
     }
     addData(dataSet,FLOAT);
+}
+
+void Task::setScheduled(bool scheduled) {
+    IsScheduled = scheduled;
+}
+
+bool Task::isScheduled() {
+    return IsScheduled;
+}
+
+void Task::resetIsCalculationDone() {
+    IsCalculationDone = false;
 }

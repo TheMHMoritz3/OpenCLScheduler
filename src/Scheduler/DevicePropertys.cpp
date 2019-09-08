@@ -70,16 +70,19 @@ int DeviceProperties::getMaxCoreCount()
 std::string DeviceProperties::toString()
 {
 	std::stringstream stream;
-	stream << "Device: " << getName();
+
 	switch (Type) {
 	case SERIAL:
-		stream << " - " << "Staticshedule";
+		stream << "Serial";
 		break;
+	    case STATIC:
+	        stream<< "Static";
+	        break;
 	case ASAPHC: 
-		stream << " - " << "ASAP";
+		stream << "ASAP";
 		break;
 	case READY_FIRE_SCHEDULER: 
-		stream << " - " << "R. F. S.";
+		stream << "R. F. S.";
 		break;
 	default:;
 	}
@@ -88,7 +91,7 @@ std::string DeviceProperties::toString()
 		stream << " OOE ";
 
 	stream << " - Workgroup Size: " << getCoureCount();
-
+    stream << " - Device: " << getName();
 	return stream.str();
 }
 
