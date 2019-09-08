@@ -5,7 +5,8 @@
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_barchart.h>
-
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
 
 
 TaskTabWidget::TaskTabWidget(SCHEDULER::Task* task, QWidget* parent) :
@@ -96,6 +97,8 @@ void TaskTabWidget::makeConnections()
 	connect(Ui.GenerateDataButton, SIGNAL(clicked()), this, SLOT(generateDataTriggered()));
 	connect(Ui.ReadCanBusButton, SIGNAL(clicked()), this, SLOT(readDataFromBusClicked()));
 	connect(Ui.AddConstantButton, SIGNAL(clicked()), this, SLOT(addConstantClicked()));
+	connect(Ui.ExportDataButton,SIGNAL(clicked()),this,SLOT(onDataExportClicked()));
+	connect(Ui.ExportTimeButton,SIGNAL(clicked()),this,SLOT(onTimeExportClicked()));
 	connect(TasksModel, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(onItemChanged(QStandardItem*)));
 
 }
@@ -231,7 +234,6 @@ void TaskTabWidget::generateExecutionTimeDiagramm()
 	Ui.ExecutionTimes->setCanvasBackground(Qt::white);
 	QVector<QPointF> points;
 	for (int i = 0; i < Task->elapsedTime().size(); i++) {
-	    qDebug()<<"Test Times: "<<Task->elapsedTime().at(i);
 		if (Task->elapsedTime().at(i) > 0.0)
 		{
 			QStandardItem* item = new QStandardItem();
@@ -485,5 +487,51 @@ void TaskTabWidget::generateGraph() {
 	curve->attach(Ui.DiagramPlot);
 	curve->setCurveAttribute(QwtPlotCurve::Fitted, true);
 	Ui.DiagramPlot->replot();
+}
+
+void TaskTabWidget::onDataExportClicked() {
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export CSV"), "", tr("File (*.csv);;All Files (*)"));
+    if (fileName.isEmpty())
+        return;
+    else {
+        QFile file(fileName);
+        if (!file.open(QIODevice::WriteOnly)) {
+            QMessageBox::information(this, tr("Unable to open file"), file.errorString());
+            return;
+        }
+        QTextStream out(&file);
+        for (int i = 0; i < Model->rowCount(); i++) {
+            for(int j = 0; j< Model->columnCount(); j++){
+                if(j==Model->columnCount()-1){
+                    out<<Model->item(i,j)->text()<<"\n";
+                } else{
+                    out<<Model->item(i,j)->text()<<"; ";
+                }
+            }
+        }
+    }
+}
+
+void TaskTabWidget::onTimeExportClicked() {
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export CSV"), "", tr("File (*.csv);;All Files (*)"));
+    if (fileName.isEmpty())
+        return;
+    else {
+        QFile file(fileName);
+        if (!file.open(QIODevice::WriteOnly)) {
+            QMessageBox::information(this, tr("Unable to open file"), file.errorString());
+            return;
+        }
+        QTextStream out(&file);
+        for (int i = 0; i < ExecutionTimeModel->rowCount(); i++) {
+            for(int j = 0; j<ExecutionTimeModel->columnCount(); j++){
+                if(j==ExecutionTimeModel->columnCount()-1){
+                    out<<ExecutionTimeModel->item(i,j)->text()<<"\n";
+                } else{
+                    out<<ExecutionTimeModel->item(i,j)->text()<<"; ";
+                }
+            }
+        }
+    }
 }
 

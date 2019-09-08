@@ -65,5 +65,7 @@ private slots:
 	void readDataFromBusClicked();
 	void addConstantClicked();
 	void onItemChanged(QStandardItem* item);
+	void onDataExportClicked();
+	void onTimeExportClicked();
 };
 
