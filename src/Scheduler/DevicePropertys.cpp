@@ -90,8 +90,8 @@ std::string DeviceProperties::toString()
 	if (getOutOfOrderExecution())
 		stream << " OOE ";
 
-	stream << " - Workgroup Size: " << getCoureCount();
-    stream << " - Device: " << getName();
+	stream << " ; Workgroup Size: " << getCoureCount();
+    stream << " ; Device: " << getName();
 	return stream.str();
 }
 

@@ -35,6 +35,7 @@ namespace UI {
 		void onTabCloseClicked(int id);
         void onTaskWidgetDoubleClicked(const QModelIndex &index);
         void onActivateOutOfOrderSchedulingClicked();
+        void onCSVExportClicked();
 
 	private:
 		Ui::MainWindow ui;

@@ -307,14 +307,14 @@ void MainWindow::startSchedule() {
         }
     }
 
-	QList<QStandardItem*> items;
-	QStandardItem* infoItem = new QStandardItem(ActiveDevicePropertie->toString().c_str());
-	items.append(infoItem);
-	QStandardItem* dataitem = new QStandardItem(
-		tr("%1").arg(ScheduleManager->getLastScheduleTime()));
-	items.append(dataitem);
-    
-	ScheduleTimeModel->appendRow(items);
+    QList<QStandardItem *> items;
+    QStandardItem *infoItem = new QStandardItem(ActiveDevicePropertie->toString().c_str());
+    items.append(infoItem);
+    QStandardItem *dataitem = new QStandardItem(
+            tr("%1").arg(ScheduleManager->getLastScheduleTime()));
+    items.append(dataitem);
+
+    ScheduleTimeModel->appendRow(items);
 }
 
 void MainWindow::fillStartUI() {
@@ -330,7 +330,7 @@ void MainWindow::fillStartUI() {
     ui.DeviceCombobox->addItem(tr("All Devices"));
 
     QStringList headerItems;
-	headerItems.append(tr("Informations"));
+    headerItems.append(tr("Informations"));
     headerItems.append(tr("Execution Times"));
 
     ScheduleTimeModel->setHorizontalHeaderLabels(headerItems);
@@ -349,6 +349,7 @@ void MainWindow::makeConnections() {
     connect(ui.SchedulingTypeSpinBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onSchedulingTypeChanged()));
     connect(ui.ShowScheduleGraphicButton, SIGNAL(clicked()), this, SLOT(onShowScheduleGraphClicked()));
     connect(ui.TasksWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(onTabCloseClicked(int)));
+    connect(ui.CSVExportButton, SIGNAL(clicked()), this, SLOT(onCSVExportClicked()));
     connect(ui.TasksListView, SIGNAL(doubleClicked(
                                              const QModelIndex&)), this, SLOT(onTaskWidgetDoubleClicked(
                                                                                       const QModelIndex&)));
@@ -423,10 +424,10 @@ void MainWindow::onShowScheduleGraphClicked() {
 
     QVector<QwtIntervalSample> points;
 
-	for (int i = 0; i < ScheduleTimeModel->rowCount(); i++) {
-		QwtIntervalSample sample( ScheduleTimeModel->item(i, 1)->text().toDouble(),i+0.8,i+1.2);
-		points << sample;
-	}
+    for (int i = 0; i < ScheduleTimeModel->rowCount(); i++) {
+        QwtIntervalSample sample(ScheduleTimeModel->item(i, 1)->text().toDouble(), i + 0.8, i + 1.2);
+        points << sample;
+    }
 
     plot->setAxisTitle(QwtPlot::xBottom, QString::fromUtf8("Run Number"));
     plot->setAxisAutoScale(QwtPlot::xBottom);
@@ -434,11 +435,11 @@ void MainWindow::onShowScheduleGraphClicked() {
     plot->setAxisAutoScale(QwtPlot::yLeft);
 
     QwtPlotHistogram *curve = new QwtPlotHistogram();
-	curve->setSamples(points);
+    curve->setSamples(points);
     curve->attach(plot);
-	curve->setPen(QPen(QColor(Qt::GlobalColor::blue)));
-	curve->setBrush(QBrush(QColor(Qt::GlobalColor::darkBlue), Qt::BrushStyle::SolidPattern));
-	curve->setStyle(QwtPlotHistogram::Columns);
+    curve->setPen(QPen(QColor(Qt::GlobalColor::blue)));
+    curve->setBrush(QBrush(QColor(Qt::GlobalColor::darkBlue), Qt::BrushStyle::SolidPattern));
+    curve->setStyle(QwtPlotHistogram::Columns);
 
     plot->replot();
 
@@ -466,4 +467,27 @@ void MainWindow::onTaskWidgetDoubleClicked(const QModelIndex &index) {
 
 void MainWindow::onActivateOutOfOrderSchedulingClicked() {
     ActiveDevicePropertie->setOutOfOrderExecution(ui.OutOfOrderScheduling->checkState() == Qt::Checked);
+}
+
+void MainWindow::onCSVExportClicked() {
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export CSV"), "", tr("File (*.csv);;All Files (*)"));
+    if (fileName.isEmpty())
+        return;
+    else {
+        QFile file(fileName);
+        if (!file.open(QIODevice::WriteOnly)) {
+            QMessageBox::information(this, tr("Unable to open file"), file.errorString());
+            return;
+        }
+        QTextStream out(&file);
+        for (int i = 0; i < ScheduleTimeModel->rowCount(); i++) {
+            for(int j = 0; j<ScheduleTimeModel->columnCount(); j++){
+                if(j==ScheduleTimeModel->columnCount()-1){
+                    out<<ScheduleTimeModel->item(i,j)->text()<<"\n";
+                } else{
+                    out<<ScheduleTimeModel->item(i,j)->text()<<"; ";
+                }
+            }
+        }
+    }
 }
