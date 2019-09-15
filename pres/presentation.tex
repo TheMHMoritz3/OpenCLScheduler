@@ -1,3 +1,4 @@
+% !TeX program = lualatex
 \documentclass{beamer}
 
 \usepackage[utf8]{inputenc}
@@ -180,7 +181,7 @@
 \end{frame}
 
 \section{Kernels}
-\subsection{Overview}
+%\subsection{Overview}
 \begin{frame} %%Eine Folie
   \frametitle{List of Kernels} %%Folientitel
   Already there:
@@ -207,7 +208,7 @@
     \end{itemize}
 \end{frame}
 
-\subsection{Abnormal Acceleration Detection}
+%\subsection{Abnormal Acceleration Detection}
 \begin{frame}
     \frametitle{Abnormal Acceleration Detection}
     By testing for accelerationspikes or accelerationvalues, we are able to detect accidents and unexpected movement.\\
@@ -231,7 +232,7 @@
     \end{enumerate}
 \end{frame}
 
-\subsection{Anti Blocking System}
+%\subsection{Anti Blocking System}
 \begin{frame}
     \frametitle{Anti Blocking System}
     By comparing the fronts average and back wheels speeds we can determine if the rear wheels are turning to slow or are locking up. 
@@ -244,7 +245,7 @@
     \end{itemize}
 \end{frame}
 
-\subsection{Drive Slip Control}
+%\subsection{Drive Slip Control}
 \begin{frame}
     \frametitle{Drive Slip Control}
     By comparing the fronts average and back wheels speeds we can determine if the rear wheels are turning to fast. 
@@ -257,7 +258,7 @@
     \end{itemize}
 \end{frame}
 
-\subsection{Tractioncontrol}
+%\subsection{Tractioncontrol}
 \begin{frame}
     \frametitle{Tractioncontrol}
     By comparing the fronts average and back wheels speeds we can determine if the rear wheels have lost to much traction.
@@ -285,7 +286,7 @@
     \end{enumerate}
 \end{frame}
 
-\subsection{Range}
+%\subsection{Range}
 \begin{frame}
     \frametitle{Range}
     Function:\\
@@ -315,7 +316,7 @@
     \end{enumerate}
 \end{frame}
 
-\subsection{Wenderadius}
+%\subsection{Wenderadius}
 \begin{frame}
     \frametitle{Wenderadius}
     Function:\\
@@ -355,33 +356,58 @@
     \frametitle{UML - Scheduler}
     \includegraphics[width=.8\textwidth]{res/ClassDiagramScheduler.png}
 \end{frame}
-\section{First Results}
+\begin{frame}{Scheduling Types}
+	\begin{tabular}{c|c|c|c}
+		Serial & Static & ASAP & Ready Fire Scheduling\\
+		\includegraphics[width=.2\textwidth]{res/SerialScheduling.jpg}&
+		\includegraphics[width=.2\textwidth]{res/StaticScheduling.jpg}&
+		\includegraphics[width=.2\textwidth]{res/ASAPScheduling.jpg}&
+		\includegraphics[width=.2\textwidth]{res/RFScheduling.jpg}
+	\end{tabular}
+\end{frame}
+\section{Results}
+\subsection{Mesurements}
+\begin{frame}{Mesurements}
+	\begin{columns}
+		\column{.6\textwidth}
+		\includegraphics[width=\textwidth]{res/SerialExample.PNG}
+		\column{.4\textwidth}
+		\begin{enumerate}
+			\item Multible Runs with the same settings
+			\item Getting the average of all runs yellow line
+			\item Getting a diagramm of all schedules with the given settings
+		\end{enumerate}
+	\end{columns}
+\end{frame}
+\subsection{Results}
 \begin{frame}
-   \frametitle{Execution Results - Raspberry PI 2 B+}
-    \begin{columns}
-        \column{.5\textwidth}
-       \includegraphics[width=\textwidth]{res/DataRaspberryPI2B+.png}
-        \column{.5\textwidth}
-        \begin{itemize}
-	\item All runns at POCL and a dataset size of 10 000
-        \end{itemize}
-        \begin{enumerate}
-	\item Static Scheduler Runs with and without Workgroupsize > 1
-	\item ASAP and Readyfire with and without Workgroupsize > 1,  ¸first run is with Out of Order Scheduling activated
-        \end{enumerate}
-    \end{columns}
+   \frametitle{Raspberrry PI 2 B - POCL}
+   \includegraphics[width=.8\textwidth]{res/ResultsPOCL.PNG}\\
+   We are not able to see the impact of the other scheduler.
 \end{frame}
 \begin{frame}
-   \frametitle{Execution Results - Raspberry PI 2 B}
-    \begin{columns}
-        \column{.5\textwidth}
-       \includegraphics[width=\textwidth]{res/RaspberryPi2B_POCL_VS_VC4CL.png}
-        \column{.5\textwidth}
-        \begin{enumerate}
-            \item Static run with VC4CL
-            \item Run with nothing Scheduled on POCL
-            \item Static run with POCL
-        \end{enumerate}
-    \end{columns}
+	\frametitle{Raspberrry PI 2 B - POCL}
+	\includegraphics[width=.8\textwidth]{res/ResultsPOCL_WithoutSerial.PNG}
+\end{frame}
+\begin{frame}
+	\frametitle{Raspberrry PI 2 B - VC4CL}
+	\includegraphics[width=.8\textwidth]{res/ResultsVC4CL.PNG}\\
+	We are not able to see the impact of the other scheduler.
+\end{frame}
+\begin{frame}
+	\frametitle{Raspberrry PI 2 B - VC4CL}
+	\includegraphics[width=.8\textwidth]{res/ResultsVC4CL_WithoutSerial.PNG}\\
+	We are not able to see the impact of the other scheduler.
+\end{frame}
+\subsection{Resolution}
+\begin{frame}
+	\frametitle{Raspberrry PI 2 B}
+	Resolution:
+	\begin{itemize}
+		\item ASAP may be faster than Static. This can be due to the Overhead of each. This may due to the overhead of the loops of the static.
+		\item Another Problem is that POCL is heighly dependant on the CPU Load.
+		\item A big impact on POCL has a out of order Scheduler.
+		\item On VC4CL is the best sheduler the Static.
+	\end{itemize}
 \end{frame}
 \end{document}
