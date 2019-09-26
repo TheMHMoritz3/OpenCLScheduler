@@ -121,7 +121,7 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Example Raspberry Pi 3B+}
+\begin{frame}{Example Raspberry Pi 3 B+}
     \includegraphics[height=.8\textheight]{res/RaspberryPiData.PNG}
 \end{frame}
 \subsection{Software Model}
@@ -372,69 +372,68 @@
 		\column{.6\textwidth}
 		\includegraphics[width=\textwidth]{res/SerialExample.PNG}
 		\column{.4\textwidth}
+        Testing procedure:
 		\begin{enumerate}
-			\item Multible Runs with the same settings
-			\item Getting the average of all runs yellow line
-			\item Getting a diagramm of all schedules with the given settings
+			\item Running Tasks multible times with the same settings
+			\item Calculating the average of all runs (yellow line)
+			\item Presenting the collected data in a reasonable manner 
 		\end{enumerate}
 	\end{columns}
 \end{frame}
 \subsection{Results}
 \begin{frame}
-   \frametitle{Raspberrry PI 2 B - POCL}
+   \frametitle{Raspberrry PI 3 B - POCL (CPU)}
    \includegraphics[width=.8\textwidth]{res/ResultsPOCL.PNG}\\
-   We are not able to see the impact of the other scheduler.
+   Compared to serial schedulers, parallel schedulers are much faster.
 \end{frame}
 \begin{frame}
-	\frametitle{Raspberrry PI 2 B - POCL - Without Serial}
+	\frametitle{Raspberrry PI 3 B - POCL - Without Serial}
 	\includegraphics[width=.8\textwidth]{res/ResultsPOCL_WithoutSerial.PNG}
 \end{frame}
 \begin{frame}
-	\frametitle{Raspberrry PI 2 B - POCL - 100k}
+	\frametitle{Raspberrry PI 3 B - POCL - 100k}
 	\includegraphics[width=.8\textwidth]{res/ResultsPOCL-100k.PNG}
 \end{frame}
 \begin{frame}
-	\frametitle{Raspberrry PI 2 B - POCL - 100k}
+	\frametitle{Raspberrry PI 3 B - POCL - 100k}
 	\includegraphics[width=.8\textwidth]{res/ResultsPOCL-100k_WithoutSerial.PNG}
 \end{frame}
 \begin{frame}
-	\frametitle{Raspberrry PI 2 B - VC4CL}
+	\frametitle{Raspberrry PI 3 B - VC4CL (GPU)}
 	\includegraphics[width=.8\textwidth]{res/ResultsVC4CL.PNG}\\
-	We are not able to see the impact of the other scheduler.
+    Again: Compared to serial schedulers, parallel schedulers are much faster.
 \end{frame}
 \begin{frame}
-	\frametitle{Raspberrry PI 2 B - VC4CL - Without Serial}
+	\frametitle{Raspberrry PI 3 B - VC4CL - Without Serial}
 	\includegraphics[width=.8\textwidth]{res/ResultsVC4CL_WithoutSerial.PNG}
 \end{frame}
 \begin{frame}
-	\frametitle{Raspberrry PI 2 B - VC4CL - 20k}
+	\frametitle{Raspberrry PI 3 B - VC4CL - 20k}
 	\includegraphics[width=.8\textwidth]{res/ResultsVC4CL-20k.PNG}
 \end{frame}
 \begin{frame}
-	\frametitle{Raspberrry PI 2 B - VC4CL - 20k}
+	\frametitle{Raspberrry PI 3 B - VC4CL - 20k}
 	\includegraphics[width=.8\textwidth]{res/ResultsVC4CL-20k_WithoutSerial.PNG}
 \end{frame}
-\subsection{Resolution}
+\subsection{Conclusion}
 \begin{frame}
-	\frametitle{Raspberrry PI 2 B}
-	Resolution:
+	\frametitle{Conclusion}
 	\begin{itemize}
-		\item ASAP may be faster than Static. This can be due to the Overhead of each. This may due to the overhead of the loops of the static.
-		\item Another Problem is that POCL is heighly dependant on the CPU Load.
-		\item A big impact on POCL has a out of order Scheduler.
-		\item On VC4CL is the best sheduler the Static.
+		\item On POCL ASAP and Static schedulers have similar execution times. Only minor diffrences caused by algorithmic overhead can be detected.
+		\item The most efficent scheduler on VC4CL is the static scheduler. 
+		\item The effects of other tasks on POCL are highly negative (e.g. moving the mouse).
+		\item OpenCLs ``Out of Order``-flag has only minor but positive effects.
 	\end{itemize}
 \end{frame}
 \begin{frame}
-	\frametitle{Raspberry PI 2 B - Diffrent Loads}
+	\frametitle{Conclusion}
 	\begin{itemize}
-		\item If the load varies the only the execution times changes
-		\item Only a change in the y-Axis of the diagrams
+		\item Workgroup sizes on POCL have little to no impact.
+		\item In our case CPU and GPU performance can be close.\\
+            $\Rightarrow$ This could be caused by caching problems and memory latency on the GPU.
+        \item Workgroup sizes on both CPU and GPU should always be maxed out.
+        \item More than 5-10 million datapoints per OpenCL-kernel can easily lead to memory overflow.\\
+            $\Rightarrow$ Memory management optimization would be required.
 	\end{itemize}
-	\begin{itemize}
-		\item VC4CL: Static Scheduler is the best.
-		\item POCL: Dependant on the CPU-Load a ASAP Scheduling can be faster than a Static, but with a margin von some milliseconds
-	\end{itemize}
-	So the Resolution stays for the Raspberry PI
 \end{frame}
 \end{document}
