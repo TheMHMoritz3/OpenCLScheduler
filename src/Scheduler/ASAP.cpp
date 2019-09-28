@@ -23,6 +23,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #include <cstring>
 #include <CL/cl.hpp>
 #include <fstream>
+#include <thread>
 
 using namespace SCHEDULER;
 using namespace std;
@@ -67,6 +68,7 @@ void ASAP::schedule() {
 			}
 //            cout << "Command Queue is Finishing: " << ErrorCode << endl;
 			ErrorCode = commandQueue.finish();
+            std::this_thread::sleep_for(std::chrono::milliseconds(5));
 //            cout << "Command Queue is finished: " << ErrorCode << endl;
 			while (!TasksToReadInStep.empty()) {
 				Task* task = TasksToReadInStep.front();
