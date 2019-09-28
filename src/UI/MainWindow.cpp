@@ -279,42 +279,43 @@ void MainWindow::onTasksToScheduleItemClicked(QStandardItem *item) {
 }
 
 void MainWindow::startSchedule() {
-
-    bool acceptedOnce = false;
-    for (Task *task : Tasks) {
-        if ((task->dependenciesAreCalculated()) && (task->getLoad() % ui.CoreCountSpinBox->value()) &&
-            (!acceptedOnce)) {
-            QMessageBox msg;
-            msg.setIcon(QMessageBox::Question);
-            msg.setText(
-                    tr("The Load is not dividable by the Workitem Count. This can cause Problems.\nDo you want to start anyway?"));
-            msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-            if (msg.exec() != QMessageBox::StandardButton::Yes) {
-                return;
+    for(int i = 0; i<ui.RepititionsSpinBox->value(); i++) {
+        bool acceptedOnce = false;
+        for (Task *task : Tasks) {
+            if ((task->dependenciesAreCalculated()) && (task->getLoad() % ui.CoreCountSpinBox->value()) &&
+                (!acceptedOnce)) {
+                QMessageBox msg;
+                msg.setIcon(QMessageBox::Question);
+                msg.setText(
+                        tr("The Load is not dividable by the Workitem Count. This can cause Problems.\nDo you want to start anyway?"));
+                msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                if (msg.exec() != QMessageBox::StandardButton::Yes) {
+                    return;
+                }
+                acceptedOnce = true;
             }
-            acceptedOnce = true;
         }
+
+        if (ui.DeviceCombobox->currentIndex() >= Devices.size()) {
+            ScheduleManager->startMultiDeviceScheduling();
+        } else {
+            try {
+                ScheduleManager->startSingleDeviceScheduling();
+            }
+            catch (std::exception ex) {
+                std::cout << "Exception: " << ex.what() << std::endl;
+            }
+        }
+
+        QList<QStandardItem *> items;
+        QStandardItem *infoItem = new QStandardItem(ActiveDevicePropertie->toString().c_str());
+        items.append(infoItem);
+        QStandardItem *dataitem = new QStandardItem(
+                tr("%1").arg(ScheduleManager->getLastScheduleTime()));
+        items.append(dataitem);
+
+        ScheduleTimeModel->appendRow(items);
     }
-
-    if (ui.DeviceCombobox->currentIndex() >= Devices.size()) {
-        ScheduleManager->startMultiDeviceScheduling();
-    } else {
-        try {
-            ScheduleManager->startSingleDeviceScheduling();
-        }
-        catch (std::exception ex) {
-            std::cout << "Exception: " << ex.what() << std::endl;
-        }
-    }
-
-    QList<QStandardItem *> items;
-    QStandardItem *infoItem = new QStandardItem(ActiveDevicePropertie->toString().c_str());
-    items.append(infoItem);
-    QStandardItem *dataitem = new QStandardItem(
-            tr("%1").arg(ScheduleManager->getLastScheduleTime()));
-    items.append(dataitem);
-
-    ScheduleTimeModel->appendRow(items);
 }
 
 void MainWindow::fillStartUI() {
