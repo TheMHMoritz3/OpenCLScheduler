@@ -11,6 +11,7 @@
 #include <qwt_plot_histogram.h>
 #include <QProgressDialog>
 #include <QtCore/QThread>
+#include "src/Scheduler/SchedulerNamespace.h"
 
 using namespace SCHEDULER;
 using namespace UI;
@@ -48,7 +49,7 @@ void MainWindow::multiThreaddingCheckstateChanged() {
 }
 
 void MainWindow::loadPreset() {
-    int DefaultCanLoad = 20000;
+    int DefaultCanLoad = 1000000;
 
     QMessageBox msg;
     msg.setIcon(QMessageBox::Question);
@@ -247,7 +248,7 @@ void MainWindow::addKernel() {
 }
 
 void MainWindow::deviceComboboxChanged() {
-    if (ui.DeviceCombobox->currentIndex() >= (int)Devices.size())
+    if (ui.DeviceCombobox->currentIndex() >= (int) Devices.size())
         decorateAllDevices();
     else {
         ActiveDevicePropertie = Devices.at(ui.DeviceCombobox->currentIndex());
@@ -266,6 +267,17 @@ void MainWindow::onCoreCountChanged() {
 }
 
 void MainWindow::onSchedulingTypeChanged() {
+    qDebug()<<ui.DeviceCombobox->currentText();
+    if (ui.DeviceCombobox->currentText().contains("pthread")) {
+        if(((ScheduleType) ui.SchedulingTypeSpinBox->currentIndex())==SCHEDULER::ASAPHC) {
+            ActiveDevicePropertie->setSchedule(SCHEDULER::ASAP_POCL);
+            return;
+        }
+        if(((ScheduleType) ui.SchedulingTypeSpinBox->currentIndex())==SCHEDULER::STATIC) {
+            ActiveDevicePropertie->setSchedule(SCHEDULER::STATIC_POCL);
+            return;
+        }
+    }
     ActiveDevicePropertie->setSchedule((ScheduleType) ui.SchedulingTypeSpinBox->currentIndex());
 }
 
@@ -295,9 +307,9 @@ void MainWindow::startSchedule() {
         }
     }
 
-    for(int i = 0; i<ui.RepititionsSpinBox->value(); i++) {
+    for (int i = 0; i < ui.RepititionsSpinBox->value(); i++) {
 
-        if (ui.DeviceCombobox->currentIndex() >= (int)Devices.size()) {
+        if (ui.DeviceCombobox->currentIndex() >= (int) Devices.size()) {
             ScheduleManager->startMultiDeviceScheduling();
         } else {
             try {
@@ -483,11 +495,11 @@ void MainWindow::onCSVExportClicked() {
         }
         QTextStream out(&file);
         for (int i = 0; i < ScheduleTimeModel->rowCount(); i++) {
-            for(int j = 0; j<ScheduleTimeModel->columnCount(); j++){
-                if(j==ScheduleTimeModel->columnCount()-1){
-                    out<<ScheduleTimeModel->item(i,j)->text()<<"\n";
-                } else{
-                    out<<ScheduleTimeModel->item(i,j)->text()<<"; ";
+            for (int j = 0; j < ScheduleTimeModel->columnCount(); j++) {
+                if (j == ScheduleTimeModel->columnCount() - 1) {
+                    out << ScheduleTimeModel->item(i, j)->text() << "\n";
+                } else {
+                    out << ScheduleTimeModel->item(i, j)->text() << "; ";
                 }
             }
         }

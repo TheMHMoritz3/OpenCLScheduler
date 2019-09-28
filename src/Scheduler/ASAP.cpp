@@ -32,8 +32,6 @@ ASAP::ASAP(std::vector<Task*> tasks, std::vector<Device*> device) : Scheduler(ta
 	ErrorCode = 1;
 	if (device.size() <= 1)
 		generateAllPrograms();
-
-    TasksToSchedule = Tasks;
 }
 
 
@@ -48,13 +46,18 @@ void ASAP::schedule() {
             commandQueue = cl::CommandQueue(device->getDeviceContext(), device->getOclDevice());
 
 		CommandQueues.push_back(commandQueue);
+		copyTasks();
 		while (!TasksToSchedule.empty()) {
 			enqueueTasksWithNoDependency();
 			while (!TasksToScheduleInStep.empty())
 			{
 				Task* task = TasksToScheduleInStep.front();
 				TasksToScheduleInStep.pop();
-				cl::Kernel kernel = cl::Kernel(task->getProgramm(), task->getKernelName().c_str(), &ErrorCode);
+
+                if (Devices.size() > 1)
+                    device->generateProgramm(task);
+
+                cl::Kernel kernel = cl::Kernel(task->getProgramm(), task->getKernelName().c_str(), &ErrorCode);
 				if (ErrorCode == CL_SUCCESS) {
 					setRAMForCurrentTask(task, device, kernel, commandQueue);
 					readConstantsFromTask(task, device, kernel, commandQueue);
@@ -68,7 +71,6 @@ void ASAP::schedule() {
 			}
 //            cout << "Command Queue is Finishing: " << ErrorCode << endl;
 			ErrorCode = commandQueue.finish();
-            std::this_thread::sleep_for(std::chrono::milliseconds(5));
 //            cout << "Command Queue is finished: " << ErrorCode << endl;
 			while (!TasksToReadInStep.empty()) {
 				Task* task = TasksToReadInStep.front();
@@ -82,7 +84,6 @@ void ASAP::schedule() {
 }
 
 void ASAP::enqueueTasksWithNoDependency() {
-//    cout << "Tasks Left Count: " << TasksToSchedule.size() << endl;
     bool TasksAreRemoved = true;
     while (TasksAreRemoved) {
         TasksAreRemoved = false;
@@ -92,7 +93,6 @@ void ASAP::enqueueTasksWithNoDependency() {
                 TasksToSchedule.erase(TasksToSchedule.begin() + i);
                 TasksAreRemoved = true;
             }
-            i++;
         }
     }
 }
@@ -103,5 +103,11 @@ void ASAP::generateAllPrograms()
 	for (Device* device : Devices)
 		for (Task* task : Tasks)
 			device->generateProgramm(task);
+}
+
+void ASAP::copyTasks() {
+    for(int i = 0; i<(int)Tasks.size(); i++){
+        TasksToSchedule.push_back(Tasks.at(i));
+    }
 }
 

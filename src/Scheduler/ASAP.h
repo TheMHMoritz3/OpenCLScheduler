@@ -30,6 +30,7 @@ namespace SCHEDULER {
     private:
 		void enqueueTasksWithNoDependency();
 		void generateAllPrograms();
+		void copyTasks();
 		std::queue<Task*> TasksToScheduleInStep;
 		std::queue<Task*> TasksToReadInStep;
 		std::vector<Task*> TasksToSchedule;

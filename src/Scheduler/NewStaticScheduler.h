@@ -8,6 +8,7 @@
 #include "Scheduler.h"
 #include "Device.h"
 #include <vector>
+#include <queue>
 #include "Task.h"
 
 namespace SCHEDULER {
@@ -22,7 +23,7 @@ namespace SCHEDULER {
         bool areTaskDependenciesScheduled(Task* task);
         void scheduleTasks(std::vector<Task*> tasks);
 
-        std::vector<std::vector<Task*>> TasksToSchedule;
+        std::queue<std::vector<Task*>> TasksToSchedule;
     };
 }
 
