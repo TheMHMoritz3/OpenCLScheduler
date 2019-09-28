@@ -162,7 +162,7 @@ void TaskTabWidget::readDataFromTask()
 void TaskTabWidget::readUIntDataFromTask(std::vector<void*> data)
 {
 	QList<QStandardItem*> items;
-	for (int i = 0; i < data.size(); i++)
+	for (int i = 0; i < (int)data.size(); i++)
 	{
 		unsigned int iDataPoint = *((unsigned int*)data.at(i));
 		QStandardItem* item = new QStandardItem(tr("%1").arg(iDataPoint));
@@ -175,7 +175,7 @@ void TaskTabWidget::readUIntDataFromTask(std::vector<void*> data)
 void TaskTabWidget::readIntDataFromTask(std::vector<void*> data)
 {
 	QList<QStandardItem*> items;
-	for (int i = 0; i < data.size(); i++)
+	for (int i = 0; i < (int)data.size(); i++)
 	{
 		int iDataPoint = *((int*)data.at(i));
 		QStandardItem* item = new QStandardItem(tr("%1").arg(iDataPoint));
@@ -188,7 +188,7 @@ void TaskTabWidget::readIntDataFromTask(std::vector<void*> data)
 void TaskTabWidget::readFloatDataFromTask(std::vector<void*> data)
 {
 	QList<QStandardItem*> items;
-	for (int i = 0; i < data.size(); i++)
+	for (int i = 0; i < (int)data.size(); i++)
 	{
 		float iDataPoint = *((float*)data.at(i));
 		QStandardItem* item = new QStandardItem(tr("%1").arg(iDataPoint));
@@ -201,7 +201,7 @@ void TaskTabWidget::readFloatDataFromTask(std::vector<void*> data)
 void TaskTabWidget::readCharDataFromTask(std::vector<void*> data)
 {
 	QList<QStandardItem*> items;
-	for (int i = 0; i < data.size(); i++)
+	for (int i = 0; i < (int)data.size(); i++)
 	{
 		char iDataPoint = *((char*)data.at(i));
 		QStandardItem* item = new QStandardItem(tr("%1").arg(iDataPoint));
@@ -214,7 +214,7 @@ void TaskTabWidget::readCharDataFromTask(std::vector<void*> data)
 void TaskTabWidget::readDoubleDataFromTask(std::vector<void*> data)
 {
 	QList<QStandardItem*> items;
-	for (int i = 0; i < data.size(); i++)
+	for (int i = 0; i < (int)data.size(); i++)
 	{
 		double iDataPoint = *((double*)data.at(i));
 		QStandardItem* item = new QStandardItem(tr("%1").arg(iDataPoint));
@@ -233,7 +233,7 @@ void TaskTabWidget::generateExecutionTimeDiagramm()
 	Ui.ExecutionTimes->setTitle("Execution Times");
 	Ui.ExecutionTimes->setCanvasBackground(Qt::white);
 	QVector<QPointF> points;
-	for (int i = 0; i < Task->elapsedTime().size(); i++) {
+	for (int i = 0; i < (int)Task->elapsedTime().size(); i++) {
 		if (Task->elapsedTime().at(i) > 0.0)
 		{
 			QStandardItem* item = new QStandardItem();
@@ -263,7 +263,7 @@ void TaskTabWidget::generateDataTriggered()
 {
 	clear();
 	Task->setLoad(Ui.LoadSpinBox->value());
-	for (int j = 0; j < Task->kernelArguments().size(); j++) {
+	for (int j = 0; j < (int)Task->kernelArguments().size(); j++) {
 		std::vector<void*> data = CanManager->getValuesFromSimulation(CAN::WheelFrontLeft, Ui.LoadSpinBox->value());
 		Task->addData(data, SCHEDULER::Type::INT);
 	}
@@ -456,7 +456,6 @@ void TaskTabWidget::onItemChanged(QStandardItem* item) {
 		}
 	}
 	else {
-		int i = 0;
 		std::vector<SCHEDULER::Task*> tasks = Task->getDependantTasks();
 		Task->getDependantTasks().clear();
 		for (SCHEDULER::Task* task : tasks) {

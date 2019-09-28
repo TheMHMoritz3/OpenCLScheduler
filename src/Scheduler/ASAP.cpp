@@ -84,7 +84,7 @@ void ASAP::enqueueTasksWithNoDependency() {
     bool TasksAreRemoved = true;
     while (TasksAreRemoved) {
         TasksAreRemoved = false;
-        for (int i = 0; i<TasksToSchedule.size(); i++) {
+        for (int i = 0; i<(int)TasksToSchedule.size(); i++) {
             if (TasksToSchedule.at(i)->dependenciesAreCalculated()) {
                 TasksToScheduleInStep.push(TasksToSchedule.at(i));
                 TasksToSchedule.erase(TasksToSchedule.begin() + i);

@@ -168,7 +168,7 @@ void TUI::decorateFloatValue(SCHEDULER::Task* task, std::vector<std::vector<void
 {
     cout<<"Data Size: "<<data.size()<<endl;
 	for (std::vector<void*> singleDataSet : data) {
-		for (long unsigned int i = 0; i < task->getLoad(); i++) {
+		for (int i = 0; i < task->getLoad(); i++) {
 			float value = *((float*)singleDataSet.at(i));
 			cout << i << ". Return Value: \t" << value << endl;
 		}
@@ -178,7 +178,7 @@ void TUI::decorateFloatValue(SCHEDULER::Task* task, std::vector<std::vector<void
 void TUI::decorateIntValue(SCHEDULER::Task* task, std::vector<std::vector<void*>> data)
 {
 	for (std::vector<void*> singleDataSet : data) {
-		for (long unsigned int i = 0; i < task->getLoad(); i++) {
+		for (int i = 0; i < task->getLoad(); i++) {
 			int32_t value = *((int32_t*)singleDataSet.at(i));
 			cout << i << ". Return Value: \t" << value << endl;
 		}
@@ -188,7 +188,7 @@ void TUI::decorateIntValue(SCHEDULER::Task* task, std::vector<std::vector<void*>
 void TUI::decorateUIntValue(SCHEDULER::Task* task, std::vector<std::vector<void*>> data)
 {
 	for (std::vector<void*> singleDataSet : data) {
-		for (long unsigned int i = 0; i < task->getLoad(); i++) {
+		for (int i = 0; i < task->getLoad(); i++) {
 			uint32_t value = *((uint32_t*)singleDataSet.at(i));
 			cout << i << ". Return Value: \t" << value << endl;
 		}
@@ -198,7 +198,7 @@ void TUI::decorateUIntValue(SCHEDULER::Task* task, std::vector<std::vector<void*
 void TUI::decorateCharValue(SCHEDULER::Task* task, std::vector<std::vector<void*>> data)
 {
 	for (std::vector<void*> singleDataSet : data) {
-		for (long unsigned int i = 0; i < task->getLoad(); i++) {
+		for (int i = 0; i < task->getLoad(); i++) {
 			char value = *((char*)singleDataSet.at(i));
 			cout << i << ". Return Value: \t" << value << endl;
 		}
@@ -208,7 +208,7 @@ void TUI::decorateCharValue(SCHEDULER::Task* task, std::vector<std::vector<void*
 void TUI::decorateDoubleValue(SCHEDULER::Task* task, std::vector<std::vector<void*>> data)
 {
 	for (std::vector<void*> singleDataSet : data) {
-		for (long unsigned int i = 0; i < task->getLoad(); i++) {
+		for (int i = 0; i < task->getLoad(); i++) {
 			double value = *((double*)singleDataSet.at(i));
 			cout << i << ". Return Value: \t" << value << endl;
 		}
@@ -227,14 +227,14 @@ void TUI::decorateOtherTask(SCHEDULER::Task* task)
 			i++;
 		}
 		cin >> value;
-		if (!((value >= 0) && (value < tasks.size())))
+		if (!((value >= 0) && (value < (int)tasks.size())))
 		{
 			clear();
 			decorateError("Please Type in a correct Value.");
 		}
-	} while (!((value >= 0) && (value < tasks.size())));
+	} while (!((value >= 0) && (value < (int)tasks.size())));
 
-	for(int i =0 ;i<tasks.size(); i++)
+	for(int i =0 ;i<(int)tasks.size(); i++)
 	{
 		if(i==value)
 		{

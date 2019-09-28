@@ -1,10 +1,11 @@
 cmake_minimum_required (VERSION 3.10)
 
 set (CMAKE_CXX_COMPILER /usr/bin/g++)
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Werror")
 
 project(CAN DESCRIPTION "C3CAN Interface Libary")
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set (CAN_VERSION_MAJOR 1)
 set (CAN_VERSION_MINOR 0)
 
@@ -31,7 +32,7 @@ target_compile_options(CAN PUBLIC)
 
 project(Scheduler DESCRIPTION "Scheduler Interface Libary")
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set (Scheduler_VERSION_MAJOR 1)
 set (Scheduler_VERSION_MINOR 0)
 
@@ -74,11 +75,11 @@ target_compile_options(Scheduler PUBLIC)
 
 
 
-project(UI DESCRIPTION "Scheduler Interface Libary")
+project(DEMO DESCRIPTION "Demonstration Prototype")
 
-set(CMAKE_CXX_STANDARD 11)
-set (UI_VERSION_MAJOR 1)
-set (UI_VERSION_MINOR 0)
+set(CMAKE_CXX_STANDARD 17)
+set (DEMO_VERSION_MAJOR 1)
+set (DEMO_VERSION_MINOR 0)
 set (CMAKE_PREFIX_PATH  $ENV{QTDIR})
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -127,12 +128,12 @@ get_target_property(QtCore_location Qt5::Core LOCATION)
 
 include_directories(${QWT_INCLUDE_DIR} ${PROJECT_BINARY_DIR} )
 
-qt5_wrap_ui(UI_UICHEADERS src/UI/MainWindow.ui
+qt5_wrap_ui(DEMO_UICHEADERS src/UI/MainWindow.ui
 			src/UI/ConstantDialog.ui
 			src/UI/TaskTabWidget.ui
 			src/UI/OpenTaskWizard.ui)
 
-add_executable(UI ${UI_UICHEADERS} src/UI/main.cpp 
+add_executable(DEMO ${DEMO_UICHEADERS} src/UI/main.cpp
 			src/UI/ConstantDialog.cpp 
 			src/UI/ConstantDialog.h
 			src/UI/OpenKernelFileWizard.cpp
@@ -143,11 +144,11 @@ add_executable(UI ${UI_UICHEADERS} src/UI/main.cpp
 			src/UI/TaskTabWidget.h
 			src/UI/TaskTabWidget.cpp)
 
-file(GLOB_RECURSE SRC_UI "src/UI/*.ui")
+file(GLOB_RECURSE SRC_DEMO "src/UI/*.ui")
 
-source_group("Form Files" FILES ${SRC_UI})
+source_group("Form Files" FILES ${SRC_DEMO})
 
-add_dependencies(UI Scheduler CAN)
-target_link_libraries(UI LINK_PUBLIC Scheduler CAN Qt5::Widgets ${QWT_LIBRARY})
+add_dependencies(DEMO Scheduler CAN)
+target_link_libraries(DEMO LINK_PUBLIC Scheduler CAN Qt5::Widgets ${QWT_LIBRARY})
 
-target_compile_options(UI PUBLIC)
+target_compile_options(DEMO PUBLIC)

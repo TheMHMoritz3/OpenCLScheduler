@@ -71,7 +71,6 @@ void ScheduleManager::startSchedule() {
     ActiveScheduler->schedule();
     auto end = std::chrono::steady_clock::now();
     LastScheduleTime = std::chrono::duration_cast<std::chrono::milliseconds> (end - start).count();
-	delete ActiveScheduler;
 }
 
 void ScheduleManager::startMultiDeviceScheduling()
@@ -111,7 +110,6 @@ void ScheduleManager::startSchedule(std::vector<Task*> tasks, Device* device)
     ActiveScheduler->schedule();
     auto end = std::chrono::steady_clock::now();
     LastScheduleTime = std::chrono::duration_cast<std::chrono::milliseconds> (end - start).count();
-	delete ActiveScheduler;
 }
 
 void ScheduleManager::setScheduleType(ScheduleType type) {

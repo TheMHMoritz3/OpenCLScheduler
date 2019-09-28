@@ -22,5 +22,5 @@ void OpenKernelFileWizard::openFileDialog()
 {
 	QString fileName = QFileDialog::getOpenFileName(this, "Open Kernel", qApp->applicationDirPath(), "*.cl");
 	wizard.FileNameLineEdit->setText(fileName);
-	SCHEDULER::KernelFileParser* parser = new SCHEDULER::KernelFileParser();
+//	SCHEDULER::KernelFileParser* parser = new SCHEDULER::KernelFileParser();
 }

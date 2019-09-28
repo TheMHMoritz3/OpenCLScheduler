@@ -18,12 +18,11 @@ NewStaticScheduler::NewStaticScheduler(std::vector<Task *> tasks, std::vector<De
 void NewStaticScheduler::schedule() {
     for (Device *device : Devices) {
         cl::CommandQueue commandQueue;
-        if(device->getProperties()->getOutOfOrderExecution())
-            commandQueue = cl::CommandQueue(device->getDeviceContext(), device->getOclDevice(),CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE);
-        else
-            commandQueue = cl::CommandQueue(device->getDeviceContext(), device->getOclDevice());
-        for(std::vector<Task*> tasks : TasksToSchedule){
-            for(Task* task : tasks){
+        commandQueue = cl::CommandQueue(device->getDeviceContext(), device->getOclDevice());
+        for(int j=0; j<(int)TasksToSchedule.size();j++){
+            std::vector<Task*> tasks = TasksToSchedule.at(j);
+            for(int i = 0; i<(int)tasks.size();i++){
+                Task* task = tasks.at(i);
                 cl::Kernel kernel = cl::Kernel(task->getProgramm(), task->getKernelName().c_str(), &ErrorCode);
                 if (ErrorCode == CL_SUCCESS) {
                     setRAMForCurrentTask(task, device, kernel, commandQueue);
@@ -36,7 +35,8 @@ void NewStaticScheduler::schedule() {
                     std::cout << "Kernel Creation Resolved Error: " << ErrorCode << std::endl;
             }
             commandQueue.finish();
-            for(Task* task : tasks){
+            for(int i = 0; i<(int)tasks.size();i++){
+                Task* task = tasks.at(i);
                 readDataFromTask(task, commandQueue);
             }
         }
@@ -59,7 +59,7 @@ bool NewStaticScheduler::areTaskDependenciesScheduled(Task* task) {
 }
 
 void NewStaticScheduler::scheduleTasks(std::vector<Task *> tasks) {
-    bool AnythingScheduled=false;
+    bool AnythingScheduled;
     do{
         AnythingScheduled=false;
         std::vector<Task*> scheduledTasks;

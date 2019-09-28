@@ -18,8 +18,8 @@ using namespace UI;
 MainWindow::MainWindow(QWidget *parent) :
         QMainWindow(parent),
         TasksToScheduleModel(new QStandardItemModel()),
-        ActiveDevicePropertie(nullptr),
         ScheduleTimeModel(new QStandardItemModel()),
+        ActiveDevicePropertie(nullptr),
         CanManager(new CAN::CanManager()) {
     ui.setupUi(this);
     ui.retranslateUi(this);
@@ -247,7 +247,7 @@ void MainWindow::addKernel() {
 }
 
 void MainWindow::deviceComboboxChanged() {
-    if (ui.DeviceCombobox->currentIndex() >= Devices.size())
+    if (ui.DeviceCombobox->currentIndex() >= (int)Devices.size())
         decorateAllDevices();
     else {
         ActiveDevicePropertie = Devices.at(ui.DeviceCombobox->currentIndex());
@@ -297,14 +297,14 @@ void MainWindow::startSchedule() {
 
     for(int i = 0; i<ui.RepititionsSpinBox->value(); i++) {
 
-        if (ui.DeviceCombobox->currentIndex() >= Devices.size()) {
+        if (ui.DeviceCombobox->currentIndex() >= (int)Devices.size()) {
             ScheduleManager->startMultiDeviceScheduling();
         } else {
             try {
                 ScheduleManager->startSingleDeviceScheduling();
             }
-            catch (std::exception ex) {
-                std::cout << "Exception: " << ex.what() << std::endl;
+            catch (std::exception *ex) {
+                std::cout << "Exception: " << ex->what() << std::endl;
             }
         }
 

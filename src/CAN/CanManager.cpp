@@ -81,6 +81,7 @@ std::vector<void*> CanManager::getValuesFromSimulation(CAN::CanID id, int count)
 		return RandomNumberGenerator::generateRandomNumbers(count, 2000, 2100);
 	case Temperature:
 		return RandomNumberGenerator::generateRandomNumbers(count, 0, 400);
-	default:;
+	default:
+	    return std::vector<void*>();
 	}
 }

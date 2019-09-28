@@ -155,9 +155,9 @@ void Scheduler::deleteAllBuffers()
 
 	while (!DeleteableDatasets.empty())
 	{
-		void* ToDelete = DeleteableDatasets.at(0);
+//		void* ToDelete = DeleteableDatasets.at(0);
 		DeleteableDatasets.erase(DeleteableDatasets.begin());
-		delete ToDelete;
+//		delete ToDelete;
 	}
 }
 
