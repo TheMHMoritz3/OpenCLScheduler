@@ -23,6 +23,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #include <cstring>
 #include <CL/cl.hpp>
 #include <fstream>
+#include <thread>
 
 using namespace SCHEDULER;
 using namespace std;
@@ -31,8 +32,6 @@ ASAP::ASAP(std::vector<Task*> tasks, std::vector<Device*> device) : Scheduler(ta
 	ErrorCode = 1;
 	if (device.size() <= 1)
 		generateAllPrograms();
-
-    TasksToSchedule = Tasks;
 }
 
 
@@ -47,13 +46,18 @@ void ASAP::schedule() {
             commandQueue = cl::CommandQueue(device->getDeviceContext(), device->getOclDevice());
 
 		CommandQueues.push_back(commandQueue);
+		copyTasks();
 		while (!TasksToSchedule.empty()) {
 			enqueueTasksWithNoDependency();
 			while (!TasksToScheduleInStep.empty())
 			{
 				Task* task = TasksToScheduleInStep.front();
 				TasksToScheduleInStep.pop();
-				cl::Kernel kernel = cl::Kernel(task->getProgramm(), task->getKernelName().c_str(), &ErrorCode);
+
+                if (Devices.size() > 1)
+                    device->generateProgramm(task);
+
+                cl::Kernel kernel = cl::Kernel(task->getProgramm(), task->getKernelName().c_str(), &ErrorCode);
 				if (ErrorCode == CL_SUCCESS) {
 					setRAMForCurrentTask(task, device, kernel, commandQueue);
 					readConstantsFromTask(task, device, kernel, commandQueue);
@@ -80,17 +84,15 @@ void ASAP::schedule() {
 }
 
 void ASAP::enqueueTasksWithNoDependency() {
-//    cout << "Tasks Left Count: " << TasksToSchedule.size() << endl;
     bool TasksAreRemoved = true;
     while (TasksAreRemoved) {
         TasksAreRemoved = false;
-        for (int i = 0; i<TasksToSchedule.size(); i++) {
+        for (int i = 0; i<(int)TasksToSchedule.size(); i++) {
             if (TasksToSchedule.at(i)->dependenciesAreCalculated()) {
                 TasksToScheduleInStep.push(TasksToSchedule.at(i));
                 TasksToSchedule.erase(TasksToSchedule.begin() + i);
                 TasksAreRemoved = true;
             }
-            i++;
         }
     }
 }
@@ -101,5 +103,11 @@ void ASAP::generateAllPrograms()
 	for (Device* device : Devices)
 		for (Task* task : Tasks)
 			device->generateProgramm(task);
+}
+
+void ASAP::copyTasks() {
+    for(int i = 0; i<(int)Tasks.size(); i++){
+        TasksToSchedule.push_back(Tasks.at(i));
+    }
 }
 

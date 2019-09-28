@@ -27,7 +27,9 @@ namespace SCHEDULER {
         SERIAL,
         STATIC,
 	    ASAPHC,
-        READY_FIRE_SCHEDULER
+        READY_FIRE_SCHEDULER,
+        STATIC_POCL,
+        ASAP_POCL,
     };
 
 	enum SCHEDULER_EXPORT ErrorCodes {

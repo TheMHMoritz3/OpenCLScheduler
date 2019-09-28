@@ -26,7 +26,7 @@ void ReadyFireScheduler::schedule() {
         while(!TasksToSchedule.empty()) {
             getQueueTasksWithNoDependencies();
             std::vector<cl::Event> events;
-            for (int i = 0; i < TasksToScheduleInStep.size(); i++) {
+            for (int i = 0; i < (int)TasksToScheduleInStep.size(); i++) {
                 cl::Event currentEvent;
                 events.push_back(currentEvent);
                 Task *task = TasksToScheduleInStep.at(i);
@@ -42,7 +42,7 @@ void ReadyFireScheduler::schedule() {
                     cout << "First Step Kernel Creation Resolved Error: " << ErrorCode << endl;
             }
             cl::Event::waitForEvents(events);
-            for (int i = 0; i<TasksToReadInStep.size(); i++) {
+            for (int i = 0; i<(int)TasksToReadInStep.size(); i++) {
                 readDataFromTask(TasksToReadInStep.at(i), commandQueue);
             }
             TasksToReadInStep.clear();
@@ -55,7 +55,7 @@ void ReadyFireScheduler::getQueueTasksWithNoDependencies() {
     bool TasksAreRemoved = true;
     while (TasksAreRemoved) {
         TasksAreRemoved = false;
-        for (int i = 0; i < TasksToSchedule.size(); i++) {
+        for (int i = 0; i < (int)TasksToSchedule.size(); i++) {
             if (TasksToSchedule.at(i)->dependenciesAreCalculated()) {
                 TasksToScheduleInStep.push_back(TasksToSchedule.at(i));
                 TasksToSchedule.erase(TasksToSchedule.begin() + i);

@@ -37,32 +37,32 @@ void ScheduleManager::searchForDevices() {
     vector<cl::Platform> platforms;
     cl::Platform::get(&platforms);
 
-    int device_id=0;
+    int device_id = 0;
 
-    for(cl::Platform platform : platforms){
+    for (cl::Platform platform : platforms) {
         vector<cl::Device> devices;
         platform.getDevices(CL_DEVICE_TYPE_ALL, &devices);
-        for(cl::Device device : devices){
-            Device* newDevice = new Device(device_id, device);
+        for (cl::Device device : devices) {
+            Device *newDevice = new Device(device_id, device);
             Devices.push_back(newDevice);
-			device_id++;
+            device_id++;
         }
     }
 }
 
 void ScheduleManager::startSchedule() {
-    switch(Type){
+    switch (Type) {
         case ScheduleType::SERIAL:
             ActiveScheduler = new StaticScheduler(Tasks, Devices);
             break;
         case ScheduleType::STATIC:
-            ActiveScheduler = new NewStaticScheduler(Tasks,Devices);
+            ActiveScheduler = new NewStaticScheduler(Tasks, Devices);
             break;
         case ScheduleType::ASAPHC:
-			ActiveScheduler = new ASAP(Tasks, Devices);
-			break;
+            ActiveScheduler = new ASAP(Tasks, Devices);
+            break;
         case ScheduleType::READY_FIRE_SCHEDULER:
-            ActiveScheduler = new ReadyFireScheduler(Tasks,Devices);
+            ActiveScheduler = new ReadyFireScheduler(Tasks, Devices);
             break;
         default:
             break;
@@ -70,81 +70,79 @@ void ScheduleManager::startSchedule() {
     auto start = std::chrono::steady_clock::now();
     ActiveScheduler->schedule();
     auto end = std::chrono::steady_clock::now();
-    LastScheduleTime = std::chrono::duration_cast<std::chrono::milliseconds> (end - start).count();
-	delete ActiveScheduler;
+    LastScheduleTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 }
 
-void ScheduleManager::startMultiDeviceScheduling()
-{
-	for(Device* device : Devices)
-	{
-		DeviceProperties* props = device->getProperties();
-		Type = props->getSchedule();
-		startSchedule(props->getTasksToSchedule(), device);
-	}
+void ScheduleManager::startMultiDeviceScheduling() {
+    for (Device *device : Devices) {
+        DeviceProperties *props = device->getProperties();
+        Type = props->getSchedule();
+        startSchedule(props->getTasksToSchedule(), device);
+    }
 }
 
-void ScheduleManager::startSchedule(std::vector<Task*> tasks, Device* device)
-{
-	std::vector<Device*> devices;
-	devices.push_back(device);
-	switch (Type) {
-	case ScheduleType::SERIAL:
-	    ActiveScheduler = new StaticScheduler(tasks, devices);
-		break;
-	    case ScheduleType::STATIC:
-            ActiveScheduler = new NewStaticScheduler(tasks,devices);
-	        break;
-	case ScheduleType::ASAPHC:
-		ActiveScheduler = new ASAP(tasks, devices);
-		break;
-	case ScheduleType::READY_FIRE_SCHEDULER:
-	    ActiveScheduler = new ReadyFireScheduler(tasks,devices);
-	    break;
-	default:
-		break;
-	}
-	if(device->getProperties()->getCoureCount()>1){
-	    ActiveScheduler->setCoreCount(device->getProperties()->getCoureCount());
-	}
+void ScheduleManager::startSchedule(std::vector<Task *> tasks, Device *device) {
+    std::vector<Device *> devices;
+    devices.push_back(device);
+    switch (Type) {
+        case ScheduleType::SERIAL:
+            ActiveScheduler = new StaticScheduler(tasks, devices);
+            break;
+        case ScheduleType::STATIC:
+        case ScheduleType::ASAP_POCL:
+            ActiveScheduler = new NewStaticScheduler(tasks, devices);
+            break;
+
+        case ScheduleType::ASAPHC:
+        case ScheduleType::STATIC_POCL:
+            ActiveScheduler = new ASAP(tasks, devices);
+            break;
+        case ScheduleType::READY_FIRE_SCHEDULER:
+            ActiveScheduler = new ReadyFireScheduler(tasks, devices);
+            break;
+        default:
+            break;
+    }
+    if (device->getProperties()->getCoureCount() > 1) {
+        ActiveScheduler->setCoreCount(device->getProperties()->getCoureCount());
+    }
     auto start = std::chrono::steady_clock::now();
     ActiveScheduler->schedule();
     auto end = std::chrono::steady_clock::now();
-    LastScheduleTime = std::chrono::duration_cast<std::chrono::milliseconds> (end - start).count();
-	delete ActiveScheduler;
+    LastScheduleTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 }
 
 void ScheduleManager::setScheduleType(ScheduleType type) {
-    Type=type;
+    Type = type;
 }
 
-Task* ScheduleManager::addTask(std::string filePath, std::string kernelName) {
-    Task* task=new Task(getKernelCount());
+Task *ScheduleManager::addTask(std::string filePath, std::string kernelName) {
+    Task *task = new Task(getKernelCount());
     task->setProgramSources(convertSources(filePath));
     task->setKernel(kernelName);
-	task->setPath(filePath);
+    task->setPath(filePath);
     Tasks.push_back(task);
     return task;
 }
 
 bool ScheduleManager::isAddingTasksPossible() {
-    return Devices.size()>0;
+    return Devices.size() > 0;
 }
 
 int ScheduleManager::getKernelCount() {
     return Tasks.size();
 }
 
-cl::Program::Sources* ScheduleManager::convertSources(std::string file) {
-    cl::Program::Sources* sources = new cl::Program::Sources();
+cl::Program::Sources *ScheduleManager::convertSources(std::string file) {
+    cl::Program::Sources *sources = new cl::Program::Sources();
 
     ifstream sourceFile(file);
     string kernel_code(istreambuf_iterator<char>(sourceFile), (istreambuf_iterator<char>()));
 
-    char* cstr = new char[kernel_code.length()+1];
+    char *cstr = new char[kernel_code.length() + 1];
     strcpy(cstr, kernel_code.c_str());
 
-    sources->push_back({cstr,kernel_code.length()+1});
+    sources->push_back({cstr, kernel_code.length() + 1});
     return sources;
 }
 
@@ -152,9 +150,8 @@ int ScheduleManager::getDeviceCount() {
     return Devices.size();
 }
 
-DeviceProperties* ScheduleManager::getDeviceProperties(int i) const
-{
-	return Devices.at(i)->getProperties();
+DeviceProperties *ScheduleManager::getDeviceProperties(int i) const {
+    return Devices.at(i)->getProperties();
 }
 
 void ScheduleManager::setActiveDevice(int id) {
@@ -163,7 +160,7 @@ void ScheduleManager::setActiveDevice(int id) {
 
 void ScheduleManager::startSingleDeviceScheduling() {
     Type = ActiveDevice->getProperties()->getSchedule();
-    startSchedule(ActiveDevice->getProperties()->getTasksToSchedule(),ActiveDevice);
+    startSchedule(ActiveDevice->getProperties()->getTasksToSchedule(), ActiveDevice);
 }
 
 int ScheduleManager::getLastScheduleTime() const {

@@ -29,6 +29,7 @@ namespace SCHEDULER {
         void schedule() override;
 
     private:
+	    void generateAllPrograms();
     };
 }
 

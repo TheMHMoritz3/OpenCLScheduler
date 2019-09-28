@@ -11,6 +11,7 @@
 #include <qwt_plot_histogram.h>
 #include <QProgressDialog>
 #include <QtCore/QThread>
+#include "src/Scheduler/SchedulerNamespace.h"
 
 using namespace SCHEDULER;
 using namespace UI;
@@ -18,8 +19,8 @@ using namespace UI;
 MainWindow::MainWindow(QWidget *parent) :
         QMainWindow(parent),
         TasksToScheduleModel(new QStandardItemModel()),
-        ActiveDevicePropertie(nullptr),
         ScheduleTimeModel(new QStandardItemModel()),
+        ActiveDevicePropertie(nullptr),
         CanManager(new CAN::CanManager()) {
     ui.setupUi(this);
     ui.retranslateUi(this);
@@ -48,7 +49,7 @@ void MainWindow::multiThreaddingCheckstateChanged() {
 }
 
 void MainWindow::loadPreset() {
-    int DefaultCanLoad = 20000;
+    int DefaultCanLoad = 1000000;
 
     QMessageBox msg;
     msg.setIcon(QMessageBox::Question);
@@ -247,7 +248,7 @@ void MainWindow::addKernel() {
 }
 
 void MainWindow::deviceComboboxChanged() {
-    if (ui.DeviceCombobox->currentIndex() >= Devices.size())
+    if (ui.DeviceCombobox->currentIndex() >= (int) Devices.size())
         decorateAllDevices();
     else {
         ActiveDevicePropertie = Devices.at(ui.DeviceCombobox->currentIndex());
@@ -266,6 +267,16 @@ void MainWindow::onCoreCountChanged() {
 }
 
 void MainWindow::onSchedulingTypeChanged() {
+    if (ui.DeviceCombobox->currentText().contains("pthread")) {
+        if(((ScheduleType) ui.SchedulingTypeSpinBox->currentIndex())==SCHEDULER::ASAPHC) {
+            ActiveDevicePropertie->setSchedule(SCHEDULER::ASAP_POCL);
+            return;
+        }
+        if(((ScheduleType) ui.SchedulingTypeSpinBox->currentIndex())==SCHEDULER::STATIC) {
+            ActiveDevicePropertie->setSchedule(SCHEDULER::STATIC_POCL);
+            return;
+        }
+    }
     ActiveDevicePropertie->setSchedule((ScheduleType) ui.SchedulingTypeSpinBox->currentIndex());
 }
 
@@ -279,31 +290,32 @@ void MainWindow::onTasksToScheduleItemClicked(QStandardItem *item) {
 }
 
 void MainWindow::startSchedule() {
-    for(int i = 0; i<ui.RepititionsSpinBox->value(); i++) {
-        bool acceptedOnce = false;
-        for (Task *task : Tasks) {
-            if ((task->dependenciesAreCalculated()) && (task->getLoad() % ui.CoreCountSpinBox->value()) &&
-                (!acceptedOnce)) {
-                QMessageBox msg;
-                msg.setIcon(QMessageBox::Question);
-                msg.setText(
-                        tr("The Load is not dividable by the Workitem Count. This can cause Problems.\nDo you want to start anyway?"));
-                msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-                if (msg.exec() != QMessageBox::StandardButton::Yes) {
-                    return;
-                }
-                acceptedOnce = true;
+    bool acceptedOnce = false;
+    for (Task *task : Tasks) {
+        if ((task->dependenciesAreCalculated()) && (task->getLoad() % ui.CoreCountSpinBox->value()) &&
+            (!acceptedOnce)) {
+            QMessageBox msg;
+            msg.setIcon(QMessageBox::Question);
+            msg.setText(
+                    tr("The Load is not dividable by the Workitem Count. This can cause Problems.\nDo you want to start anyway?"));
+            msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            if (msg.exec() != QMessageBox::StandardButton::Yes) {
+                return;
             }
+            acceptedOnce = true;
         }
+    }
 
-        if (ui.DeviceCombobox->currentIndex() >= Devices.size()) {
+    for (int i = 0; i < ui.RepititionsSpinBox->value(); i++) {
+
+        if (ui.DeviceCombobox->currentIndex() >= (int) Devices.size()) {
             ScheduleManager->startMultiDeviceScheduling();
         } else {
             try {
                 ScheduleManager->startSingleDeviceScheduling();
             }
-            catch (std::exception ex) {
-                std::cout << "Exception: " << ex.what() << std::endl;
+            catch (std::exception *ex) {
+                std::cout << "Exception: " << ex->what() << std::endl;
             }
         }
 
@@ -482,11 +494,11 @@ void MainWindow::onCSVExportClicked() {
         }
         QTextStream out(&file);
         for (int i = 0; i < ScheduleTimeModel->rowCount(); i++) {
-            for(int j = 0; j<ScheduleTimeModel->columnCount(); j++){
-                if(j==ScheduleTimeModel->columnCount()-1){
-                    out<<ScheduleTimeModel->item(i,j)->text()<<"\n";
-                } else{
-                    out<<ScheduleTimeModel->item(i,j)->text()<<"; ";
+            for (int j = 0; j < ScheduleTimeModel->columnCount(); j++) {
+                if (j == ScheduleTimeModel->columnCount() - 1) {
+                    out << ScheduleTimeModel->item(i, j)->text() << "\n";
+                } else {
+                    out << ScheduleTimeModel->item(i, j)->text() << "; ";
                 }
             }
         }
