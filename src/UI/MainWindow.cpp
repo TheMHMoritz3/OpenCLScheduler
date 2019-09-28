@@ -49,7 +49,7 @@ void MainWindow::multiThreaddingCheckstateChanged() {
 }
 
 void MainWindow::loadPreset() {
-    int DefaultCanLoad = 1000000;
+    int DefaultCanLoad = 10000;
 
     QMessageBox msg;
     msg.setIcon(QMessageBox::Question);
