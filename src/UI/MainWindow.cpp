@@ -267,7 +267,6 @@ void MainWindow::onCoreCountChanged() {
 }
 
 void MainWindow::onSchedulingTypeChanged() {
-    qDebug()<<ui.DeviceCombobox->currentText();
     if (ui.DeviceCombobox->currentText().contains("pthread")) {
         if(((ScheduleType) ui.SchedulingTypeSpinBox->currentIndex())==SCHEDULER::ASAPHC) {
             ActiveDevicePropertie->setSchedule(SCHEDULER::ASAP_POCL);
