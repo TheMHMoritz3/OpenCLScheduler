@@ -279,22 +279,23 @@ void MainWindow::onTasksToScheduleItemClicked(QStandardItem *item) {
 }
 
 void MainWindow::startSchedule() {
-    for(int i = 0; i<ui.RepititionsSpinBox->value(); i++) {
-        bool acceptedOnce = false;
-        for (Task *task : Tasks) {
-            if ((task->dependenciesAreCalculated()) && (task->getLoad() % ui.CoreCountSpinBox->value()) &&
-                (!acceptedOnce)) {
-                QMessageBox msg;
-                msg.setIcon(QMessageBox::Question);
-                msg.setText(
-                        tr("The Load is not dividable by the Workitem Count. This can cause Problems.\nDo you want to start anyway?"));
-                msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-                if (msg.exec() != QMessageBox::StandardButton::Yes) {
-                    return;
-                }
-                acceptedOnce = true;
+    bool acceptedOnce = false;
+    for (Task *task : Tasks) {
+        if ((task->dependenciesAreCalculated()) && (task->getLoad() % ui.CoreCountSpinBox->value()) &&
+            (!acceptedOnce)) {
+            QMessageBox msg;
+            msg.setIcon(QMessageBox::Question);
+            msg.setText(
+                    tr("The Load is not dividable by the Workitem Count. This can cause Problems.\nDo you want to start anyway?"));
+            msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            if (msg.exec() != QMessageBox::StandardButton::Yes) {
+                return;
             }
+            acceptedOnce = true;
         }
+    }
+
+    for(int i = 0; i<ui.RepititionsSpinBox->value(); i++) {
 
         if (ui.DeviceCombobox->currentIndex() >= Devices.size()) {
             ScheduleManager->startMultiDeviceScheduling();

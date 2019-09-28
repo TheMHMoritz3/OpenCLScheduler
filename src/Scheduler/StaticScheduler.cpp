@@ -29,6 +29,7 @@ using namespace std;
 
 StaticScheduler::StaticScheduler(std::vector<Task*> tasks, std::vector<Device*> device) : Scheduler(tasks, device) {
 	ErrorCode = 1;
+	generateAllPrograms();
 }
 
 
@@ -39,8 +40,6 @@ void StaticScheduler::schedule() {
 		CommandQueues.push_back(commandQueue);
 		for (Task* task : Tasks) {
 //		    cout << "Task Name: "<<task->getKernelName()<<endl;
-			device->generateProgramm(task);
-
 			cl::Kernel kernel = cl::Kernel(task->getProgramm(), task->getKernelName().c_str(),  &ErrorCode);
             if (ErrorCode == CL_SUCCESS) {
 				setRAMForCurrentTask(task, device, kernel, commandQueue);
@@ -60,5 +59,14 @@ void StaticScheduler::schedule() {
 		}
 		deleteAllBuffers();
 	}
+}
+
+void StaticScheduler::generateAllPrograms() {
+    for(Device* device : Devices){
+        for(Task* task: Tasks){
+            device->generateProgramm(task);
+        }
+    }
+
 }
 
