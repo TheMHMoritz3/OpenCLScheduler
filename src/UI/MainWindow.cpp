@@ -11,6 +11,8 @@
 #include <qwt_plot_histogram.h>
 #include <QProgressDialog>
 #include <QtCore/QThread>
+#include <QInputDialog>
+#include <bits/stdc++.h>
 #include "src/Scheduler/SchedulerNamespace.h"
 
 using namespace SCHEDULER;
@@ -49,13 +51,9 @@ void MainWindow::multiThreaddingCheckstateChanged() {
 }
 
 void MainWindow::loadPreset() {
-    int DefaultCanLoad = 10000;
 
-    QMessageBox msg;
-    msg.setIcon(QMessageBox::Question);
-    msg.setText(tr("Do you want to load the preset from the CAN-Bus?"));
-    msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-    bool CANAccepted = (msg.exec() == QMessageBox::StandardButton::Yes);
+    bool CANAccepted;
+    int DefaultCanLoad = QInputDialog::getInt(this,tr("Load Preset"), tr("Do you want to load the preset from the CAN-Bus? And if so, please tell us the Load."),10000,0,INT_MAX,1,&CANAccepted);
 
 
     SCHEDULER::Task *xAxis = ScheduleManager->addTask("kernels/accel_sensor.cl", "xAxis");
